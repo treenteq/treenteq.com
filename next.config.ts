@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+    env: {
+        PRIVY_APP_ID: process.env.PRIVY_APP_ID,
+    },
+    /* config options here */
 };
 
 export default nextConfig;
