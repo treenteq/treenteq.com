@@ -16,7 +16,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                 appearance: {
                     theme: "dark",
                     accentColor: "#676FFF",
-                    logo: "https://your-logo-url",
                 },
                 embeddedWallets: {
                     createOnLogin: "users-without-wallets",

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import { useDatasetToken } from "../hooks/useDatasetToken";
 import { usePrivy } from "@privy-io/react-auth";
@@ -107,7 +106,7 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                     />
                 </div>
 
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-600 overflow-x-scroll">
                     Content Hash: {contentHash || "Not available"}
                 </div>
 

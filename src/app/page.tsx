@@ -5,11 +5,14 @@ import MintDatasetToken from "@/components/MintingComp";
 import { Button } from "@/components/ui/button";
 import { usePrivy } from "@privy-io/react-auth";
 import { keccak256, toHex } from "viem";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
     const { ready, authenticated, login } = usePrivy();
     const [contentHash, setContentHash] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    const router = useRouter();
 
     const handleValidationResult = (validationResult: {
         success: boolean;
@@ -39,7 +42,7 @@ export default function Home() {
         const disableLogout = !ready || (ready && !authenticated);
 
         return (
-            <Button disabled={disableLogout} onClick={logout}>
+            <Button className="mr-10" disabled={disableLogout} onClick={logout}>
                 Log out
             </Button>
         );
@@ -54,6 +57,7 @@ export default function Home() {
                         Connect Wallet
                     </Button>
                 ) : null}
+                <Button onClick={() => router.push("/market")}>Markets</Button>
 
                 <div className="space-y-2">
                     <h1 className="text-2xl font-bold">
