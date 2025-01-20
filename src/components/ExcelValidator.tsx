@@ -112,7 +112,14 @@ const validateColumn = (
         : { success: true };
 };
 
-const ExcelValidator: React.FC = () => {
+const ExcelValidator: React.FC<{
+    onValidation: (result: {
+        success: boolean;
+        errorDetails?: string;
+        data?: (string | number | boolean)[][];
+        file?: File;
+    }) => void;
+}> = ({ onValidation }) => {
     const handleFileUpload = async (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
@@ -150,8 +157,27 @@ const ExcelValidator: React.FC = () => {
             );
             if (failedValidations.length > 0) {
                 console.error("Validation Failed:", failedValidations);
+                const errorMessage = failedValidations
+                    .map((validation) => {
+                        if (
+                            validation.errorDetails?.[0].expectedType ===
+                            "Dominance threshold not met"
+                        ) {
+                            return `Column "${validation.columnName}": No dominant type found`;
+                        }
+                        return `Column "${
+                            validation.columnName
+                        }": Invalid values found at rows ${validation.errorDetails
+                            ?.map((err) => err.row)
+                            .join(", ")}. Expected type: ${
+                            validation.errorDetails?.[0].expectedType
+                        }`;
+                    })
+                    .join("\n");
+                onValidation({ success: false, errorDetails: errorMessage });
             } else {
                 console.log("All columns are valid!");
+                onValidation({ success: true, data: jsonData, file });
             }
         };
 
