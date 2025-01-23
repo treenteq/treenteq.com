@@ -14,6 +14,7 @@ import DatasetTokenABI from "@/utils/DatasetTokenABI.json";
 import Link from "next/link";
 import { CONTRACT_ADDRESS, RPC_URL } from "@/utils/contractConfig";
 import { Download } from "lucide-react";
+import toast, { Toast } from "react-hot-toast";
 
 interface DatasetMetadata {
     name: string;
@@ -30,7 +31,10 @@ interface TokenData {
     balance: bigint;
 }
 
+const BASE_EXPLORER_URL = "https://sepolia.basescan.org";
+
 const downloadFromPinata = async (ipfsHash: string, filename: string) => {
+    const toastId = toast.loading("Downloading dataset...");
     try {
         const response = await fetch(
             `https://gateway.pinata.cloud/ipfs/${ipfsHash}`
@@ -46,9 +50,12 @@ const downloadFromPinata = async (ipfsHash: string, filename: string) => {
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
+        toast.success("Dataset downloaded successfully!", { id: toastId });
     } catch (error) {
         console.error("Download error:", error);
-        alert("Failed to download the dataset. Please try again.");
+        toast.error("Failed to download the dataset. Please try again.", {
+            id: toastId,
+        });
     }
 };
 
@@ -143,9 +150,11 @@ export default function Market() {
 
     const handlePurchase = async (tokenId: bigint, price: bigint) => {
         if (!authenticated || !user?.wallet?.address) {
-            alert("Please connect your wallet first");
+            toast.error("Please connect your wallet first");
             return;
         }
+
+        const toastId = toast.loading("Processing purchase...");
 
         try {
             // Get the active wallet
@@ -176,17 +185,43 @@ export default function Market() {
                 value: price,
             });
 
-            await publicClient.waitForTransactionReceipt({ hash });
-            alert("Purchase successful! You can now access the dataset.");
+            const receipt = await publicClient.waitForTransactionReceipt({
+                hash,
+            });
+
+            toast.success(
+                (t: Toast) => (
+                    <div>
+                        Purchase successful! You can now access the dataset.
+                        <a
+                            href={`${BASE_EXPLORER_URL}/tx/${receipt.transactionHash}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block mt-2 text-blue-500 hover:underline"
+                            onClick={() => toast.dismiss(t.id)}
+                        >
+                            View on Block Explorer
+                        </a>
+                    </div>
+                ),
+                { id: toastId, duration: 5000 }
+            );
 
             // Refresh the token list
             window.location.reload();
         } catch (error) {
             console.error("Purchase error:", error);
             if (error instanceof Error) {
-                alert(`Error purchasing dataset: ${error.message}`);
+                toast.error(`Error purchasing dataset: ${error.message}`, {
+                    id: toastId,
+                });
             } else {
-                alert("Error purchasing dataset. Check console for details.");
+                toast.error(
+                    "Error purchasing dataset. Check console for details.",
+                    {
+                        id: toastId,
+                    }
+                );
             }
         }
     };
