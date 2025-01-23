@@ -4,7 +4,7 @@
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #D8E9A8;
+    background-color: #000000;
     position: relative;
 }
 
@@ -103,20 +103,104 @@ body {
     z-index: 1;
 }
 
+/* Update animation keyframes */
+@keyframes backgroundFloat {
+    0%, 100% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-15px) translateX(15px) rotate(1deg);
+    }
+    50% {
+        transform: translateY(0) translateX(25px) rotate(0deg);
+    }
+    75% {
+        transform: translateY(15px) translateX(15px) rotate(-1deg);
+    }
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        filter: brightness(1) blur(0px);
+    }
+    50% {
+        filter: brightness(1.2) blur(2px);
+    }
+}
+
 .left-bg, .right-bg {
     position: absolute;
     top: 0;
     width: 50%;
     height: 100%;
-    background-image: url('/treenteq.com/public/background.svg');
+    background-image: url('/background.svg');
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: cover;
+    opacity: 0.3;
+    animation: backgroundFloat 20s ease-in-out infinite, glowPulse 4s ease-in-out infinite;
 }
 
 .left-bg {
     left: 0;
+    transform-origin: center;
+    animation-delay: -10s;
 }
 
 .right-bg {
     right: 0;
+    transform-origin: center;
+}
+
+/* Update the background container styles */
+.animated-background {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.animated-background::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at 30% center,
+        rgba(0, 163, 64, 0.15) 0%,
+        transparent 60%
+    );
+    animation: pulseGlow 6s ease-in-out infinite;
+}
+
+.animated-background::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at 70% center,
+        rgba(0, 163, 64, 0.15) 0%,
+        transparent 60%
+    );
+    animation: pulseGlow 6s ease-in-out infinite reverse;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+/* Update these styles for background animation */
+.bg-svg {
+    transition: all 0.5s ease-in-out;
+    mix-blend-mode: screen;
+}
+
+.bg-svg:hover {
+    filter: brightness(1.3) saturate(1.2);
+    transform: scale(1.6);
 }

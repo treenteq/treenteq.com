@@ -17,7 +17,7 @@ module.exports = {
     },
     extend: {
       colors: {
-        'custom-bg': '#D8E9A8',
+        'custom-bg': '#000000',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -66,10 +66,38 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: 0 },
         },
+        dash: {
+          to: {
+            strokeDashoffset: '1000'
+          }
+        },
+        'float-left': {
+          '0%, 100%': { 
+            transform: 'translateY(0) translateX(0) scale(1.5)',
+            opacity: '0.3'
+          },
+          '50%': { 
+            transform: 'translateY(-15px) translateX(15px) scale(1.5)',
+            opacity: '0.4'
+          }
+        },
+        'float-right': {
+          '0%, 100%': { 
+            transform: 'translateY(0) translateX(0) scale(1.5) rotate(90deg)',
+            opacity: '0.3'
+          },
+          '50%': { 
+            transform: 'translateY(-15px) translateX(-15px) scale(1.5) rotate(90deg)',
+            opacity: '0.4'
+          }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        dash: 'dash 20s linear infinite',
+        'float-left': 'float-left 15s ease-in-out infinite',
+        'float-right': 'float-right 15s ease-in-out infinite'
       },
     },
   },

@@ -35,34 +35,39 @@ export default function Home() {
     }
 
     return (
-        <div className="relative min-h-screen overflow-hidden bg-[#D8E9A8]">
+        <div className="relative min-h-screen overflow-hidden bg-black">
+            <div className="absolute inset-0 z-0">
+                {/* Left side background */}
+                <div className="absolute left-0 top-0 w-2/5 h-full">
+                    <div className="absolute inset-0 bg-[url('/background.svg')] bg-left bg-no-repeat opacity-30 transform scale-150 animate-float-left bg-svg" />
+                </div>
+                {/* Center background pattern */}
+                <div className="absolute left-1/3 right-1/3 top-0 h-full">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#00A340]/5 to-transparent" />
+                </div>
+                {/* Right side background */}
+                <div className="absolute -right-1/4 -top-1/4 w-2/3 h-full">
+                    <div className="absolute inset-0 bg-[url('/background.svg')] bg-right bg-no-repeat opacity-30 transform scale-150 rotate-90 animate-float-right bg-svg" />
+                </div>
+            </div>
+            
             <BackgroundAnimation />
-
+            
             <header className="relative z-10 flex justify-between items-center p-6">
-                <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="text-2xl font-bold text-gray-700"
-                >
-                    <Link href="/">
-                        <Image
-                            src="/treenteq-logo.png"
-                            width={130}
-                            height={130}
-                            alt="Treenteq Logo"
-                        />
-                    </Link>
-                </motion.div>
-                <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5 }}
-                >
+                <div className="logo">
+                    <Image 
+                        src="/treenteq-logo.png" 
+                        alt="TREENTEQ Logo" 
+                        width={200} 
+                        height={200} 
+                        priority
+                    />
+                </div>
+                <div className="flex items-center mt-4">
                     <Link href="/market">
                         <Button
                             variant="default"
-                            className="marketplace-button mr-4 border-2 border-transparent bg-[#00A340] text-white hover:bg-[#00A340] hover:border-[#00A340] transition-colors duration-300"
+                            className="marketplace-button mr-4 bg-[#00A340] text-white hover:bg-[#00A340] transition-colors duration-300"
                         >
                             Marketplace
                         </Button>
@@ -71,24 +76,24 @@ export default function Home() {
                     {ready && !authenticated ? (
                         <Button
                             size="lg"
-                            className="w-full sm:w-auto connect-wallet-button border-2 border-transparent bg-[#00A340] text-white hover:bg-[#00A340] hover:border-[#00A340] transition-colors duration-300"
+                            className="connect-wallet-button border-2 border-transparent bg-[#00A340] text-white hover:bg-[#00A340] transition-colors duration-300"
                             onClick={login}
                         >
-                            Connect Wallet
+                            Log out
                         </Button>
                     ) : (
                         <LogoutButton />
                     )}
-                </motion.div>
+                </div>
             </header>
 
-            <main className="relative z-10 container mx-auto px-6 pt-20 pb-32">
+            <main className="relative z-10 container mx-auto px-6 pt-3 pb-28">
                 <div className="max-w-4xl mx-auto text-center space-y-8">
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.7, delay: 0.2 }}
-                        className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900"
+                        className="text-5xl md:text-7xl font-bold tracking-tight text-white"
                     >
                         Unlock the <span className="highlight">value</span> of your data
                     </motion.h1>
@@ -97,7 +102,7 @@ export default function Home() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.7, delay: 0.4 }}
-                        className="text-xl text-gray-600 max-w-2xl mx-auto"
+                        className="text-xl text-gray-400 max-w-2xl mx-auto"
                     >
                         Transform your raw data into valuable insights. Share,
                         analyze, and monetize your data securely on our
@@ -108,7 +113,7 @@ export default function Home() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.7, delay: 0.6 }}
-                        className="text-lg text-gray-500"
+                        className="text-lg text-gray-400"
                     >
                         Join thousands of users who are already benefiting from
                         our data marketplace.
@@ -124,12 +129,20 @@ export default function Home() {
                             onSubmit={handleSearch}
                             className="relative flex-1 max-w-md"
                         >
-                            <div className="relative">
-                                <CustomInput
-                                    placeholder="Search for datasets..."
-                                    className="flex-1 max-w-md pl-10"
-                                />
-                                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
+                            <div className="relative flex items-center">
+                                <div className="relative flex-1">
+                                    <CustomInput
+                                        placeholder="Search for datasets..."
+                                        className="flex-1 w-full pl-10 bg-[#DEE5C9] border border-[#00A340] placeholder-gray-600 rounded-r-none"
+                                    />
+                                    <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
+                                </div>
+                                <Button 
+                                    type="submit"
+                                    className="h-12 rounded-l-none bg-[#00A340] text-white hover:bg-[#00A340]/90 transition-colors duration-300"
+                                >
+                                    Search
+                                </Button>
                             </div>
                         </form>
                         <Link href="/listing">
@@ -153,22 +166,22 @@ export default function Home() {
                         icon="lock"
                         title="Secure Upload"
                         description="Upload and store your data with top-notch security."
-                        color="bg-white"
-                        iconColor="text-blue-500"
+                        color="bg-[#DEE5C9]"
+                        iconColor="text-[#00a340]"
                     />
                     <FeatureCard
                         icon="bar-chart"
                         title="Data Analytics"
                         description="Analyze your data to uncover valuable insights."
-                        color="bg-white"
-                        iconColor="text-green-500"
+                        color="bg-[#DEE5C9]"
+                        iconColor="text-[#00a340]"
                     />
                     <FeatureCard
                         icon="dollar-sign"
                         title="Monetize"
                         description="Turn your data into a revenue-generating asset."
-                        color="bg-white"
-                        iconColor="text-purple-500"
+                        color="bg-[#DEE5C9]"
+                        iconColor="text-[#00a340]"
                     />
                 </motion.div>
             </main>

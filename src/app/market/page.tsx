@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useEffect, useState } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
@@ -15,6 +16,10 @@ import Link from "next/link";
 import { CONTRACT_ADDRESS, RPC_URL } from "@/utils/contractConfig";
 import { Download } from "lucide-react";
 import toast, { Toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import BackgroundAnimation from "@/components/background-animation";
+import Image from "next/image";
 
 interface DatasetMetadata {
     name: string;
@@ -142,6 +147,7 @@ export default function Market() {
     const [tokens, setTokens] = useState<TokenData[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
 
     const publicClient = createPublicClient({
         chain: baseSepolia,
@@ -365,48 +371,104 @@ export default function Market() {
     }, [ready, authenticated, user?.wallet?.address, publicClient]);
 
     return (
-        <main className="container mx-auto p-4 max-w-6xl bg-[#D8E9A8]">
-            <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                    <Link
-                        href="/"
-                        className="text-blue-500 hover:text-blue-600"
-                    >
-                        ← Back to Upload
-                    </Link>
-                    {ready && !authenticated ? (
-                        <Button onClick={login}>Connect Wallet</Button>
-                    ) : null}
+        <div className="relative min-h-screen overflow-hidden bg-black">
+            {/* Background Elements */}
+            <div className="absolute inset-0 z-0">
+                {/* Left side background */}
+                <div className="absolute left-0 top-0 w-2/5 h-full">
+                    <div className="absolute inset-0 bg-[url('/background.svg')] bg-left bg-no-repeat opacity-30 transform scale-150 animate-float-left bg-svg" />
                 </div>
-
-                <div className="space-y-2">
-                    <h1 className="text-3xl font-bold">Dataset Marketplace</h1>
-                    <p className="text-gray-600">
-                        Browse and purchase tokenized datasets
-                    </p>
+                {/* Center background pattern */}
+                <div className="absolute left-1/3 right-1/3 top-0 h-full">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#00A340]/5 to-transparent" />
                 </div>
-
-                {error ? (
-                    <div className="text-center py-8 text-red-500">{error}</div>
-                ) : loading ? (
-                    <div className="text-center py-8">Loading datasets...</div>
-                ) : tokens.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500">
-                        No datasets available yet
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {tokens.map((token) => (
-                            <DatasetCard
-                                key={token.tokenId.toString()}
-                                token={token}
-                                onPurchase={handlePurchase}
-                                isOwner={token.balance > BigInt(0)}
-                            />
-                        ))}
-                    </div>
-                )}
+                {/* Right side background */}
+                <div className="absolute -right-1/4 -top-1/4 w-2/3 h-full">
+                    <div className="absolute inset-0 bg-[url('/background.svg')] bg-right bg-no-repeat opacity-30 transform scale-150 rotate-90 animate-float-right bg-svg" />
+                </div>
             </div>
-        </main>
+
+            <BackgroundAnimation />
+
+            {/* Header */}
+            <header className="relative z-10 flex justify-between items-center p-6">
+                <div className="logo">
+                    <Link href="/">
+                        <Image 
+                            src="/treenteq-logo.png" 
+                            alt="TREENTEQ Logo" 
+                            width={200} 
+                            height={200}
+                            priority 
+                        />
+                    </Link>
+                </div>
+                <div className="flex items-center gap-4">
+                    <Link href="/listing">
+                        <Button
+                            variant="default"
+                            className="bg-[#00A340] text-white hover:bg-[#00A340] transition-colors duration-300"
+                        >
+                            List your data
+                        </Button>
+                    </Link>
+                </div>
+            </header>
+
+            {/* Main Content */}
+            <main className="relative z-10 container mx-auto px-6 pt-8">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7 }}
+                    className="max-w-4xl mx-auto"
+                >
+                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-8">
+                        Data Marketplace
+                    </h1>
+                    
+                    <div className="space-y-6">
+                        <div className="flex justify-between items-center">
+                            <Link
+                                href="/"
+                                className="text-white hover:text-gray-300"
+                            >
+                                ← Back to Upload
+                            </Link>
+                            {ready && !authenticated ? (
+                                <Button onClick={login}>Connect Wallet</Button>
+                            ) : null}
+                        </div>
+
+                        <div className="space-y-2">
+                            <p className="text-gray-300">
+                                Browse and purchase tokenized datasets
+                            </p>
+                        </div>
+
+                        {error ? (
+                            <div className="text-center py-8 text-red-500">{error}</div>
+                        ) : loading ? (
+                            <div className="text-center py-8">Loading datasets...</div>
+                        ) : tokens.length === 0 ? (
+                            <div className="text-center py-8 text-gray-500">
+                                No datasets available yet
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {tokens.map((token) => (
+                                    <DatasetCard
+                                        key={token.tokenId.toString()}
+                                        token={token}
+                                        onPurchase={handlePurchase}
+                                        isOwner={token.balance > BigInt(0)}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </motion.div>
+            </main>
+        </div>
     );
 }

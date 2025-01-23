@@ -43,13 +43,13 @@ export default function DataUpload() {
     if (!ready) return null;
 
     return (
-        <div className="min-h-screen bg-gray-50 p-4 flex items-center justify-center">
-            <Card className="w-full max-w-xl p-6 space-y-6 border-black border-2">
+        <main className="container mx-auto p-4 max-w-6xl bg-black">
+            <Card className="w-full max-w-xl p-6 space-y-6 border-gray-800 border-2 bg-black">
                 <div className="space-y-2">
-                    <h2 className="text-xl font-semibold text-gray-900">
+                    <h2 className="text-xl font-semibold text-white">
                         List Your Data
                     </h2>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-300">
                         Upload your data in .csv or .xlsx format. Make sure your
                         data is properly formatted and contains no sensitive
                         information.
@@ -95,6 +95,6 @@ export default function DataUpload() {
                     </div>
                 </div>
             </Card>
-        </div>
+        </main>
     );
 }
