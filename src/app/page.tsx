@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import { useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
 import { motion } from "framer-motion";
@@ -10,6 +11,7 @@ import { CustomInput } from "@/components/ui/custom-input";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { SearchIcon } from 'lucide-react';
 
 export default function Home() {
     const { ready, authenticated, login } = usePrivy();
@@ -57,10 +59,19 @@ export default function Home() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5 }}
                 >
+                    <Link href="/market">
+                        <Button
+                            variant="default"
+                            className="marketplace-button mr-4 border-2 border-transparent bg-[#00A340] text-white hover:bg-[#00A340] hover:border-[#00A340] transition-colors duration-300"
+                        >
+                            Marketplace
+                        </Button>
+                    </Link>
+
                     {ready && !authenticated ? (
                         <Button
                             size="lg"
-                            className="w-full sm:w-auto"
+                            className="w-full sm:w-auto connect-wallet-button border-2 border-transparent bg-[#00A340] text-white hover:bg-[#00A340] hover:border-[#00A340] transition-colors duration-300"
                             onClick={login}
                         >
                             Connect Wallet
@@ -113,15 +124,18 @@ export default function Home() {
                             onSubmit={handleSearch}
                             className="relative flex-1 max-w-md"
                         >
-                            <CustomInput
-                                placeholder="Search for datasets..."
-                                className="flex-1 max-w-md"
-                            />
+                            <div className="relative">
+                                <CustomInput
+                                    placeholder="Search for datasets..."
+                                    className="flex-1 max-w-md pl-10"
+                                />
+                                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
+                            </div>
                         </form>
                         <Link href="/listing">
                             <CustomButton
                                 size="lg"
-                                className="w-full sm:w-auto"
+                                className="w-full sm:w-auto bg-[#00A340] text-white hover:bg-[#00A340] transition-colors duration-300"
                             >
                                 List your data
                             </CustomButton>
@@ -139,21 +153,21 @@ export default function Home() {
                         icon="lock"
                         title="Secure Upload"
                         description="Upload and store your data with top-notch security."
-                        color="bg-blue-100"
+                        color="bg-white"
                         iconColor="text-blue-500"
                     />
                     <FeatureCard
                         icon="bar-chart"
                         title="Data Analytics"
                         description="Analyze your data to uncover valuable insights."
-                        color="bg-green-100"
+                        color="bg-white"
                         iconColor="text-green-500"
                     />
                     <FeatureCard
                         icon="dollar-sign"
                         title="Monetize"
                         description="Turn your data into a revenue-generating asset."
-                        color="bg-purple-100"
+                        color="bg-white"
                         iconColor="text-purple-500"
                     />
                 </motion.div>
