@@ -4,11 +4,12 @@
 
 body {
     font-family: Arial, Helvetica, sans-serif;
+    background-color: #D8E9A8;
 }
 
 @layer base {
     :root {
-        --background: 0 0% 100%;
+        --background: 83 53% 79%;
         --foreground: 222.2 84% 4.9%;
         --card: 0 0% 100%;
         --card-foreground: 222.2 84% 4.9%;
@@ -68,5 +69,30 @@ body {
     }
     body {
         @apply bg-background text-foreground;
+    }
+}
+
+@layer components {
+    .border-border {
+        border-color: theme('colors.border'); /* Ensure this color is defined in your Tailwind config */
+    }
+    .header {
+        margin-top: -5px; /* Adjust this value as needed */
+        /* or */
+        padding-top: 5px; /* Adjust this value as needed */
+    }
+    .header-container {
+        position: absolute; /* or fixed, depending on your layout */
+        top: 0; /* Adjust this value as needed */
+        left: 0; /* Align to the left */
+        right: 0; /* Align to the right */
+        display: flex; /* Use flexbox for alignment */
+        justify-content: space-between; /* Space between logo and button */
+        align-items: center; /* Center vertically */
+        padding: 10px; /* Add some padding if needed */
+        background-color: transparent; /* Change if you want a background */
+    }
+    .highlight {
+        color: #00A340; /* Change text color to #00A340 */
     }
 }

@@ -33,7 +33,7 @@ export default function Home() {
     }
 
     return (
-        <div className="relative min-h-screen overflow-hidden">
+        <div className="relative min-h-screen overflow-hidden bg-[#D8E9A8]">
             <BackgroundAnimation />
 
             <header className="relative z-10 flex justify-between items-center p-6">
@@ -79,7 +79,7 @@ export default function Home() {
                         transition={{ duration: 0.7, delay: 0.2 }}
                         className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900"
                     >
-                        Unlock the value of your data
+                        Unlock the <span className="highlight">value</span> of your data
                     </motion.h1>
 
                     <motion.p
