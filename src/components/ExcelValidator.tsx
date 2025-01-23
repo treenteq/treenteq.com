@@ -1,6 +1,9 @@
+"use client";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import * as XLSX from "xlsx";
+import { Upload } from "lucide-react";
 
 interface ValidationResult {
     success: boolean;
@@ -150,13 +153,10 @@ const ExcelValidator: React.FC<{
                 };
             });
 
-            console.log("Validation Results:", validationResults);
-
             const failedValidations = validationResults.filter(
                 (result) => !result.success
             );
             if (failedValidations.length > 0) {
-                console.error("Validation Failed:", failedValidations);
                 const errorMessage = failedValidations
                     .map((validation) => {
                         if (
@@ -176,7 +176,6 @@ const ExcelValidator: React.FC<{
                     .join("\n");
                 onValidation({ success: false, errorDetails: errorMessage });
             } else {
-                console.log("All columns are valid!");
                 onValidation({ success: true, data: jsonData, file });
             }
         };
@@ -185,22 +184,23 @@ const ExcelValidator: React.FC<{
     };
 
     return (
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-            <h1>Excel Validator</h1>
+        <div className="flex flex-col items-center gap-4">
+            <label
+                htmlFor="file-upload"
+                className="cursor-pointer flex flex-col items-center gap-2"
+            >
+                <Upload className="h-8 w-8 text-gray-400" />
+                <span className="text-sm text-gray-600">
+                    Click to upload Excel file
+                </span>
+            </label>
             <input
+                id="file-upload"
                 type="file"
                 accept=".xlsx, .xls"
                 onChange={handleFileUpload}
-                style={{
-                    padding: "10px",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                }}
+                className="hidden"
             />
-            <p>
-                Upload an Excel file to validate its columns. Check the console
-                for results.
-            </p>
         </div>
     );
 };

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { useDatasetToken } from "../hooks/useDatasetToken";
 import { usePrivy } from "@privy-io/react-auth";
@@ -6,11 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { uploadToPinata } from "@/services/pinata";
 import { parseEther } from "viem";
+import toast, { Toast } from "react-hot-toast";
 
 interface MintDatasetTokenProps {
     contentHash: string | null;
     file: File | null;
 }
+
+const BASE_EXPLORER_URL = "https://sepolia.basescan.org";
 
 const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
     contentHash,
@@ -34,16 +39,20 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
             !file ||
             !price
         ) {
-            alert("Please fill all fields!");
+            toast.error("Please fill all fields!");
             return;
         }
+
+        const toastId = toast.loading("Uploading to IPFS...");
 
         try {
             setIsUploading(true);
             // Upload to Pinata
             const ipfsHash = await uploadToPinata(file);
 
+            toast.loading("Minting token...", { id: toastId });
             setIsMinting(true);
+
             // Mint token
             const receipt = await mintDatasetToken(
                 user.wallet.address,
@@ -54,8 +63,23 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                 parseEther(price)
             );
 
-            console.log("Token minted successfully:", receipt);
-            alert("Token minted successfully!");
+            toast.success(
+                (t: Toast) => (
+                    <div>
+                        Token minted successfully!
+                        <a
+                            href={`${BASE_EXPLORER_URL}/tx/${receipt.transactionHash}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block mt-2 text-blue-500 hover:underline"
+                            onClick={() => toast.dismiss(t.id)}
+                        >
+                            View on Block Explorer
+                        </a>
+                    </div>
+                ),
+                { id: toastId, duration: 5000 }
+            );
 
             // Reset form
             setName("");
@@ -63,7 +87,10 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
             setPrice("");
         } catch (error) {
             console.error("Error in mint process:", error);
-            alert("Error in minting process. Check console for details.");
+            toast.error(
+                "Error minting token. Please check console for details.",
+                { id: toastId }
+            );
         } finally {
             setIsUploading(false);
             setIsMinting(false);
