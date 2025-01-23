@@ -365,7 +365,7 @@ export default function Market() {
     }, [ready, authenticated, user?.wallet?.address, publicClient]);
 
     return (
-        <main className="container mx-auto p-4 max-w-6xl">
+        <main className="container mx-auto p-4 max-w-6xl bg-[#D8E9A8]">
             <div className="space-y-6">
                 <div className="flex justify-between items-center">
                     <Link
