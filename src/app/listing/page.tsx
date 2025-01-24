@@ -43,7 +43,7 @@ export default function DataUpload() {
     if (!ready) return null;
 
     return (
-        <main className="container mx-auto p-4 max-w-6xl bg-black">
+        <main className="container mx-auto p-12 flex items-center justify-center max-w-6xl bg-black">
             <Card className="w-full max-w-xl p-6 space-y-6 border-gray-800 border-2 bg-black">
                 <div className="space-y-2">
                     <h2 className="text-xl font-semibold text-white">
