@@ -109,7 +109,7 @@ const DatasetCard: React.FC<{
                                         token.metadata.price
                                     )
                                 }
-                                variant="default"
+                                className="bg-gray-700 text-white hover:bg-[#00A340] transition-colors duration-300"
                             >
                                 Purchase
                             </Button>
@@ -142,7 +142,7 @@ const DatasetCard: React.FC<{
 };
 
 export default function Market() {
-    const { ready, authenticated, login, user } = usePrivy();
+    const { ready, authenticated, login, logout, user } = usePrivy();
     const { wallets } = useWallets();
     const [tokens, setTokens] = useState<TokenData[]>([]);
     const [loading, setLoading] = useState(true);
@@ -370,6 +370,8 @@ export default function Market() {
         }
     }, [ready, authenticated, user?.wallet?.address, publicClient]);
 
+    if (!ready) return null;
+
     return (
         <div className="relative min-h-screen overflow-hidden bg-black">
             {/* Background Elements */}
@@ -412,6 +414,12 @@ export default function Market() {
                             List your data
                         </Button>
                     </Link>
+                    <Button
+                        onClick={authenticated ? logout : login}
+                        className="bg-[#00A340] text-white hover:bg-[#009030] transition-colors duration-300"
+                    >
+                        {authenticated ? "Log out" : "Log in"}
+                    </Button>
                 </div>
             </header>
 
@@ -435,9 +443,6 @@ export default function Market() {
                             >
                                 ← Back to Upload
                             </Link>
-                            {ready && !authenticated ? (
-                                <Button onClick={login}>Connect Wallet</Button>
-                            ) : null}
                         </div>
 
                         <div className="space-y-2">

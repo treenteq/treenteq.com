@@ -99,30 +99,32 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
 
     return (
         <div className="space-y-4">
-            <h2 className="text-xl font-bold">Mint Dataset Token</h2>
+            <h2 className="mint-token-title">Mint Dataset Token</h2>
             <div className="space-y-4">
                 <div className="space-y-2">
-                    <Label htmlFor="name">Dataset Name</Label>
+                    <Label htmlFor="name" className="text-white">Dataset Name</Label>
                     <Input
                         id="name"
                         placeholder="Dataset Name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
+                        className="text-black placeholder-white"
                     />
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="description">Description</Label>
+                    <Label htmlFor="description" className="text-white">Description</Label>
                     <Input
                         id="description"
                         placeholder="Description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
+                        className="text-black placeholder-white"
                     />
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="price">Price (ETH)</Label>
+                    <Label htmlFor="price" className="text-white">Price (ETH)</Label>
                     <Input
                         id="price"
                         type="number"
@@ -130,6 +132,7 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                         placeholder="0.1"
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
+                        className="text-black placeholder-white"
                     />
                 </div>
 
@@ -140,7 +143,7 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                 <Button
                     onClick={handleMint}
                     disabled={isUploading || isMinting || !contentHash || !file}
-                    className="w-full"
+                    className={`w-full ${name && description && price ? 'bg-[#00A340] text-black' : 'bg-gray-500 text-gray-300'} hover:bg-[#009030] transition-colors duration-300`}
                 >
                     {isUploading
                         ? "Uploading to IPFS..."

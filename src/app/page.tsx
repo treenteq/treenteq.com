@@ -28,8 +28,8 @@ export default function Home() {
         const disableLogout = !ready || (ready && !authenticated);
 
         return (
-            <Button disabled={disableLogout} onClick={logout}>
-                Log out
+            <Button disabled={disableLogout} onClick={authenticated ? logout : login}>
+                {authenticated ? "Log out" : "Log in"}
             </Button>
         );
     }
@@ -79,7 +79,7 @@ export default function Home() {
                             className="connect-wallet-button border-2 border-transparent bg-[#00A340] text-white hover:bg-[#00A340] transition-colors duration-300"
                             onClick={login}
                         >
-                            Log out
+                            Log In
                         </Button>
                     ) : (
                         <LogoutButton />
@@ -107,16 +107,6 @@ export default function Home() {
                         Transform your raw data into valuable insights. Share,
                         analyze, and monetize your data securely on our
                         platform.
-                    </motion.p>
-
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.7, delay: 0.6 }}
-                        className="text-lg text-gray-400"
-                    >
-                        Join thousands of users who are already benefiting from
-                        our data marketplace.
                     </motion.p>
 
                     <motion.div
@@ -148,7 +138,7 @@ export default function Home() {
                         <Link href="/listing">
                             <CustomButton
                                 size="lg"
-                                className="w-full sm:w-auto bg-[#00A340] text-white hover:bg-[#00A340] transition-colors duration-300"
+                                className="h-12 w-full sm:w-auto bg-[#00A340] text-white hover:bg-[#00A340] transition-colors duration-300"
                             >
                                 List your data
                             </CustomButton>
