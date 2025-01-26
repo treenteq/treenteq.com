@@ -14,12 +14,22 @@ import { baseSepolia } from "viem/chains";
 import DatasetTokenABI from "@/utils/DatasetTokenABI.json";
 import Link from "next/link";
 import { CONTRACT_ADDRESS, RPC_URL } from "@/utils/contractConfig";
-import { Download } from "lucide-react";
+import { Download, Search, Tag } from "lucide-react";
 import toast, { Toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import BackgroundAnimation from "@/components/background-animation";
 import Image from "next/image";
+import { Input } from "@/components/ui/input";
+import { OwnershipShare } from "@/hooks/useDatasetToken";
+
+interface RawMetadata extends Array<string | bigint> {
+    0: string; // name
+    1: string; // description
+    2: string; // contentHash
+    3: string; // ipfsHash
+    4: bigint; // price
+}
 
 interface DatasetMetadata {
     name: string;
@@ -27,7 +37,8 @@ interface DatasetMetadata {
     contentHash: string;
     ipfsHash: string;
     price: bigint;
-    creator: string;
+    tags: string[];
+    owners: OwnershipShare[];
 }
 
 interface TokenData {
@@ -70,7 +81,7 @@ const DatasetCard: React.FC<{
     isOwner: boolean;
 }> = ({ token, onPurchase, isOwner }) => {
     if (!token?.metadata) {
-        return null; // Don't render invalid cards
+        return null;
     }
 
     const handleDownload = async () => {
@@ -79,6 +90,14 @@ const DatasetCard: React.FC<{
             "_"
         )}.zip`;
         await downloadFromPinata(token.metadata.ipfsHash, filename);
+    };
+
+    const formatPercentage = (percentage: bigint) => {
+        // Convert from basis points (10000 = 100%) to a decimal string
+        const whole = percentage / BigInt(100);
+        const fraction = percentage % BigInt(100);
+        const fractionStr = fraction.toString().padStart(2, "0");
+        return `${whole}.${fractionStr}%`;
     };
 
     return (
@@ -96,6 +115,41 @@ const DatasetCard: React.FC<{
                     <p className="text-gray-600 line-clamp-2">
                         {token.metadata.description}
                     </p>
+
+                    <div className="flex flex-wrap gap-1 mt-2">
+                        {token.metadata.tags.map((tag) => (
+                            <span
+                                key={tag}
+                                className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs flex items-center gap-1"
+                            >
+                                <Tag className="w-3 h-3" />
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+
+                    <div className="mt-4">
+                        <h4 className="text-sm font-semibold text-gray-700 mb-1">
+                            Owners
+                        </h4>
+                        <div className="space-y-1">
+                            {token.metadata.owners.map((owner, index) => (
+                                <div
+                                    key={index}
+                                    className="flex justify-between text-xs text-gray-500"
+                                >
+                                    <span className="truncate flex-1">
+                                        {owner.owner}
+                                    </span>
+                                    <span className="ml-2">
+                                        {formatPercentage(
+                                            BigInt(owner.percentage)
+                                        )}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
 
                     <div className="flex justify-between items-center pt-2">
                         <div className="text-lg font-bold">
@@ -131,10 +185,6 @@ const DatasetCard: React.FC<{
                             </div>
                         )}
                     </div>
-
-                    <div className="text-xs text-gray-500 truncate">
-                        Creator: {token.metadata.creator}
-                    </div>
                 </div>
             </div>
         </div>
@@ -145,8 +195,10 @@ export default function Market() {
     const { ready, authenticated, login, logout, user } = usePrivy();
     const { wallets } = useWallets();
     const [tokens, setTokens] = useState<TokenData[]>([]);
+    const [filteredTokens, setFilteredTokens] = useState<TokenData[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
     const router = useRouter();
 
     const publicClient = createPublicClient({
@@ -232,6 +284,38 @@ export default function Market() {
         }
     };
 
+    const handleSearch = (term: string) => {
+        setSearchTerm(term);
+        if (!term.trim()) {
+            setFilteredTokens(tokens);
+            return;
+        }
+
+        const searchTerms = term.toLowerCase().split(/\s+/);
+        const filtered = tokens.filter((token) => {
+            // Check if any search term exactly matches a tag
+            const tagMatches = searchTerms.some((term) =>
+                token.metadata.tags.some((tag) => tag.toLowerCase() === term)
+            );
+
+            // Check if search terms match name or description
+            const textContent = [
+                token.metadata.name,
+                token.metadata.description,
+            ]
+                .join(" ")
+                .toLowerCase();
+
+            const textMatches = searchTerms.every((term) =>
+                textContent.includes(term)
+            );
+
+            return tagMatches || textMatches;
+        });
+
+        setFilteredTokens(filtered);
+    };
+
     useEffect(() => {
         const fetchTokens = async () => {
             try {
@@ -248,6 +332,7 @@ export default function Market() {
 
                 if (totalTokens === BigInt(0)) {
                     setTokens([]);
+                    setFilteredTokens([]);
                     setLoading(false);
                     return;
                 }
@@ -257,41 +342,39 @@ export default function Market() {
                     tokenPromises.push(
                         (async () => {
                             try {
-                                // Get metadata - it comes as an array from the contract
-                                const metadataArray =
+                                // Get metadata
+                                const metadata =
                                     (await publicClient.readContract({
                                         address: CONTRACT_ADDRESS,
                                         abi: DatasetTokenABI,
                                         functionName: "tokenMetadata",
                                         args: [i],
-                                    })) as [
-                                        string,
-                                        string,
-                                        string,
-                                        string,
-                                        bigint,
-                                        string
-                                    ];
+                                    })) as RawMetadata;
+
+                                // Get tags
+                                const tags = (await publicClient.readContract({
+                                    address: CONTRACT_ADDRESS,
+                                    abi: DatasetTokenABI,
+                                    functionName: "getTokenTags",
+                                    args: [i],
+                                })) as string[];
+
+                                // Get owners
+                                const owners = (await publicClient.readContract(
+                                    {
+                                        address: CONTRACT_ADDRESS,
+                                        abi: DatasetTokenABI,
+                                        functionName: "getTokenOwners",
+                                        args: [i],
+                                    }
+                                )) as OwnershipShare[];
 
                                 console.log(
                                     `Raw metadata for token ${i}:`,
-                                    metadataArray
-                                );
-
-                                // Convert array to object
-                                const metadata = {
-                                    name: metadataArray[0],
-                                    description: metadataArray[1],
-                                    contentHash: metadataArray[2],
-                                    ipfsHash: metadataArray[3],
-                                    price: metadataArray[4],
-                                    creator: metadataArray[5],
-                                };
-
-                                console.log(
-                                    `Parsed metadata for token ${i}:`,
                                     metadata
                                 );
+                                console.log(`Tags for token ${i}:`, tags);
+                                console.log(`Owners for token ${i}:`, owners);
 
                                 // Get balance if user is authenticated
                                 const balance =
@@ -304,8 +387,24 @@ export default function Market() {
                                           })) as bigint)
                                         : BigInt(0);
 
+                                // Combine all metadata
+                                const fullMetadata = {
+                                    name: metadata[0],
+                                    description: metadata[1],
+                                    contentHash: metadata[2],
+                                    ipfsHash: metadata[3],
+                                    price: metadata[4],
+                                    tags,
+                                    owners,
+                                };
+
+                                console.log(
+                                    `Full metadata for token ${i}:`,
+                                    fullMetadata
+                                );
+
                                 return {
-                                    metadata,
+                                    metadata: fullMetadata,
                                     balance,
                                 };
                             } catch (error) {
@@ -325,11 +424,14 @@ export default function Market() {
                         if (!data) return null;
                         const { metadata, balance } = data;
 
-                        // Basic validation
+                        // Validate required fields
                         if (
                             !metadata ||
-                            typeof metadata.name !== "string" ||
-                            !metadata.price
+                            !metadata.name ||
+                            !metadata.price ||
+                            !Array.isArray(metadata.tags) ||
+                            !Array.isArray(metadata.owners) ||
+                            metadata.owners.length === 0
                         ) {
                             console.error(
                                 `Invalid metadata for token ${index}:`,
@@ -340,14 +442,7 @@ export default function Market() {
 
                         return {
                             tokenId: BigInt(index),
-                            metadata: {
-                                name: metadata.name,
-                                description: metadata.description,
-                                contentHash: metadata.contentHash,
-                                ipfsHash: metadata.ipfsHash,
-                                price: metadata.price,
-                                creator: metadata.creator,
-                            },
+                            metadata,
                             balance,
                         };
                     })
@@ -355,6 +450,7 @@ export default function Market() {
 
                 console.log("Final formatted tokens:", formattedTokens);
                 setTokens(formattedTokens);
+                setFilteredTokens(formattedTokens);
             } catch (error) {
                 console.error("Error fetching tokens:", error);
                 setError(
@@ -396,12 +492,12 @@ export default function Market() {
             <header className="relative z-10 flex justify-between items-center p-6">
                 <div className="logo">
                     <Link href="/">
-                        <Image 
-                            src="/treenteq-logo.png" 
-                            alt="TREENTEQ Logo" 
-                            width={200} 
+                        <Image
+                            src="/treenteq-logo.png"
+                            alt="TREENTEQ Logo"
+                            width={200}
                             height={200}
-                            priority 
+                            priority
                         />
                     </Link>
                 </div>
@@ -434,7 +530,7 @@ export default function Market() {
                     <h1 className="text-4xl md:text-5xl font-bold text-white mb-8">
                         Data Marketplace
                     </h1>
-                    
+
                     <div className="space-y-6">
                         <div className="flex justify-between items-center">
                             <Link
@@ -445,23 +541,34 @@ export default function Market() {
                             </Link>
                         </div>
 
-                        <div className="space-y-2">
-                            <p className="text-gray-300">
-                                Browse and purchase tokenized datasets
-                            </p>
+                        <div className="relative">
+                            <Input
+                                type="text"
+                                placeholder="Search by name, description, or tags..."
+                                value={searchTerm}
+                                onChange={(e) => handleSearch(e.target.value)}
+                                className="pl-10 bg-white text-black"
+                            />
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                         </div>
 
                         {error ? (
-                            <div className="text-center py-8 text-red-500">{error}</div>
+                            <div className="text-center py-8 text-red-500">
+                                {error}
+                            </div>
                         ) : loading ? (
-                            <div className="text-center py-8">Loading datasets...</div>
-                        ) : tokens.length === 0 ? (
+                            <div className="text-center py-8 text-white">
+                                Loading datasets...
+                            </div>
+                        ) : filteredTokens.length === 0 ? (
                             <div className="text-center py-8 text-gray-500">
-                                No datasets available yet
+                                {searchTerm
+                                    ? "No datasets found matching your search"
+                                    : "No datasets available yet"}
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {tokens.map((token) => (
+                                {filteredTokens.map((token) => (
                                     <DatasetCard
                                         key={token.tokenId.toString()}
                                         token={token}
