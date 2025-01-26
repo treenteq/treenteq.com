@@ -180,16 +180,16 @@
                 "type": "address"
             },
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "seller",
-                "type": "address"
+                "indexed": false,
+                "internalType": "address[]",
+                "name": "sellers",
+                "type": "address[]"
             },
             {
                 "indexed": false,
-                "internalType": "uint256",
-                "name": "price",
-                "type": "uint256"
+                "internalType": "uint256[]",
+                "name": "amounts",
+                "type": "uint256[]"
             }
         ],
         "name": "DatasetPurchased",
@@ -199,10 +199,16 @@
         "anonymous": false,
         "inputs": [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "creator",
-                "type": "address"
+                "indexed": false,
+                "internalType": "address[]",
+                "name": "owners",
+                "type": "address[]"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256[]",
+                "name": "percentages",
+                "type": "uint256[]"
             },
             {
                 "indexed": true,
@@ -233,6 +239,12 @@
                 "internalType": "uint256",
                 "name": "price",
                 "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "string[]",
+                "name": "tags",
+                "type": "string[]"
             }
         ],
         "name": "DatasetTokenMinted",
@@ -439,12 +451,81 @@
     {
         "inputs": [
             {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getTokenOwners",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "owner",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "percentage",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct DatasetToken.OwnershipShare[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getTokenTags",
+        "outputs": [
+            {
+                "internalType": "string[]",
+                "name": "",
+                "type": "string[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "address",
                 "name": "owner",
                 "type": "address"
             }
         ],
         "name": "getTokensByOwner",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "tag",
+                "type": "string"
+            }
+        ],
+        "name": "getTokensByTag",
         "outputs": [
             {
                 "internalType": "uint256[]",
@@ -514,9 +595,21 @@
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "creator",
-                "type": "address"
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "owner",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "percentage",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct DatasetToken.OwnershipShare[]",
+                "name": "owners",
+                "type": "tuple[]"
             },
             {
                 "internalType": "string",
@@ -542,6 +635,11 @@
                 "internalType": "uint256",
                 "name": "price",
                 "type": "uint256"
+            },
+            {
+                "internalType": "string[]",
+                "name": "tags",
+                "type": "string[]"
             }
         ],
         "name": "mintDatasetToken",
@@ -719,11 +817,6 @@
                 "internalType": "uint256",
                 "name": "price",
                 "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "creator",
-                "type": "address"
             }
         ],
         "stateMutability": "view",
