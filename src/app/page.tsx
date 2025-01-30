@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
 import { motion } from "framer-motion";
@@ -11,7 +11,7 @@ import { CustomInput } from "@/components/ui/custom-input";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { SearchIcon } from 'lucide-react';
+import { SearchIcon } from "lucide-react";
 
 export default function Home() {
     const { ready, authenticated, login } = usePrivy();
@@ -28,7 +28,10 @@ export default function Home() {
         const disableLogout = !ready || (ready && !authenticated);
 
         return (
-            <Button disabled={disableLogout} onClick={authenticated ? logout : login}>
+            <Button
+                disabled={disableLogout}
+                onClick={authenticated ? logout : login}
+            >
                 {authenticated ? "Log out" : "Log in"}
             </Button>
         );
@@ -50,23 +53,23 @@ export default function Home() {
                     <div className="absolute inset-0 bg-[url('/background.svg')] bg-right bg-no-repeat opacity-30 transform scale-150 rotate-90 animate-float-right bg-svg" />
                 </div>
             </div>
-            
+
             <BackgroundAnimation />
-            
+
             <header className="relative z-10 flex justify-between items-center p-6">
                 <div className="logo">
-                    <Image 
-                        src="/treenteq-logo.png" 
-                        alt="TREENTEQ Logo" 
-                        width={200} 
-                        height={200} 
+                    <Image
+                        src="/treenteq-logo.png"
+                        alt="TREENTEQ Logo"
+                        width={200}
+                        height={200}
                         priority
                     />
                 </div>
                 <div className="flex items-center mt-4">
                     <Link href="/market">
                         <Button
-                            variant="default"
+                            // variant="default"
                             className="marketplace-button mr-4 bg-[#00A340] text-white hover:bg-[#00A340] transition-colors duration-300"
                         >
                             Marketplace
@@ -75,7 +78,7 @@ export default function Home() {
 
                     {ready && !authenticated ? (
                         <Button
-                            size="lg"
+                            // size="lg"
                             className="connect-wallet-button border-2 border-transparent bg-[#00A340] text-white hover:bg-[#00A340] transition-colors duration-300"
                             onClick={login}
                         >
@@ -95,7 +98,8 @@ export default function Home() {
                         transition={{ duration: 0.7, delay: 0.2 }}
                         className="text-5xl md:text-7xl font-bold tracking-tight text-white"
                     >
-                        Unlock the <span className="highlight">value</span> of your data
+                        Unlock the <span className="highlight">value</span> of
+                        your data
                     </motion.h1>
 
                     <motion.p
@@ -127,7 +131,7 @@ export default function Home() {
                                     />
                                     <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
                                 </div>
-                                <Button 
+                                <Button
                                     type="submit"
                                     className="h-12 rounded-l-none bg-[#00A340] text-white hover:bg-[#00A340]/90 transition-colors duration-300"
                                 >
@@ -137,7 +141,7 @@ export default function Home() {
                         </form>
                         <Link href="/listing">
                             <CustomButton
-                                size="lg"
+                                // size="lg"
                                 className="h-12 w-full sm:w-auto bg-[#00A340] text-white hover:bg-[#00A340] transition-colors duration-300"
                             >
                                 List your data

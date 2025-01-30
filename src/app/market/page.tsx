@@ -9,6 +9,8 @@ import {
     http,
     formatEther,
     custom,
+    Chain,
+    defineChain,
 } from "viem";
 import { baseSepolia } from "viem/chains";
 import DatasetTokenABI from "@/utils/DatasetTokenABI.json";
@@ -48,6 +50,32 @@ interface TokenData {
 }
 
 const BASE_EXPLORER_URL = "https://sepolia.basescan.org";
+
+const customBaseSepolia = defineChain({
+    id: 84532,
+    name: "Base Sepolia",
+    nativeCurrency: {
+        name: "Ether",
+        symbol: "ETH",
+        decimals: 18,
+    },
+    rpcUrls: {
+        default: {
+            http: ["https://sepolia.base.org"],
+        },
+        public: {
+            http: ["https://sepolia.base.org"],
+        },
+    },
+    blockExplorers: {
+        default: {
+            name: "Basescan",
+            url: "https://sepolia.basescan.org",
+            apiUrl: "https://api-sepolia.basescan.org/api",
+        },
+    },
+    testnet: true,
+});
 
 const downloadFromPinata = async (ipfsHash: string, filename: string) => {
     const toastId = toast.loading("Downloading dataset...");
@@ -175,9 +203,7 @@ const DatasetCard: React.FC<{
                                 </span>
                                 <Button
                                     onClick={handleDownload}
-                                    variant="outline"
-                                    size="sm"
-                                    className="flex items-center gap-1"
+                                    className="flex items-center gap-1 border border-gray-300"
                                 >
                                     <Download className="w-4 h-4" />
                                     Download
@@ -202,7 +228,7 @@ export default function Market() {
     const router = useRouter();
 
     const publicClient = createPublicClient({
-        chain: baseSepolia,
+        chain: customBaseSepolia,
         transport: http(RPC_URL),
     });
 
@@ -216,13 +242,13 @@ export default function Market() {
 
         try {
             // Get the active wallet
-            const activeWallet = wallets[0]; // Usually the first wallet is the active one
+            const activeWallet = wallets[0];
             if (!activeWallet) {
                 throw new Error("No wallet connected");
             }
 
             // Switch to Base Sepolia
-            await activeWallet.switchChain(baseSepolia.id);
+            await activeWallet.switchChain(customBaseSepolia.id);
 
             // Get the provider from the wallet
             const provider = await activeWallet.getEthereumProvider();
@@ -230,7 +256,7 @@ export default function Market() {
             // Create wallet client using Privy's provider
             const walletClient = createWalletClient({
                 account: user.wallet.address as `0x${string}`,
-                chain: baseSepolia,
+                chain: customBaseSepolia,
                 transport: custom(provider),
             });
 
@@ -241,6 +267,7 @@ export default function Market() {
                 functionName: "purchaseDataset",
                 args: [tokenId],
                 value: price,
+                chain: customBaseSepolia,
             });
 
             const receipt = await publicClient.waitForTransactionReceipt({
@@ -291,26 +318,37 @@ export default function Market() {
             return;
         }
 
-        const searchTerms = term.toLowerCase().split(/\s+/);
+        const searchTerm = term.toLowerCase().trim();
+
+        // If the search term starts with 'tag:', only search in tags
+        if (searchTerm.startsWith("tag:")) {
+            const tagToSearch = searchTerm.slice(4).trim(); // Remove 'tag:' prefix
+            const filtered = tokens.filter((token) =>
+                token.metadata.tags.some(
+                    (tag) => tag.toLowerCase() === tagToSearch
+                )
+            );
+            setFilteredTokens(filtered);
+            return;
+        }
+
+        // Otherwise, search in all fields
         const filtered = tokens.filter((token) => {
-            // Check if any search term exactly matches a tag
-            const tagMatches = searchTerms.some((term) =>
-                token.metadata.tags.some((tag) => tag.toLowerCase() === term)
+            // Check if the search term exactly matches any tag
+            const hasMatchingTag = token.metadata.tags.some(
+                (tag) => tag.toLowerCase() === searchTerm
             );
 
-            // Check if search terms match name or description
+            // Check name and description
             const textContent = [
                 token.metadata.name,
                 token.metadata.description,
             ]
                 .join(" ")
                 .toLowerCase();
+            const hasMatchingText = textContent.includes(searchTerm);
 
-            const textMatches = searchTerms.every((term) =>
-                textContent.includes(term)
-            );
-
-            return tagMatches || textMatches;
+            return hasMatchingTag || hasMatchingText;
         });
 
         setFilteredTokens(filtered);
@@ -503,10 +541,7 @@ export default function Market() {
                 </div>
                 <div className="flex items-center gap-4">
                     <Link href="/listing">
-                        <Button
-                            variant="default"
-                            className="bg-[#00A340] text-white hover:bg-[#00A340] transition-colors duration-300"
-                        >
+                        <Button className="bg-[#00A340] text-white hover:bg-[#00A340] transition-colors duration-300">
                             List your data
                         </Button>
                     </Link>
