@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa6";
 import { Card } from "@/components/ui/card";
+// import { defineChain } from "viem";
 
 // import React, { useEffect, useState } from "react";
 // import { usePrivy, useWallets } from "@privy-io/react-auth";
@@ -57,7 +58,42 @@ import { Card } from "@/components/ui/card";
 //     balance: bigint;
 // }
 
+
 // const BASE_EXPLORER_URL = "https://sepolia.basescan.org";
+
+// const customBaseSepolia = defineChain({
+//     id: 84532,
+//     name: "Base Sepolia",
+//     nativeCurrency: {
+//         name: "Ether",
+//         symbol: "ETH",
+//         decimals: 18,
+//     },
+//     rpcUrls: {
+//         default: {
+//             http: ["https://sepolia.base.org"],
+//         },
+//         public: {
+//             http: ["https://sepolia.base.org"],
+//         },
+//     },
+//     blockExplorers: {
+//         default: {
+//             name: "Basescan",
+//             url: "https://sepolia.basescan.org",
+//             apiUrl: "https://api-sepolia.basescan.org/api",
+//         },
+//     },
+//     testnet: true,
+// });
+
+// const downloadFromPinata = async (ipfsHash: string, filename: string) => {
+//     const toastId = toast.loading("Downloading dataset...");
+//     try {
+//         const response = await fetch(
+//             `https://gateway.pinata.cloud/ipfs/${ipfsHash}`
+//         );
+//         if (!response.ok) throw new Error("Failed to fetch file from Pinata");
 
 // const downloadFromPinata = async (ipfsHash: string, filename: string) => {
 //     const toastId = toast.loading("Downloading dataset...");
@@ -608,6 +644,7 @@ export default function Market() {
         { id: 8, name: "Dataset Name", description: "dataset description", price: "3.27 ETH", purchased: true },
         { id: 9, name: "Dataset Name", description: "dataset description", price: "3.27 ETH", purchased: false },
       ]
+
     return (
         <div className="min-h-screen bg-gradient">
             {/* Navbar */}

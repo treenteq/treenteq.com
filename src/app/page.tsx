@@ -1,5 +1,6 @@
 "use client";
 
+
 // import React from 'react';
 // import { useRouter } from "next/navigation";
 // import { usePrivy } from "@privy-io/react-auth";
@@ -182,9 +183,11 @@ import { FaChevronRight } from "react-icons/fa6";
 //     );
 // }
 
-export default function Home() {
 
+export default function Home() {
     const pathname = usePathname(); // Get the current route
+
+    
 
     const navItems = [
         { name: "Home", path: "/" },
@@ -221,6 +224,7 @@ export default function Home() {
                       ? "text-[#00A340] font-semibold"
                       : "text-white hover:text-[#00A340]"
                   }`}
+
                 >
                   {item.name}
                 </Link>
