@@ -199,14 +199,16 @@ export default function Home() {
       <nav className="fixed top-4 mt-8 left-1/2 transform -translate-x-1/2 w-[80%] rounded-full gradient-bg border border-white/20 shadow-lg z-50">
         <div className="container flex justify-between items-center pt-3 pb-3">
           {/* Logo */}
+          <Link href="/">
           <Image
             src="/logo.svg"
             alt="TREENTEQ Logo"
             width={150}
             height={150}
-            className="brightness-110 contrast-125 opacity-80"
+            className="brightness-110 contrast-125"
             priority
           />
+          </Link>
 
           {/* Navigation Links */}
           <ul className="flex space-x-6">
@@ -233,7 +235,7 @@ export default function Home() {
         {/* Left Part */}
         <div className="flex flex-col justify-center gap-5 ml-[135px]">
           <div className="flex px-[10px] py-[15px] gap-[10px]">
-            <Button className="text-white bg-[#0B170D] border border-[#00A340] rounded-full w-auto p-3 text-lg disable">
+            <Button className="text-white bg-[#0B170D] border border-green-900/30 rounded-full w-auto p-3 text-lg disable">
               Lightning-fast, secure, easy.
             </Button>
           </div>
@@ -252,12 +254,14 @@ export default function Home() {
             <h1 className="text-white">analyze, and monetize your data securely on our platform</h1>
           </div>
           <div className="flex flex-row items-center gap-4">
+            <Link href="/market">
             <Button className="border border-[#00A340] text-white rounded-full bg-black px-4 py-2 flex items-center">
               <h1 className="font-semibold text-lg">Treen It now</h1>
               <FaChevronRight />
             </Button>
+            </Link>
             <div className="flex justify-center items-center gap-3">
-              <h1 className="font-semibold text-lg text-white flex justify-center items-center">Explore</h1>
+              <h1 className="font-semibold text-lg text-white flex justify-center items-center border-green-900/80">Explore</h1>
               <FaChevronRight className="text-white" />
             </div>
           </div>
