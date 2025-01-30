@@ -4,6 +4,7 @@
 import React from "react";
 import * as XLSX from "xlsx";
 import { Upload } from "lucide-react";
+import Papa, { ParseResult } from "papaparse";
 
 interface ValidationResult {
     success: boolean;
@@ -115,7 +116,24 @@ const validateColumn = (
         : { success: true };
 };
 
-const ExcelValidator: React.FC<{
+const parseCSV = (file: File): Promise<any[][]> => {
+    return new Promise((resolve, reject) => {
+        Papa.parse(file, {
+            complete: (results: ParseResult<any>) => {
+                if (results.errors.length > 0) {
+                    reject(new Error("Error parsing CSV file"));
+                } else {
+                    resolve(results.data);
+                }
+            },
+            error: (error: Error) => {
+                reject(error);
+            },
+        });
+    });
+};
+
+const DatasetValidator: React.FC<{
     onValidation: (result: {
         success: boolean;
         errorDetails?: string;
@@ -129,20 +147,32 @@ const ExcelValidator: React.FC<{
         const file = event.target.files?.[0];
         if (!file) return;
 
-        const reader = new FileReader();
+        try {
+            let jsonData: (string | number | boolean)[][];
 
-        reader.onload = (e: ProgressEvent<FileReader>) => {
-            const data = new Uint8Array(e.target?.result as ArrayBuffer);
-            const workbook = XLSX.read(data, { type: "array" });
+            if (file.name.toLowerCase().endsWith(".csv")) {
+                // Handle CSV files
+                jsonData = await parseCSV(file);
+            } else {
+                // Handle Excel files
+                const reader = new FileReader();
+                const data = await new Promise<ArrayBuffer>(
+                    (resolve, reject) => {
+                        reader.onload = (e) =>
+                            resolve(e.target?.result as ArrayBuffer);
+                        reader.onerror = reject;
+                        reader.readAsArrayBuffer(file);
+                    }
+                );
 
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
+                const workbook = XLSX.read(new Uint8Array(data), {
+                    type: "array",
+                });
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+            }
 
-            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as (
-                | string
-                | number
-                | boolean
-            )[][];
             const [header, ...rows] = jsonData;
 
             const validationResults = header.map((columnName, index) => {
@@ -178,9 +208,14 @@ const ExcelValidator: React.FC<{
             } else {
                 onValidation({ success: true, data: jsonData, file });
             }
-        };
-
-        reader.readAsArrayBuffer(file);
+        } catch (error) {
+            console.error("Error processing file:", error);
+            onValidation({
+                success: false,
+                errorDetails:
+                    "Error processing file. Please ensure it's a valid Excel or CSV file.",
+            });
+        }
     };
 
     return (
@@ -191,13 +226,13 @@ const ExcelValidator: React.FC<{
             >
                 <Upload className="h-8 w-8 text-gray-400" />
                 <span className="text-sm text-gray-600">
-                    Click to upload Excel file
+                    Click to upload Excel or CSV file
                 </span>
             </label>
             <input
                 id="file-upload"
                 type="file"
-                accept=".xlsx, .xls"
+                accept=".xlsx,.xls,.csv"
                 onChange={handleFileUpload}
                 className="hidden"
             />
@@ -205,4 +240,4 @@ const ExcelValidator: React.FC<{
     );
 };
 
-export default ExcelValidator;
+export default DatasetValidator;

@@ -221,8 +221,8 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                             />
                             {owners.length > 1 && (
                                 <Button
-                                    variant="outline"
-                                    size="icon"
+                                    // variant="outline"
+                                    // size="icon"
                                     onClick={() => removeOwner(index)}
                                     className="flex-shrink-0"
                                 >
@@ -232,7 +232,7 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                         </div>
                     ))}
                     <Button
-                        variant="outline"
+                        // variant="outline"
                         onClick={addOwner}
                         className="mt-2"
                     >
@@ -283,7 +283,7 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                             className="text-black placeholder-gray-400"
                         />
                         <Button
-                            variant="outline"
+                            // variant="outline"
                             onClick={addTag}
                             disabled={!newTag}
                         >
