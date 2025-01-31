@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         PINATA_SECRET_KEY: process.env.NEXT_PUBLIC_PINATA_SECRET_KEY,
         NEXT_PUBLIC_CONTRACT_OWNER_PRIVATE_KEY:
             process.env.NEXT_PUBLIC_CONTRACT_OWNER_PRIVATE_KEY,
+        NEXT_PUBLIC_RECLAIM_APP_ID: process.env.NEXT_PUBLIC_RECLAIM_APP_ID,
+        NEXT_PUBLIC_RECLAIM_APP_SECRET:
+            process.env.NEXT_PUBLIC_RECLAIM_APP_SECRET,
+        NEXT_PUBLIC_RECLAIM_TWITTER_PROVIDER_ID:
+            process.env.NEXT_PUBLIC_RECLAIM_TWITTER_PROVIDER_ID,
     },
     /* config options here */
 };
