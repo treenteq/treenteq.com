@@ -221,10 +221,8 @@ export default function Market() {
     const { ready, authenticated, login, logout, user } = usePrivy();
     const { wallets } = useWallets();
     const [tokens, setTokens] = useState<TokenData[]>([]);
-    const [filteredTokens, setFilteredTokens] = useState<TokenData[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = useState("");
     const router = useRouter();
 
     const publicClient = createPublicClient({
@@ -311,49 +309,6 @@ export default function Market() {
         }
     };
 
-    const handleSearch = (term: string) => {
-        setSearchTerm(term);
-        if (!term.trim()) {
-            setFilteredTokens(tokens);
-            return;
-        }
-
-        const searchTerm = term.toLowerCase().trim();
-
-        // If the search term starts with 'tag:', only search in tags
-        if (searchTerm.startsWith("tag:")) {
-            const tagToSearch = searchTerm.slice(4).trim(); // Remove 'tag:' prefix
-            const filtered = tokens.filter((token) =>
-                token.metadata.tags.some(
-                    (tag) => tag.toLowerCase() === tagToSearch
-                )
-            );
-            setFilteredTokens(filtered);
-            return;
-        }
-
-        // Otherwise, search in all fields
-        const filtered = tokens.filter((token) => {
-            // Check if the search term exactly matches any tag
-            const hasMatchingTag = token.metadata.tags.some(
-                (tag) => tag.toLowerCase() === searchTerm
-            );
-
-            // Check name and description
-            const textContent = [
-                token.metadata.name,
-                token.metadata.description,
-            ]
-                .join(" ")
-                .toLowerCase();
-            const hasMatchingText = textContent.includes(searchTerm);
-
-            return hasMatchingTag || hasMatchingText;
-        });
-
-        setFilteredTokens(filtered);
-    };
-
     useEffect(() => {
         const fetchTokens = async () => {
             try {
@@ -370,7 +325,6 @@ export default function Market() {
 
                 if (totalTokens === BigInt(0)) {
                     setTokens([]);
-                    setFilteredTokens([]);
                     setLoading(false);
                     return;
                 }
@@ -407,13 +361,6 @@ export default function Market() {
                                     }
                                 )) as OwnershipShare[];
 
-                                console.log(
-                                    `Raw metadata for token ${i}:`,
-                                    metadata
-                                );
-                                console.log(`Tags for token ${i}:`, tags);
-                                console.log(`Owners for token ${i}:`, owners);
-
                                 // Get balance if user is authenticated
                                 const balance =
                                     authenticated && user?.wallet?.address
@@ -436,12 +383,8 @@ export default function Market() {
                                     owners,
                                 };
 
-                                console.log(
-                                    `Full metadata for token ${i}:`,
-                                    fullMetadata
-                                );
-
                                 return {
+                                    tokenId: i,
                                     metadata: fullMetadata,
                                     balance,
                                 };
@@ -458,37 +401,18 @@ export default function Market() {
 
                 const tokensData = await Promise.all(tokenPromises);
                 const formattedTokens = tokensData
-                    .map((data, index) => {
-                        if (!data) return null;
-                        const { metadata, balance } = data;
-
-                        // Validate required fields
-                        if (
-                            !metadata ||
-                            !metadata.name ||
-                            !metadata.price ||
-                            !Array.isArray(metadata.tags) ||
-                            !Array.isArray(metadata.owners) ||
-                            metadata.owners.length === 0
-                        ) {
-                            console.error(
-                                `Invalid metadata for token ${index}:`,
-                                metadata
-                            );
-                            return null;
-                        }
-
-                        return {
-                            tokenId: BigInt(index),
-                            metadata,
-                            balance,
-                        };
-                    })
-                    .filter((token): token is TokenData => token !== null);
+                    .filter((token): token is TokenData => token !== null)
+                    .filter(
+                        (token) =>
+                            token.metadata.name &&
+                            token.metadata.price &&
+                            Array.isArray(token.metadata.tags) &&
+                            Array.isArray(token.metadata.owners) &&
+                            token.metadata.owners.length > 0
+                    );
 
                 console.log("Final formatted tokens:", formattedTokens);
                 setTokens(formattedTokens);
-                setFilteredTokens(formattedTokens);
             } catch (error) {
                 console.error("Error fetching tokens:", error);
                 setError(
@@ -576,17 +500,6 @@ export default function Market() {
                             </Link>
                         </div>
 
-                        <div className="relative">
-                            <Input
-                                type="text"
-                                placeholder="Search by name, description, or tags..."
-                                value={searchTerm}
-                                onChange={(e) => handleSearch(e.target.value)}
-                                className="pl-10 bg-white text-black"
-                            />
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        </div>
-
                         {error ? (
                             <div className="text-center py-8 text-red-500">
                                 {error}
@@ -595,15 +508,13 @@ export default function Market() {
                             <div className="text-center py-8 text-white">
                                 Loading datasets...
                             </div>
-                        ) : filteredTokens.length === 0 ? (
+                        ) : tokens.length === 0 ? (
                             <div className="text-center py-8 text-gray-500">
-                                {searchTerm
-                                    ? "No datasets found matching your search"
-                                    : "No datasets available yet"}
+                                No datasets available yet
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {filteredTokens.map((token) => (
+                                {tokens.map((token) => (
                                     <DatasetCard
                                         key={token.tokenId.toString()}
                                         token={token}
