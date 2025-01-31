@@ -13,6 +13,9 @@ import { X, Plus } from "lucide-react";
 interface MintDatasetTokenProps {
     contentHash: string | null;
     file: File | null;
+    defaultName?: string;
+    defaultDescription?: string;
+    defaultTags?: string[];
 }
 
 const BASE_EXPLORER_URL = "https://sepolia.basescan.org";
@@ -20,15 +23,18 @@ const BASE_EXPLORER_URL = "https://sepolia.basescan.org";
 const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
     contentHash,
     file,
+    defaultName = "",
+    defaultDescription = "",
+    defaultTags = [],
 }) => {
     const { mintDatasetToken } = useDatasetToken();
 
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
+    const [name, setName] = useState(defaultName);
+    const [description, setDescription] = useState(defaultDescription);
     const [price, setPrice] = useState("");
     const [isUploading, setIsUploading] = useState(false);
     const [isMinting, setIsMinting] = useState(false);
-    const [tags, setTags] = useState<string[]>([]);
+    const [tags, setTags] = useState<string[]>(defaultTags);
     const [newTag, setNewTag] = useState("");
     const [owners, setOwners] = useState<OwnershipShare[]>([
         { owner: "", percentage: 0 },
