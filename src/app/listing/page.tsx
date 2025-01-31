@@ -9,6 +9,13 @@ export default function ListingPage() {
 
     const dataTypes = [
         {
+            title: "Social Data",
+            description:
+                "Upload your Digital Footprint from various Social Media sources",
+            icon: <Database className="h-12 w-12 mb-4 text-[#00A340]" />,
+            route: "/listing/social-data",
+        },
+        {
             title: "Legacy Data",
             description: "Upload traditional Excel and CSV files",
             icon: <FileText className="h-12 w-12 mb-4 text-[#00A340]" />,
@@ -19,12 +26,6 @@ export default function ListingPage() {
             description: "Coming Soon!",
             icon: <Cpu className="h-12 w-12 mb-4 text-[#00A340]" />,
             route: "/listing/machine-data",
-        },
-        {
-            title: "Social Data",
-            description: "Coming Soon!",
-            icon: <Database className="h-12 w-12 mb-4 text-[#00A340]" />,
-            route: "/listing/social-data",
         },
     ];
 
