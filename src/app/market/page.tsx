@@ -310,130 +310,133 @@ export default function Market() {
         }
     };
 
+    const fetchTokens = async () => {
+        try {
+
+            if (isSearchActive) return;
+
+            setError(null);
+            console.log("Fetching tokens from contract:", CONTRACT_ADDRESS);
+
+            const totalTokens = (await publicClient.readContract({
+                address: CONTRACT_ADDRESS,
+                abi: DatasetTokenABI,
+                functionName: "getTotalTokens",
+            })) as bigint;
+
+            console.log("Total tokens:", totalTokens.toString());
+
+            if (totalTokens === BigInt(0)) {
+                setTokens([]);
+                setLoading(false);
+                return;
+            }
+
+            const tokenPromises = [];
+            for (let i = BigInt(0); i < totalTokens; i = i + BigInt(1)) {
+                tokenPromises.push(
+                    (async () => {
+                        try {
+                            // Get metadata
+                            const metadata =
+                                (await publicClient.readContract({
+                                    address: CONTRACT_ADDRESS,
+                                    abi: DatasetTokenABI,
+                                    functionName: "tokenMetadata",
+                                    args: [i],
+                                })) as RawMetadata;
+
+                            // Get tags
+                            const tags = (await publicClient.readContract({
+                                address: CONTRACT_ADDRESS,
+                                abi: DatasetTokenABI,
+                                functionName: "getTokenTags",
+                                args: [i],
+                            })) as string[];
+
+                            // Get owners
+                            const owners = (await publicClient.readContract(
+                                {
+                                    address: CONTRACT_ADDRESS,
+                                    abi: DatasetTokenABI,
+                                    functionName: "getTokenOwners",
+                                    args: [i],
+                                }
+                            )) as OwnershipShare[];
+
+                            // Get balance if user is authenticated
+                            const balance =
+                                authenticated && user?.wallet?.address
+                                    ? ((await publicClient.readContract({
+                                          address: CONTRACT_ADDRESS,
+                                          abi: DatasetTokenABI,
+                                          functionName: "balanceOf",
+                                          args: [user.wallet.address, i],
+                                      })) as bigint)
+                                    : BigInt(0);
+
+                            // Combine all metadata
+                            const fullMetadata = {
+                                name: metadata[0],
+                                description: metadata[1],
+                                contentHash: metadata[2],
+                                ipfsHash: metadata[3],
+                                price: metadata[4],
+                                tags,
+                                owners,
+                            };
+
+                            return {
+                                tokenId: i,
+                                metadata: fullMetadata,
+                                balance,
+                            };
+                        } catch (error) {
+                            console.error(
+                                `Error fetching token ${i}:`,
+                                error
+                            );
+                            return null;
+                        }
+                    })()
+                );
+            }
+
+            const tokensData = await Promise.all(tokenPromises);
+            const formattedTokens = tokensData
+                .filter((token): token is TokenData => token !== null)
+                .filter(
+                    (token) =>
+                        token.metadata.name &&
+                        token.metadata.price &&
+                        Array.isArray(token.metadata.tags) &&
+                        Array.isArray(token.metadata.owners) &&
+                        token.metadata.owners.length > 0
+                );
+
+            console.log("Final formatted tokens:", formattedTokens);
+            setTokens(formattedTokens);
+        } catch (error) {
+            console.error("Error fetching tokens:", error);
+            setError(
+                "Failed to load marketplace data. Please try again later."
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     useEffect(() => {
         if(!isSearchActive){
-            const fetchTokens = async () => {
-                try {
-    
-                    if (isSearchActive) return;
-    
-                    setError(null);
-                    console.log("Fetching tokens from contract:", CONTRACT_ADDRESS);
-    
-                    const totalTokens = (await publicClient.readContract({
-                        address: CONTRACT_ADDRESS,
-                        abi: DatasetTokenABI,
-                        functionName: "getTotalTokens",
-                    })) as bigint;
-    
-                    console.log("Total tokens:", totalTokens.toString());
-    
-                    if (totalTokens === BigInt(0)) {
-                        setTokens([]);
-                        setLoading(false);
-                        return;
-                    }
-    
-                    const tokenPromises = [];
-                    for (let i = BigInt(0); i < totalTokens; i = i + BigInt(1)) {
-                        tokenPromises.push(
-                            (async () => {
-                                try {
-                                    // Get metadata
-                                    const metadata =
-                                        (await publicClient.readContract({
-                                            address: CONTRACT_ADDRESS,
-                                            abi: DatasetTokenABI,
-                                            functionName: "tokenMetadata",
-                                            args: [i],
-                                        })) as RawMetadata;
-    
-                                    // Get tags
-                                    const tags = (await publicClient.readContract({
-                                        address: CONTRACT_ADDRESS,
-                                        abi: DatasetTokenABI,
-                                        functionName: "getTokenTags",
-                                        args: [i],
-                                    })) as string[];
-    
-                                    // Get owners
-                                    const owners = (await publicClient.readContract(
-                                        {
-                                            address: CONTRACT_ADDRESS,
-                                            abi: DatasetTokenABI,
-                                            functionName: "getTokenOwners",
-                                            args: [i],
-                                        }
-                                    )) as OwnershipShare[];
-    
-                                    // Get balance if user is authenticated
-                                    const balance =
-                                        authenticated && user?.wallet?.address
-                                            ? ((await publicClient.readContract({
-                                                  address: CONTRACT_ADDRESS,
-                                                  abi: DatasetTokenABI,
-                                                  functionName: "balanceOf",
-                                                  args: [user.wallet.address, i],
-                                              })) as bigint)
-                                            : BigInt(0);
-    
-                                    // Combine all metadata
-                                    const fullMetadata = {
-                                        name: metadata[0],
-                                        description: metadata[1],
-                                        contentHash: metadata[2],
-                                        ipfsHash: metadata[3],
-                                        price: metadata[4],
-                                        tags,
-                                        owners,
-                                    };
-    
-                                    return {
-                                        tokenId: i,
-                                        metadata: fullMetadata,
-                                        balance,
-                                    };
-                                } catch (error) {
-                                    console.error(
-                                        `Error fetching token ${i}:`,
-                                        error
-                                    );
-                                    return null;
-                                }
-                            })()
-                        );
-                    }
-    
-                    const tokensData = await Promise.all(tokenPromises);
-                    const formattedTokens = tokensData
-                        .filter((token): token is TokenData => token !== null)
-                        .filter(
-                            (token) =>
-                                token.metadata.name &&
-                                token.metadata.price &&
-                                Array.isArray(token.metadata.tags) &&
-                                Array.isArray(token.metadata.owners) &&
-                                token.metadata.owners.length > 0
-                        );
-    
-                    console.log("Final formatted tokens:", formattedTokens);
-                    setTokens(formattedTokens);
-                } catch (error) {
-                    console.error("Error fetching tokens:", error);
-                    setError(
-                        "Failed to load marketplace data. Please try again later."
-                    );
-                } finally {
-                    setLoading(false);
-                }
-            };
-    
+            
             if (ready) {
                 fetchTokens();
             }
         }
         
-    }, [ready, authenticated, user?.wallet?.address, publicClient, isSearchActive]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ready]);
 
     if (!ready) return null;
 
