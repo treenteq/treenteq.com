@@ -601,9 +601,9 @@ export default function Market() {
                 <div>
                     <div className="flex justify-center items-center gap-5">
                         <Link href="/listing">
-                        <Button className="text-white bg-[#0B170D] border border-green-900/80 rounded-full w-auto p-3 text-lg font-semibold">List Your Data</Button>
+                        <Button className="text-white bg-[#0B170D] border border-green-900/80 hover:bg-green-700 transition duration-300 rounded-full w-auto p-3 font-semibold">List Your Data</Button>
                         </Link>
-                        <Button onClick={authenticated ? logout : login} className="bg-gradient-to-r from-[#00A340] to-[#00000080] border border-green-900 rounded-full p-3 text-lg font-semibold text-white hover:opacity-90 transition duration-300">
+                        <Button onClick={authenticated ? logout : login} className="bg-gradient-to-r from-[#00A340] to-[#00000080] border border-green-900 rounded-full p-3 font-semibold text-white hover:opacity-90 transition duration-300">
                             {authenticated ? "Disconnect" : "Connect Wallet"}
                         </Button>
                     </div>
@@ -641,7 +641,7 @@ export default function Market() {
                                 size="icon"
                                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-green-500 hover:text-green-400 hover:bg-transparent"
                             >
-                                <SlidersHorizontal className="w-5 h-5" />
+                                <SlidersHorizontal className="w-15 h-15" />
                             </Button>
                         </div>  
 

@@ -15,8 +15,8 @@ export default function Home() {
         { name: "Home", path: "/" },
         { name: "Datasets", path: "/market" },
         { name: "Pricing", path: "/pricing" },
-        { name: "Docs", path: "/docs" },
-        { name: "Contact Us", path: "/contact" }
+        { name: "Docs", path: "https://www.treenteq.com/LitePaper_treenteq.pdf" },
+        { name: "Contact Us", path: "https://docs.google.com/forms/d/e/1FAIpQLSfFGfRqMHaBRLy22fDHJvJQgagAP7sjoyVM0HETDOcz79VcVA/viewform" }
     ];
     return (
         <div className="min-h-screen bg-gradient">
@@ -28,9 +28,12 @@ export default function Home() {
           <Image
             src="/logo.svg"
             alt="TREENTEQ Logo"
-            width={150}
-            height={150}
-            className="brightness-110 contrast-125"
+            layout="intrinsic"
+            width={145} 
+            height={50}
+            className="contrast-200"
+            objectFit="fit"
+            quality={100}
             priority
           />
           </Link>
@@ -65,13 +68,13 @@ export default function Home() {
               Lightning-fast, secure, easy.
             </Button>
           </div>
-          <div className="flex flex-col justify-center">
-            <h1 className="text-white text-[72px] font-semibold">unlock the</h1>
-            <div className="flex flex-row gap-[20px]">
-              <h1 className="text-white text-[72px] font-semibold">value of</h1>
-              <span className="text-[#00A340] text-[72px] font-semibold">your</span>
+          <div className="flex flex-col justify-center space-y-0 leading-tight">
+            <h1 className="text-white text-[72px] font-semibold m-0">Unlock The</h1>
+            <div className="flex flex-row gap-[20px] m-0">
+              <h1 className="text-white text-[72px] font-semibold">Value of</h1>
+              <span className="text-[#00A340] text-[72px] font-semibold">Your</span>
             </div>
-            <h1 className="text-white text-[72px] font-semibold">data</h1>
+            <h1 className="text-white text-[72px] font-semibold m-0">Data</h1>
           </div>
           <div>
             <h1 className="text-white">
@@ -80,16 +83,18 @@ export default function Home() {
             <h1 className="text-white">analyze, and monetize your data securely on our platform</h1>
           </div>
           <div className="flex flex-row items-center gap-4">
-            <Link href="/market">
-            <Button className="border border-[#00A340] text-white rounded-full bg-black px-4 py-2 flex items-center">
-              <h1 className="font-semibold text-lg">Treen It now</h1>
+            <Link href="/listing">
+            <Button className="border border-[#00A340] text-white rounded-full bg-black flex items-center">
+              <h1 className="font-semibold">Treen It now</h1>
               <FaChevronRight />
             </Button>
             </Link>
-            <div className="flex justify-center items-center gap-3">
-              <h1 className="font-semibold text-lg text-white flex justify-center items-center border-green-900/80">Explore</h1>
-              <FaChevronRight className="text-white" />
-            </div>
+            <Link href="/market">
+              <div className="flex justify-center items-center gap-3 cursor-pointer">
+                <h1 className="font-semibold text-white flex justify-center items-center border-green-900/80">Explore</h1>
+                <FaChevronRight className="text-white" />
+              </div>
+            </Link>
           </div>
         </div>
 
@@ -101,10 +106,10 @@ export default function Home() {
               src="/rightrobot.svg" 
               alt="main image" 
               layout="responsive"
-              width={640} 
-              height={600} 
-              objectFit="cover"
-              className="relative w-full h-full"
+              width={600} 
+              height={500} 
+              quality={100}
+              className="relative w-full h-full contrast-125"
             />
           </div>
         </div>
