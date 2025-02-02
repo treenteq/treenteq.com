@@ -131,7 +131,7 @@ const DatasetCard: React.FC<{
     };
 
     return (
-        <Card className="bg-black/40 border-green-500 p-6 relative overflow-hidden group hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300">
+        <Card className="bg-[#1A5617]/60 border-green-500 p-6 relative overflow-hidden group hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300">
             <div className="space-y-4">
             <div className="space-y-2">
                 {/* Header Section */}
@@ -152,7 +152,7 @@ const DatasetCard: React.FC<{
                 {token.metadata.tags?.map((tag) => (
                     <span
                     key={tag}
-                    className="bg-green-500/20 text-green-300 px-2 py-1 rounded-full text-xs flex items-center gap-1"
+                    className="bg-green-500/60 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1"
                     >
                     <Tag className="w-3 h-3" />
                     {tag}
@@ -195,15 +195,15 @@ const DatasetCard: React.FC<{
                     </Button>
                 ) : (
                     <div className="flex items-center gap-2">
-                    <span className="text-sm text-green-400 font-medium">
-                        You own this
-                    </span>
                     <Button
                         onClick={handleDownload}
-                        className="flex items-center gap-1 border border-green-500 text-white"
+                        className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
                     >
-                        <Download className="w-4 h-4" />
-                        Download
+                        <div className="flex flex-row gap-1">
+                            <p>Download Now</p>
+                            <Image src="/download.svg" alt="download" width={25} height={20}/>
+                        </div>
+                        
                     </Button>
                     </div>
                 )}

@@ -14,7 +14,6 @@ export default function Home() {
     const navItems = [
         { name: "Home", path: "/" },
         { name: "Datasets", path: "/market" },
-        { name: "Pricing", path: "/pricing" },
         { name: "Docs", path: "https://www.treenteq.com/LitePaper_treenteq.pdf" },
         { name: "Contact Us", path: "https://docs.google.com/forms/d/e/1FAIpQLSfFGfRqMHaBRLy22fDHJvJQgagAP7sjoyVM0HETDOcz79VcVA/viewform" }
     ];

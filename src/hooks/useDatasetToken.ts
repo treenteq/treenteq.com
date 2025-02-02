@@ -10,8 +10,7 @@ export interface OwnershipShare {
 }
 
 // Viem configuration
-const PRIVATE_KEY = (process.env.NEXT_PUBLIC_CONTRACT_OWNER_PRIVATE_KEY ||
-    "") as `0x${string}`;
+const PRIVATE_KEY = (process.env.NEXT_PUBLIC_CONTRACT_OWNER_PRIVATE_KEY || "") as `0x${string}`;
 
 const walletClient = createWalletClient({
     account: privateKeyToAccount(PRIVATE_KEY),
