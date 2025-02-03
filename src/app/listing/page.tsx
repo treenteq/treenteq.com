@@ -2,10 +2,10 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import legacy from "../../../public/legacy.svg"
-import machine from "../../../public/machine.svg"
-import social from "../../../public/social.svg"
-import Link from "next/link"
+import legacy from "../../../public/legacy.svg";
+import machine from "../../../public/machine.svg";
+import social from "../../../public/social.svg";
+import Link from "next/link";
 import BackgroundAnimation from "@/components/background-animation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -62,22 +62,27 @@ export default function ListingPage() {
                 {/* logo */}
                 <div>
                     <Link href="/">
-                    <Image 
-                        src="./logo.svg" 
-                        alt="TREENTEQ Logo" 
-                        width={145}
-                        height={50}
-                        className="brightness-110 contrast-125"
-                        priority
-                    />
+                        <Image
+                            src="./logo.svg"
+                            alt="TREENTEQ Logo"
+                            width={145}
+                            height={50}
+                            className="brightness-110 contrast-125"
+                            priority
+                        />
                     </Link>
                 </div>
                 <div>
                     <div className="flex justify-center items-center gap-5">
                         <Link href="/">
-                        <Button className="text-white bg-[#0B170D] border border-green-900/80 hover:bg-green-700 transition duration-300 rounded-full w-auto font-semibold px-7">Home</Button>
+                            <Button className="text-white bg-[#0B170D] border border-green-900/80 hover:bg-green-700 transition duration-300 rounded-full w-auto font-semibold px-7">
+                                Home
+                            </Button>
                         </Link>
-                        <Button onClick={authenticated ? logout : login} className="bg-gradient-to-r from-[#00A340] to-[#00000080] border border-green-900 rounded-full p-3 font-semibold text-white hover:opacity-90 transition duration-300">
+                        <Button
+                            onClick={authenticated ? logout : login}
+                            className="bg-gradient-to-r from-[#00A340] to-[#00000080] border border-green-900 rounded-full p-3 font-semibold text-white hover:opacity-90 transition duration-300"
+                        >
                             {authenticated ? "Disconnect" : "Connect Wallet"}
                         </Button>
                     </div>
@@ -85,15 +90,16 @@ export default function ListingPage() {
             </header>
             {/* main content */}
             <div className="container mx-auto px-6 py-8 relative z-10 space-y-6 max-w-4xl">
-                        <Link href="/market">
-                            <div className="flex justify-start gap-2 items-center cursor-pointer">
-                                <FaArrowLeft className="text-[#00A340] text-lg"/>
-                                <h1 className="text-[20px] text-white">Back</h1>
-                            </div>
-                        </Link>
+                <Link href="/market">
+                    <div className="flex justify-start gap-2 items-center cursor-pointer">
+                        <FaArrowLeft className="text-[#00A340] text-lg" />
+                        <h1 className="text-[20px] text-white">Back</h1>
+                    </div>
+                </Link>
                 <div className="mt-8">
                     <h1 className="text-3xl font-semibold mb-8 text-center text-white">
-                    Choose Your <span className="text-[#00A340]">Data</span> To Treen
+                        Choose Your <span className="text-[#00A340]">Data</span>{" "}
+                        To Treen
                     </h1>
                     <div className="grid md:grid-cols-3 gap-8">
                         {dataTypes.map((type) => (
@@ -101,14 +107,20 @@ export default function ListingPage() {
                                 key={type.title}
                                 className="bg-[#1A5617]/60 rounded-lg p-6 flex flex-col items-center text-center cursor-pointer hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300 backdrop-blur-[10px] border border-[#00A340]"
                                 onClick={() => router.push(type.route)}
-                            >   
-                                <div className="flex flex-row justify-center items-center gap-1">
-                                    <Image src={type.icon} alt={type.description} className="mb-2"/>
+                            >
+                                <div className="flex flex-row justify-center items-center gap-1 pb-7">
+                                    <Image
+                                        src={type.icon}
+                                        alt={type.description}
+                                        className="mb-2"
+                                    />
                                     <h2 className="text-xl font-semibold mb-2 text-white">
                                         {type.title}
                                     </h2>
                                 </div>
-                                <p className="text-gray-300">{type.description}</p>
+                                <p className="text-gray-300">
+                                    {type.description}
+                                </p>
                             </div>
                         ))}
                     </div>
