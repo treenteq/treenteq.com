@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
-import * as XLSX from "xlsx";
-import { Upload } from "lucide-react";
-import Papa, { ParseResult } from "papaparse";
+import React from 'react';
+import * as XLSX from 'xlsx';
+import { Upload } from 'lucide-react';
+import Papa, { ParseResult } from 'papaparse';
 
 interface ValidationResult {
     success: boolean;
@@ -19,7 +19,7 @@ interface ValidationResult {
 const validateColumn = (
     columnData: any[],
     columnIndex: number,
-    dominanceThreshold = 0.7
+    dominanceThreshold = 0.7,
 ): ValidationResult => {
     const typeCounts = {
         number: 0,
@@ -33,19 +33,19 @@ const validateColumn = (
         if (value === null || value === undefined) {
             typeCounts.undefined++;
         } else if (
-            typeof value === "number" ||
+            typeof value === 'number' ||
             (!isNaN(parseFloat(value)) && isFinite(value))
         ) {
             typeCounts.number++;
         } else if (
-            value === "true" ||
-            value === "false" ||
-            typeof value === "boolean"
+            value === 'true' ||
+            value === 'false' ||
+            typeof value === 'boolean'
         ) {
             typeCounts.boolean++;
         } else if (
             !isNaN(Date.parse(value)) &&
-            new Date(value).toString() !== "Invalid Date"
+            new Date(value).toString() !== 'Invalid Date'
         ) {
             typeCounts.date++;
         } else {
@@ -59,7 +59,7 @@ const validateColumn = (
         typeCounts[a as keyof typeof typeCounts] >
         typeCounts[b as keyof typeof typeCounts]
             ? a
-            : b
+            : b,
     ) as keyof typeof typeCounts;
 
     if (typeCounts[dominantType] / totalValidValues < dominanceThreshold) {
@@ -70,7 +70,7 @@ const validateColumn = (
                     row: -1,
                     column: columnIndex,
                     value: null,
-                    expectedType: "Dominance threshold not met",
+                    expectedType: 'Dominance threshold not met',
                 },
             ],
         };
@@ -86,18 +86,18 @@ const validateColumn = (
         if (value === null || value === undefined) return;
         let isValid = false;
 
-        if (dominantType === "number") {
+        if (dominantType === 'number') {
             isValid =
-                typeof value === "number" ||
+                typeof value === 'number' ||
                 (!isNaN(parseFloat(value)) && isFinite(value));
-        } else if (dominantType === "string") {
-            isValid = typeof value === "string";
-        } else if (dominantType === "boolean") {
+        } else if (dominantType === 'string') {
+            isValid = typeof value === 'string';
+        } else if (dominantType === 'boolean') {
             isValid =
-                value === "true" ||
-                value === "false" ||
-                typeof value === "boolean";
-        } else if (dominantType === "date") {
+                value === 'true' ||
+                value === 'false' ||
+                typeof value === 'boolean';
+        } else if (dominantType === 'date') {
             isValid = !isNaN(Date.parse(value));
         }
 
@@ -121,7 +121,7 @@ const parseCSV = (file: File): Promise<any[][]> => {
         Papa.parse(file, {
             complete: (results: ParseResult<any>) => {
                 if (results.errors.length > 0) {
-                    reject(new Error("Error parsing CSV file"));
+                    reject(new Error('Error parsing CSV file'));
                 } else {
                     resolve(results.data);
                 }
@@ -142,7 +142,7 @@ const DatasetValidator: React.FC<{
     }) => void;
 }> = ({ onValidation }) => {
     const handleFileUpload = async (
-        event: React.ChangeEvent<HTMLInputElement>
+        event: React.ChangeEvent<HTMLInputElement>,
     ) => {
         const file = event.target.files?.[0];
         if (!file) return;
@@ -150,7 +150,7 @@ const DatasetValidator: React.FC<{
         try {
             let jsonData: (string | number | boolean)[][];
 
-            if (file.name.toLowerCase().endsWith(".csv")) {
+            if (file.name.toLowerCase().endsWith('.csv')) {
                 // Handle CSV files
                 jsonData = await parseCSV(file);
             } else {
@@ -162,11 +162,11 @@ const DatasetValidator: React.FC<{
                             resolve(e.target?.result as ArrayBuffer);
                         reader.onerror = reject;
                         reader.readAsArrayBuffer(file);
-                    }
+                    },
                 );
 
                 const workbook = XLSX.read(new Uint8Array(data), {
-                    type: "array",
+                    type: 'array',
                 });
                 const sheetName = workbook.SheetNames[0];
                 const sheet = workbook.Sheets[sheetName];
@@ -184,14 +184,14 @@ const DatasetValidator: React.FC<{
             });
 
             const failedValidations = validationResults.filter(
-                (result) => !result.success
+                (result) => !result.success,
             );
             if (failedValidations.length > 0) {
                 const errorMessage = failedValidations
                     .map((validation) => {
                         if (
                             validation.errorDetails?.[0].expectedType ===
-                            "Dominance threshold not met"
+                            'Dominance threshold not met'
                         ) {
                             return `Column "${validation.columnName}": No dominant type found`;
                         }
@@ -199,17 +199,17 @@ const DatasetValidator: React.FC<{
                             validation.columnName
                         }": Invalid values found at rows ${validation.errorDetails
                             ?.map((err) => err.row)
-                            .join(", ")}. Expected type: ${
+                            .join(', ')}. Expected type: ${
                             validation.errorDetails?.[0].expectedType
                         }`;
                     })
-                    .join("\n");
+                    .join('\n');
                 onValidation({ success: false, errorDetails: errorMessage });
             } else {
                 onValidation({ success: true, data: jsonData, file });
             }
         } catch (error) {
-            console.error("Error processing file:", error);
+            console.error('Error processing file:', error);
             onValidation({
                 success: false,
                 errorDetails:

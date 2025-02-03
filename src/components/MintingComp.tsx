@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { useDatasetToken, OwnershipShare } from "../hooks/useDatasetToken";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { uploadToPinata } from "@/services/pinata";
-import { parseEther } from "viem";
-import toast, { Toast } from "react-hot-toast";
-import { X, Plus } from "lucide-react";
+import React, { useState } from 'react';
+import { useDatasetToken, OwnershipShare } from '../hooks/useDatasetToken';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { uploadToPinata } from '@/services/pinata';
+import { parseEther } from 'viem';
+import toast, { Toast } from 'react-hot-toast';
+import { X, Plus } from 'lucide-react';
 
 interface MintDatasetTokenProps {
     contentHash: string | null;
@@ -18,30 +18,30 @@ interface MintDatasetTokenProps {
     defaultTags?: string[];
 }
 
-const BASE_EXPLORER_URL = "https://sepolia.basescan.org";
+const BASE_EXPLORER_URL = 'https://sepolia.basescan.org';
 
 const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
     contentHash,
     file,
-    defaultName = "",
-    defaultDescription = "",
+    defaultName = '',
+    defaultDescription = '',
     defaultTags = [],
 }) => {
     const { mintDatasetToken } = useDatasetToken();
 
     const [name, setName] = useState(defaultName);
     const [description, setDescription] = useState(defaultDescription);
-    const [price, setPrice] = useState("");
+    const [price, setPrice] = useState('');
     const [isUploading, setIsUploading] = useState(false);
     const [isMinting, setIsMinting] = useState(false);
     const [tags, setTags] = useState<string[]>(defaultTags);
-    const [newTag, setNewTag] = useState("");
+    const [newTag, setNewTag] = useState('');
     const [owners, setOwners] = useState<OwnershipShare[]>([
-        { owner: "", percentage: 0 },
+        { owner: '', percentage: 0 },
     ]);
 
     const addOwner = () => {
-        setOwners([...owners, { owner: "", percentage: 0 }]);
+        setOwners([...owners, { owner: '', percentage: 0 }]);
     };
 
     const removeOwner = (index: number) => {
@@ -55,10 +55,10 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
     const updateOwner = (
         index: number,
         field: keyof OwnershipShare,
-        value: string | number
+        value: string | number,
     ) => {
         const newOwners = [...owners];
-        if (field === "percentage") {
+        if (field === 'percentage') {
             // Convert percentage to basis points (e.g., 33.33% = 3333)
             const basisPoints = Math.round(parseFloat(value as string) * 100);
             newOwners[index][field] = basisPoints;
@@ -71,7 +71,7 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
     const addTag = () => {
         if (newTag && !tags.includes(newTag)) {
             setTags([...tags, newTag]);
-            setNewTag("");
+            setNewTag('');
         }
     };
 
@@ -82,24 +82,24 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
     const validateOwners = () => {
         const totalPercentage = owners.reduce(
             (sum, owner) => sum + owner.percentage,
-            0
+            0,
         );
         if (Math.abs(totalPercentage - 10000) > 1) {
             // Allow for small rounding errors
             throw new Error(
                 `Total ownership must equal 100% (currently ${
                     totalPercentage / 100
-                }%)`
+                }%)`,
             );
         }
         if (owners.some((owner) => !owner.owner)) {
-            throw new Error("All owner addresses must be filled");
+            throw new Error('All owner addresses must be filled');
         }
     };
 
     const handleMint = async () => {
         if (!contentHash || !file || !price || !tags.length) {
-            toast.error("Please fill all fields and add at least one tag!");
+            toast.error('Please fill all fields and add at least one tag!');
             return;
         }
 
@@ -112,14 +112,14 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
             return;
         }
 
-        const toastId = toast.loading("Uploading to IPFS...");
+        const toastId = toast.loading('Uploading to IPFS...');
 
         try {
             setIsUploading(true);
             // Upload to Pinata
             const ipfsHash = await uploadToPinata(file);
 
-            toast.loading("Minting token...", { id: toastId });
+            toast.loading('Minting token...', { id: toastId });
             setIsMinting(true);
 
             // Mint token with multiple owners
@@ -130,7 +130,7 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                 contentHash,
                 ipfsHash,
                 parseEther(price),
-                tags
+                tags,
             );
 
             toast.success(
@@ -148,20 +148,20 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                         </a>
                     </div>
                 ),
-                { id: toastId, duration: 5000 }
+                { id: toastId, duration: 5000 },
             );
 
             // Reset form
-            setName("");
-            setDescription("");
-            setPrice("");
+            setName('');
+            setDescription('');
+            setPrice('');
             setTags([]);
-            setOwners([{ owner: "", percentage: 0 }]);
+            setOwners([{ owner: '', percentage: 0 }]);
         } catch (error) {
-            console.error("Error in mint process:", error);
+            console.error('Error in mint process:', error);
             toast.error(
-                "Error minting token. Please check console for details.",
-                { id: toastId }
+                'Error minting token. Please check console for details.',
+                { id: toastId },
             );
         } finally {
             setIsUploading(false);
@@ -207,7 +207,7 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                                 placeholder="Owner Address"
                                 value={owner.owner}
                                 onChange={(e) =>
-                                    updateOwner(index, "owner", e.target.value)
+                                    updateOwner(index, 'owner', e.target.value)
                                 }
                                 className="text-black placeholder-gray-400"
                             />
@@ -219,8 +219,8 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                                 onChange={(e) =>
                                     updateOwner(
                                         index,
-                                        "percentage",
-                                        e.target.value
+                                        'percentage',
+                                        e.target.value,
                                     )
                                 }
                                 className="text-black placeholder-gray-400 w-32"
@@ -285,7 +285,7 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                             placeholder="Add a tag"
                             value={newTag}
                             onChange={(e) => setNewTag(e.target.value)}
-                            onKeyPress={(e) => e.key === "Enter" && addTag()}
+                            onKeyPress={(e) => e.key === 'Enter' && addTag()}
                             className="text-black placeholder-gray-400"
                         />
                         <Button
@@ -299,7 +299,7 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                 </div>
 
                 <div className="text-sm text-gray-400 overflow-x-scroll">
-                    Content Hash: {contentHash || "Not available"}
+                    Content Hash: {contentHash || 'Not available'}
                 </div>
 
                 <Button
@@ -307,15 +307,15 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
                     disabled={isUploading || isMinting || !contentHash || !file}
                     className={`w-full ${
                         name && description && price && tags.length > 0
-                            ? "bg-[#00A340] text-white"
-                            : "bg-gray-500 text-gray-300"
+                            ? 'bg-[#00A340] text-white'
+                            : 'bg-gray-500 text-gray-300'
                     } hover:bg-[#009030] transition-colors duration-300`}
                 >
                     {isUploading
-                        ? "Uploading to IPFS..."
+                        ? 'Uploading to IPFS...'
                         : isMinting
-                        ? "Minting..."
-                        : "Mint Token"}
+                          ? 'Minting...'
+                          : 'Mint Token'}
                 </Button>
             </div>
         </div>

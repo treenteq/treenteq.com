@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { FaChevronRight } from "react-icons/fa6";
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { FaChevronRight } from 'react-icons/fa6';
 
 export default function Home() {
     const pathname = usePathname();
 
     const navItems = [
-        { name: "Home", path: "/", target: "" },
-        { name: "Datasets", path: "/market", target: "" },
-        { name: "Listing", path: "/listing", target: "" },
+        { name: 'Home', path: '/', target: '' },
+        { name: 'Datasets', path: '/market', target: '' },
+        { name: 'Listing', path: '/listing', target: '' },
         {
-            name: "Docs",
-            path: "https://www.treenteq.com/LitePaper_treenteq.pdf",
-            target: "_blank",
+            name: 'Docs',
+            path: 'https://www.treenteq.com/LitePaper_treenteq.pdf',
+            target: '_blank',
         },
         {
-            name: "Contact Us",
-            path: "https://docs.google.com/forms/d/e/1FAIpQLSfFGfRqMHaBRLy22fDHJvJQgagAP7sjoyVM0HETDOcz79VcVA/viewform",
-            target: "_blank",
+            name: 'Contact Us',
+            path: 'https://docs.google.com/forms/d/e/1FAIpQLSfFGfRqMHaBRLy22fDHJvJQgagAP7sjoyVM0HETDOcz79VcVA/viewform',
+            target: '_blank',
         },
     ];
     return (
@@ -53,8 +53,8 @@ export default function Home() {
                                     target={item.target}
                                     className={`px-4 py-2 rounded-md transition duration-300 ${
                                         pathname === item.path
-                                            ? "text-[#00A340] font-semibold"
-                                            : "text-white hover:text-[#00A340]"
+                                            ? 'text-[#00A340] font-semibold'
+                                            : 'text-white hover:text-[#00A340]'
                                     }`}
                                 >
                                     {item.name}

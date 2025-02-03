@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Button } from "./button";
-import { type ButtonProps } from "./button";
+import { Button } from './button';
+import { type ButtonProps } from './button';
 
 export function CustomButton({ className, ...props }: ButtonProps) {
     return (

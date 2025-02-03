@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 interface DatasetMetadata {
     name: string;
@@ -32,7 +32,7 @@ const DatasetCard: React.FC<DatasetCardProps> = ({
 
     const handleVerify = async () => {
         if (!selectedFile) {
-            alert("Please select a file to verify");
+            alert('Please select a file to verify');
             return;
         }
 
@@ -47,8 +47,8 @@ const DatasetCard: React.FC<DatasetCardProps> = ({
             };
             reader.readAsArrayBuffer(selectedFile);
         } catch (error) {
-            console.error("Error verifying dataset:", error);
-            alert("Error verifying dataset");
+            console.error('Error verifying dataset:', error);
+            alert('Error verifying dataset');
         } finally {
             setVerifying(false);
             setSelectedFile(null);
@@ -66,11 +66,11 @@ const DatasetCard: React.FC<DatasetCardProps> = ({
                 </div>
                 <p className="text-gray-600">{metadata.description}</p>
                 <div className="text-sm text-gray-500 break-all">
-                    <span className="font-medium">Content Hash:</span>{" "}
+                    <span className="font-medium">Content Hash:</span>{' '}
                     {metadata.contentHash}
                 </div>
                 <div className="text-sm text-gray-500">
-                    <span className="font-medium">Your Balance:</span>{" "}
+                    <span className="font-medium">Your Balance:</span>{' '}
                     {balance.toString()}
                 </div>
                 <div className="space-y-2">
@@ -86,7 +86,7 @@ const DatasetCard: React.FC<DatasetCardProps> = ({
                         onClick={handleVerify}
                         disabled={verifying || !selectedFile}
                     >
-                        {verifying ? "Verifying..." : "Verify Dataset"}
+                        {verifying ? 'Verifying...' : 'Verify Dataset'}
                     </Button>
                 </div>
             </div>

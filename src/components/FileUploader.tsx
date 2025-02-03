@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Upload } from "lucide-react";
-import { keccak256, toHex } from "viem";
+import React from 'react';
+import { Upload } from 'lucide-react';
+import { keccak256, toHex } from 'viem';
 
 interface FileUploaderProps {
     onUpload: (result: {
@@ -15,7 +15,7 @@ interface FileUploaderProps {
 
 const FileUploader: React.FC<FileUploaderProps> = ({ onUpload }) => {
     const handleFileUpload = async (
-        event: React.ChangeEvent<HTMLInputElement>
+        event: React.ChangeEvent<HTMLInputElement>,
     ) => {
         const file = event.target.files?.[0];
         if (!file) return;
@@ -24,12 +24,12 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onUpload }) => {
             // Read file content
             const arrayBuffer = await file.arrayBuffer();
             const content = new TextDecoder().decode(
-                new Uint8Array(arrayBuffer)
+                new Uint8Array(arrayBuffer),
             );
 
             // Generate content hash
             const contentHash = toHex(
-                keccak256(new TextEncoder().encode(content))
+                keccak256(new TextEncoder().encode(content)),
             );
 
             onUpload({
@@ -38,10 +38,10 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onUpload }) => {
                 file: file,
             });
         } catch (error) {
-            console.error("Error processing file:", error);
+            console.error('Error processing file:', error);
             onUpload({
                 success: false,
-                errorDetails: "Error processing file. Please try again.",
+                errorDetails: 'Error processing file. Please try again.',
             });
         }
     };

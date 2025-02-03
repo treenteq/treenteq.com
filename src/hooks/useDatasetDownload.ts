@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { createPublicClient, http } from "viem";
-import { baseSepolia } from "viem/chains";
-import DatasetTokenABI from "@/utils/DatasetTokenABI.json";
-import { getFromPinata } from "@/services/pinata";
-import { CONTRACT_ADDRESS, RPC_URL } from "@/utils/contractConfig";
+import { useState } from 'react';
+import { createPublicClient, http } from 'viem';
+import { baseSepolia } from 'viem/chains';
+import DatasetTokenABI from '@/utils/DatasetTokenABI.json';
+import { getFromPinata } from '@/services/pinata';
+import { CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
 
 export const useDatasetDownload = () => {
     const [downloading, setDownloading] = useState(false);
@@ -21,7 +21,7 @@ export const useDatasetDownload = () => {
             const balance = (await publicClient.readContract({
                 address: CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
-                functionName: "balanceOf",
+                functionName: 'balanceOf',
                 args: [userAddress, tokenId],
             })) as bigint;
 
@@ -33,7 +33,7 @@ export const useDatasetDownload = () => {
             const ipfsHash = (await publicClient.readContract({
                 address: CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
-                functionName: "getDatasetIPFSHash",
+                functionName: 'getDatasetIPFSHash',
                 args: [tokenId],
             })) as string;
 
@@ -44,7 +44,7 @@ export const useDatasetDownload = () => {
             const response = await fetch(downloadUrl);
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
+            const a = document.createElement('a');
             a.href = url;
             a.download = `dataset-${tokenId}.xlsx`; // You might want to get the actual filename from metadata
             document.body.appendChild(a);
@@ -52,7 +52,7 @@ export const useDatasetDownload = () => {
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
         } catch (error) {
-            console.error("Download error:", error);
+            console.error('Download error:', error);
             throw error;
         } finally {
             setDownloading(false);

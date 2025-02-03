@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client";
-import React, { useEffect, useState } from "react";
-import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { Button } from "@/components/ui/button";
+'use client';
+import React, { useEffect, useState } from 'react';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { Button } from '@/components/ui/button';
 import {
     createPublicClient,
     createWalletClient,
@@ -11,21 +11,21 @@ import {
     custom,
     Chain,
     defineChain,
-} from "viem";
-import { baseSepolia } from "viem/chains";
-import DatasetTokenABI from "@/utils/DatasetTokenABI.json";
-import Link from "next/link";
-import { CONTRACT_ADDRESS, RPC_URL } from "@/utils/contractConfig";
-import { Download, Search, SlidersHorizontal, Tag } from "lucide-react";
-import toast, { Toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import BackgroundAnimation from "@/components/background-animation";
-import Image from "next/image";
-import { Input } from "@/components/ui/input";
-import { OwnershipShare } from "@/hooks/useDatasetToken";
-import { FaArrowLeft } from "react-icons/fa6";
-import { Card } from "@/components/ui/card";
+} from 'viem';
+import { baseSepolia } from 'viem/chains';
+import DatasetTokenABI from '@/utils/DatasetTokenABI.json';
+import Link from 'next/link';
+import { CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
+import { Download, Search, SlidersHorizontal, Tag } from 'lucide-react';
+import toast, { Toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import BackgroundAnimation from '@/components/background-animation';
+import Image from 'next/image';
+import { Input } from '@/components/ui/input';
+import { OwnershipShare } from '@/hooks/useDatasetToken';
+import { FaArrowLeft } from 'react-icons/fa6';
+import { Card } from '@/components/ui/card';
 
 interface RawMetadata extends Array<string | bigint> {
     0: string; // name
@@ -51,55 +51,55 @@ interface TokenData {
     balance: bigint;
 }
 
-const BASE_EXPLORER_URL = "https://sepolia.basescan.org";
+const BASE_EXPLORER_URL = 'https://sepolia.basescan.org';
 
 const customBaseSepolia = defineChain({
     id: 84532,
-    name: "Base Sepolia",
+    name: 'Base Sepolia',
     nativeCurrency: {
-        name: "Ether",
-        symbol: "ETH",
+        name: 'Ether',
+        symbol: 'ETH',
         decimals: 18,
     },
     rpcUrls: {
         default: {
-            http: ["https://sepolia.base.org"],
+            http: ['https://sepolia.base.org'],
         },
         public: {
-            http: ["https://sepolia.base.org"],
+            http: ['https://sepolia.base.org'],
         },
     },
     blockExplorers: {
         default: {
-            name: "Basescan",
-            url: "https://sepolia.basescan.org",
-            apiUrl: "https://api-sepolia.basescan.org/api",
+            name: 'Basescan',
+            url: 'https://sepolia.basescan.org',
+            apiUrl: 'https://api-sepolia.basescan.org/api',
         },
     },
     testnet: true,
 });
 
 const downloadFromPinata = async (ipfsHash: string, filename: string) => {
-    const toastId = toast.loading("Downloading dataset...");
+    const toastId = toast.loading('Downloading dataset...');
     try {
         const response = await fetch(
-            `https://gateway.pinata.cloud/ipfs/${ipfsHash}`
+            `https://gateway.pinata.cloud/ipfs/${ipfsHash}`,
         );
-        if (!response.ok) throw new Error("Failed to fetch file from Pinata");
+        if (!response.ok) throw new Error('Failed to fetch file from Pinata');
 
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
+        const a = document.createElement('a');
         a.href = url;
         a.download = filename;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-        toast.success("Dataset downloaded successfully!", { id: toastId });
+        toast.success('Dataset downloaded successfully!', { id: toastId });
     } catch (error) {
-        console.error("Download error:", error);
-        toast.error("Failed to download the dataset. Please try again.", {
+        console.error('Download error:', error);
+        toast.error('Failed to download the dataset. Please try again.', {
             id: toastId,
         });
     }
@@ -117,7 +117,7 @@ const DatasetCard: React.FC<{
     const handleDownload = async () => {
         const filename = `${token.metadata.name.replace(
             /[^a-zA-Z0-9]/g,
-            "_"
+            '_',
         )}.zip`;
         await downloadFromPinata(token.metadata.ipfsHash, filename);
     };
@@ -126,91 +126,108 @@ const DatasetCard: React.FC<{
         // Convert from basis points (10000 = 100%) to a decimal string
         const whole = percentage / BigInt(100);
         const fraction = percentage % BigInt(100);
-        const fractionStr = fraction.toString().padStart(2, "0");
+        const fractionStr = fraction.toString().padStart(2, '0');
         return `${whole}.${fractionStr}%`;
     };
 
     return (
         <Card className="bg-[#1A5617]/60 border-green-500 p-6 relative overflow-hidden group hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300">
             <div className="space-y-4">
-            <div className="space-y-2">
-                {/* Header Section */}
-                <div className="flex justify-between items-start">
-                <h3 className="text-white font-medium">{token.metadata.name}</h3>
-                <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded">
-                    ID: {token.tokenId.toString()}
-                </span>
-                </div>
-        
-                {/* Description */}
-                <p className="text-gray-400 text-sm line-clamp-2">
-                {token.metadata.description}
-                </p>
-        
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1 mt-2">
-                {token.metadata.tags?.map((tag) => (
-                    <span
-                    key={tag}
-                    className="bg-green-500/60 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1"
-                    >
-                    <Tag className="w-3 h-3" />
-                    {tag}
-                    </span>
-                ))}
-                </div>
-        
-                {/* Owners */}
-                <div className="mt-4">
-                <h4 className="text-sm font-semibold text-gray-300 mb-1">Owners</h4>
-                <div className="space-y-1">
-                    {token.metadata.owners?.map((owner, index) => (
-                    <div
-                        key={index}
-                        className="flex justify-between text-xs text-gray-400"
-                    >
-                        <span className="truncate flex-1">{owner.owner}</span>
-                        <span className="ml-2">
-                        {formatPercentage(BigInt(owner.percentage))}
+                <div className="space-y-2">
+                    {/* Header Section */}
+                    <div className="flex justify-between items-start">
+                        <h3 className="text-white font-medium">
+                            {token.metadata.name}
+                        </h3>
+                        <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded">
+                            ID: {token.tokenId.toString()}
                         </span>
                     </div>
-                    ))}
-                </div>
-                </div>
-        
-                {/* Footer Section */}
-                <div className="flex justify-between items-center pt-2">
-                {/* Price */}
-                <div className="text-lg font-bold text-green-400">
-                    {formatEther(BigInt(token?.metadata?.price))} ETH
-                </div>
-        
-                {/* Purchase or Download Button */}
-                {!isOwner ? (
-                    <Button
-                    onClick={() => onPurchase(token?.tokenId, token.metadata.price)}
-                    className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
-                    >
-                    Collect Now
-                    </Button>
-                ) : (
-                    <div className="flex items-center gap-2">
-                    <Button
-                        onClick={handleDownload}
-                        className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
-                    >
-                        <div className="flex flex-row gap-1">
-                            <p>Download Now</p>
-                            <Image src="/download.svg" alt="download" width={25} height={20}/>
-                        </div>
-                        
-                    </Button>
+
+                    {/* Description */}
+                    <p className="text-gray-400 text-sm line-clamp-2">
+                        {token.metadata.description}
+                    </p>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1 mt-2">
+                        {token.metadata.tags?.map((tag) => (
+                            <span
+                                key={tag}
+                                className="bg-green-500/60 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1"
+                            >
+                                <Tag className="w-3 h-3" />
+                                {tag}
+                            </span>
+                        ))}
                     </div>
-                )}
+
+                    {/* Owners */}
+                    <div className="mt-4">
+                        <h4 className="text-sm font-semibold text-gray-300 mb-1">
+                            Owners
+                        </h4>
+                        <div className="space-y-1">
+                            {token.metadata.owners?.map((owner, index) => (
+                                <div
+                                    key={index}
+                                    className="flex justify-between text-xs text-gray-400"
+                                >
+                                    <span className="truncate flex-1">
+                                        {owner.owner}
+                                    </span>
+                                    <span className="ml-2">
+                                        {formatPercentage(
+                                            BigInt(owner.percentage),
+                                        )}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Footer Section */}
+                    <div className="flex justify-between items-center pt-2">
+                        {/* Price */}
+                        <div className="text-lg font-bold text-green-400">
+                            {formatEther(BigInt(token?.metadata?.price))} ETH
+                        </div>
+
+                        {/* Purchase or Download Button */}
+                        {!isOwner ? (
+                            <Button
+                                onClick={() =>
+                                    onPurchase(
+                                        token?.tokenId,
+                                        token.metadata.price,
+                                    )
+                                }
+                                className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
+                            >
+                                Collect Now
+                            </Button>
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    onClick={handleDownload}
+                                    className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
+                                >
+                                    <div className="flex flex-row gap-1">
+                                        <p>Download Now</p>
+                                        <Image
+                                            src="/download.svg"
+                                            alt="download"
+                                            width={25}
+                                            height={20}
+                                        />
+                                    </div>
+                                </Button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
-            </div>
-        </Card>      
+        </Card>
     );
 };
 
@@ -233,17 +250,17 @@ export default function Market() {
 
     const handlePurchase = async (tokenId: bigint, price: bigint) => {
         if (!authenticated || !user?.wallet?.address) {
-            toast.error("Please connect your wallet first");
+            toast.error('Please connect your wallet first');
             return;
         }
 
-        const toastId = toast.loading("Processing purchase...");
+        const toastId = toast.loading('Processing purchase...');
 
         try {
             // Get the active wallet
             const activeWallet = wallets[0];
             if (!activeWallet) {
-                throw new Error("No wallet connected");
+                throw new Error('No wallet connected');
             }
 
             // Switch to Base Sepolia
@@ -263,7 +280,7 @@ export default function Market() {
             const hash = await walletClient.writeContract({
                 address: CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
-                functionName: "purchaseDataset",
+                functionName: 'purchaseDataset',
                 args: [tokenId],
                 value: price,
                 chain: customBaseSepolia,
@@ -288,23 +305,23 @@ export default function Market() {
                         </a>
                     </div>
                 ),
-                { id: toastId, duration: 5000 }
+                { id: toastId, duration: 5000 },
             );
 
             // Refresh the token list
             window.location.reload();
         } catch (error) {
-            console.error("Purchase error:", error);
+            console.error('Purchase error:', error);
             if (error instanceof Error) {
                 toast.error(`Error purchasing dataset: ${error.message}`, {
                     id: toastId,
                 });
             } else {
                 toast.error(
-                    "Error purchasing dataset. Check console for details.",
+                    'Error purchasing dataset. Check console for details.',
                     {
                         id: toastId,
-                    }
+                    },
                 );
             }
         }
@@ -312,19 +329,18 @@ export default function Market() {
 
     const fetchTokens = async () => {
         try {
-
             if (isSearchActive) return;
 
             setError(null);
-            console.log("Fetching tokens from contract:", CONTRACT_ADDRESS);
+            console.log('Fetching tokens from contract:', CONTRACT_ADDRESS);
 
             const totalTokens = (await publicClient.readContract({
                 address: CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
-                functionName: "getTotalTokens",
+                functionName: 'getTotalTokens',
             })) as bigint;
 
-            console.log("Total tokens:", totalTokens.toString());
+            console.log('Total tokens:', totalTokens.toString());
 
             if (totalTokens === BigInt(0)) {
                 setTokens([]);
@@ -338,31 +354,28 @@ export default function Market() {
                     (async () => {
                         try {
                             // Get metadata
-                            const metadata =
-                                (await publicClient.readContract({
-                                    address: CONTRACT_ADDRESS,
-                                    abi: DatasetTokenABI,
-                                    functionName: "tokenMetadata",
-                                    args: [i],
-                                })) as RawMetadata;
+                            const metadata = (await publicClient.readContract({
+                                address: CONTRACT_ADDRESS,
+                                abi: DatasetTokenABI,
+                                functionName: 'tokenMetadata',
+                                args: [i],
+                            })) as RawMetadata;
 
                             // Get tags
                             const tags = (await publicClient.readContract({
                                 address: CONTRACT_ADDRESS,
                                 abi: DatasetTokenABI,
-                                functionName: "getTokenTags",
+                                functionName: 'getTokenTags',
                                 args: [i],
                             })) as string[];
 
                             // Get owners
-                            const owners = (await publicClient.readContract(
-                                {
-                                    address: CONTRACT_ADDRESS,
-                                    abi: DatasetTokenABI,
-                                    functionName: "getTokenOwners",
-                                    args: [i],
-                                }
-                            )) as OwnershipShare[];
+                            const owners = (await publicClient.readContract({
+                                address: CONTRACT_ADDRESS,
+                                abi: DatasetTokenABI,
+                                functionName: 'getTokenOwners',
+                                args: [i],
+                            })) as OwnershipShare[];
 
                             // Get balance if user is authenticated
                             const balance =
@@ -370,7 +383,7 @@ export default function Market() {
                                     ? ((await publicClient.readContract({
                                           address: CONTRACT_ADDRESS,
                                           abi: DatasetTokenABI,
-                                          functionName: "balanceOf",
+                                          functionName: 'balanceOf',
                                           args: [user.wallet.address, i],
                                       })) as bigint)
                                     : BigInt(0);
@@ -392,13 +405,10 @@ export default function Market() {
                                 balance,
                             };
                         } catch (error) {
-                            console.error(
-                                `Error fetching token ${i}:`,
-                                error
-                            );
+                            console.error(`Error fetching token ${i}:`, error);
                             return null;
                         }
-                    })()
+                    })(),
                 );
             }
 
@@ -411,62 +421,60 @@ export default function Market() {
                         token.metadata.price &&
                         Array.isArray(token.metadata.tags) &&
                         Array.isArray(token.metadata.owners) &&
-                        token.metadata.owners.length > 0
+                        token.metadata.owners.length > 0,
                 );
 
-            console.log("Final formatted tokens:", formattedTokens);
+            console.log('Final formatted tokens:', formattedTokens);
             setTokens(formattedTokens);
         } catch (error) {
-            console.error("Error fetching tokens:", error);
+            console.error('Error fetching tokens:', error);
             setError(
-                "Failed to load marketplace data. Please try again later."
+                'Failed to load marketplace data. Please try again later.',
             );
         } finally {
             setLoading(false);
         }
     };
 
-
     useEffect(() => {
-        if(!isSearchActive){
-            
+        if (!isSearchActive) {
             if (ready) {
                 fetchTokens();
             }
         }
-        
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ready]);
 
     if (!ready) return null;
 
     const handleSearch = async () => {
-        if (!tag || tag.trim() === "") {
-            toast.error("Please enter a tag to search.");
+        if (!tag || tag.trim() === '') {
+            toast.error('Please enter a tag to search.');
             return;
         }
-    
+
         setSearchLoading(true);
         setSearchError(null);
         setIsSearchActive(true);
         setTokens([]); // Clear previous results
-    
+
         try {
             // Fetch token IDs by tag
             const tokenIds = (await publicClient.readContract({
                 address: CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
-                functionName: "getTokensByTag",
+                functionName: 'getTokensByTag',
                 args: [tag],
             })) as bigint[];
-    
+
             if (!tokenIds || tokenIds.length === 0) {
-                toast("No datasets found for this tag.", { icon: "🔍" });
+                toast('No datasets found for this tag.', { icon: '🔍' });
                 setTokens([]);
                 setLoading(false);
                 return;
             }
-    
+
             // Fetch metadata for each token
             const tokenPromises = tokenIds.map(async (tokenId) => {
                 try {
@@ -474,36 +482,37 @@ export default function Market() {
                     const metadata = (await publicClient.readContract({
                         address: CONTRACT_ADDRESS,
                         abi: DatasetTokenABI,
-                        functionName: "tokenMetadata",
+                        functionName: 'tokenMetadata',
                         args: [tokenId],
                     })) as RawMetadata;
-    
+
                     // Get tags
                     const tags = (await publicClient.readContract({
                         address: CONTRACT_ADDRESS,
                         abi: DatasetTokenABI,
-                        functionName: "getTokenTags",
+                        functionName: 'getTokenTags',
                         args: [tokenId],
                     })) as string[];
-    
+
                     // Get owners
                     const owners = (await publicClient.readContract({
                         address: CONTRACT_ADDRESS,
                         abi: DatasetTokenABI,
-                        functionName: "getTokenOwners",
+                        functionName: 'getTokenOwners',
                         args: [tokenId],
                     })) as OwnershipShare[];
-    
+
                     // Get balance if user is authenticated
-                    const balance = authenticated && user?.wallet?.address
-                        ? ((await publicClient.readContract({
-                              address: CONTRACT_ADDRESS,
-                              abi: DatasetTokenABI,
-                              functionName: "balanceOf",
-                              args: [user.wallet.address, tokenId],
-                          })) as bigint)
-                        : BigInt(0);
-    
+                    const balance =
+                        authenticated && user?.wallet?.address
+                            ? ((await publicClient.readContract({
+                                  address: CONTRACT_ADDRESS,
+                                  abi: DatasetTokenABI,
+                                  functionName: 'balanceOf',
+                                  args: [user.wallet.address, tokenId],
+                              })) as bigint)
+                            : BigInt(0);
+
                     // Format metadata
                     const fullMetadata = {
                         name: metadata[0],
@@ -514,40 +523,56 @@ export default function Market() {
                         tags,
                         owners,
                     };
-    
+
                     return { tokenId, metadata: fullMetadata, balance };
                 } catch (err) {
-                    console.error(`Error fetching metadata for token ${tokenId}:`, err);
+                    console.error(
+                        `Error fetching metadata for token ${tokenId}:`,
+                        err,
+                    );
                     return null;
                 }
             });
-    
-            
-            const tokensData = (await Promise.all(tokenPromises)).filter(Boolean) as TokenData[];
-    
+
+            const tokensData = (await Promise.all(tokenPromises)).filter(
+                Boolean,
+            ) as TokenData[];
+
             setTokens(tokensData);
-            toast.success("Search results updated!");
+            toast.success('Search results updated!');
         } catch (error) {
-            console.error("Error fetching tokens by tag:", error);
-            setError("Failed to search datasets. Please try again.");
+            console.error('Error fetching tokens by tag:', error);
+            setError('Failed to search datasets. Please try again.');
         } finally {
             setIsSearchActive(false);
             setSearchLoading(false);
         }
-    }
+    };
 
     const renderContent = () => {
         if (searchLoading) {
-            return <div className="text-center py-8 text-white">Searching datasets...</div>;
+            return (
+                <div className="text-center py-8 text-white">
+                    Searching datasets...
+                </div>
+            );
         }
         if (error) {
             return <div className="text-center py-8 text-red-500">{error}</div>;
         }
         if (loading) {
-            return <div className="text-center py-8 text-white">Loading datasets...</div>;
+            return (
+                <div className="text-center py-8 text-white">
+                    Loading datasets...
+                </div>
+            );
         }
         if (tokens.length === 0) {
-            return <div className="text-center py-8 text-gray-500">No datasets available yet</div>;
+            return (
+                <div className="text-center py-8 text-gray-500">
+                    No datasets available yet
+                </div>
+            );
         }
         return (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -588,23 +613,28 @@ export default function Market() {
                 {/* logo */}
                 <div>
                     <Link href="/">
-                    <Image 
-                        src="./logo.svg" 
-                        alt="TREENTEQ Logo" 
-                        width={145}
-                        height={50}
-                        className="brightness-110 contrast-125"
-                        priority
-                    />
+                        <Image
+                            src="./logo.svg"
+                            alt="TREENTEQ Logo"
+                            width={145}
+                            height={50}
+                            className="brightness-110 contrast-125"
+                            priority
+                        />
                     </Link>
                 </div>
                 <div>
                     <div className="flex justify-center items-center gap-5">
                         <Link href="/listing">
-                        <Button className="text-white bg-[#0B170D] border border-green-900/80 hover:bg-green-700 transition duration-300 rounded-full w-auto p-3 font-semibold">List Your Data</Button>
+                            <Button className="text-white bg-[#0B170D] border border-green-900/80 hover:bg-green-700 transition duration-300 rounded-full w-auto p-3 font-semibold">
+                                List Your Data
+                            </Button>
                         </Link>
-                        <Button onClick={authenticated ? logout : login} className="bg-gradient-to-r from-[#00A340] to-[#00000080] border border-green-900 rounded-full p-3 font-semibold text-white hover:opacity-90 transition duration-300">
-                            {authenticated ? "Disconnect" : "Connect Wallet"}
+                        <Button
+                            onClick={authenticated ? logout : login}
+                            className="bg-gradient-to-r from-[#00A340] to-[#00000080] border border-green-900 rounded-full p-3 font-semibold text-white hover:opacity-90 transition duration-300"
+                        >
+                            {authenticated ? 'Disconnect' : 'Connect Wallet'}
                         </Button>
                     </div>
                 </div>
@@ -619,10 +649,10 @@ export default function Market() {
                 >
                     <div className="space-y-6">
                         <Link href="/">
-                        <div className="flex justify-start gap-2 items-center cursor-pointer">
-                            <FaArrowLeft className="text-[#00A340] text-lg"/>
-                            <h1 className="text-[20px] text-white">Back</h1>
-                        </div>
+                            <div className="flex justify-start gap-2 items-center cursor-pointer">
+                                <FaArrowLeft className="text-[#00A340] text-lg" />
+                                <h1 className="text-[20px] text-white">Back</h1>
+                            </div>
                         </Link>
 
                         {/* search bar */}
@@ -643,7 +673,7 @@ export default function Market() {
                             >
                                 <SlidersHorizontal className="w-15 h-15" />
                             </Button>
-                        </div>  
+                        </div>
 
                         {/* Render Content */}
                         {renderContent()}
@@ -652,11 +682,18 @@ export default function Market() {
             </main>
             <style jsx>{`
                 .bg-gradient {
-                    background: radial-gradient(50% 30% at 50% 0%, rgba(0, 163, 64, 0.2) 0%, rgba(0, 0, 0, 1) 100%),
-                                radial-gradient(circle at 30% 0%, rgba(0, 163, 64, 0.3) 0%, transparent 70%),
-                                black;
+                    background: radial-gradient(
+                            50% 30% at 50% 0%,
+                            rgba(0, 163, 64, 0.2) 0%,
+                            rgba(0, 0, 0, 1) 100%
+                        ),
+                        radial-gradient(
+                            circle at 30% 0%,
+                            rgba(0, 163, 64, 0.3) 0%,
+                            transparent 70%
+                        ),
+                        black;
                 }
-                
             `}</style>
         </div>
     );

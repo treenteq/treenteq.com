@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { LucideIcon, Lock, BarChart, DollarSign } from "lucide-react";
+import { LucideIcon, Lock, BarChart, DollarSign } from 'lucide-react';
 
 interface FeatureCardProps {
     icon: string;
@@ -12,8 +12,8 @@ interface FeatureCardProps {
 
 const iconMap: Record<string, LucideIcon> = {
     lock: Lock,
-    "bar-chart": BarChart,
-    "dollar-sign": DollarSign,
+    'bar-chart': BarChart,
+    'dollar-sign': DollarSign,
 };
 
 export default function FeatureCard({

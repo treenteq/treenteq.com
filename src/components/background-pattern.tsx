@@ -6,16 +6,16 @@ export default function BackgroundPattern() {
                 <div className="right-bg bg-animate" />
             </div>
             {/* Add SVG overlay with animation */}
-            <svg 
+            <svg
                 className="absolute inset-0 w-full h-full"
-                viewBox="0 0 1440 900" 
+                viewBox="0 0 1440 900"
                 preserveAspectRatio="xMidYMid slice"
             >
                 <g className="animate-pulse">
-                    <path 
-                        d="M0 0L1440 900M1440 0L0 900" 
-                        stroke="#00A340" 
-                        strokeWidth="2" 
+                    <path
+                        d="M0 0L1440 900M1440 0L0 900"
+                        stroke="#00A340"
+                        strokeWidth="2"
                         strokeDasharray="10,10"
                         className="animate-dash"
                     />
@@ -24,4 +24,4 @@ export default function BackgroundPattern() {
             </svg>
         </div>
     );
-} 
+}

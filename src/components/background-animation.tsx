@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 export default function BackgroundAnimation() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -9,7 +9,7 @@ export default function BackgroundAnimation() {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
         const particles: { x: number; y: number; dx: number; dy: number }[] =
@@ -39,16 +39,16 @@ export default function BackgroundAnimation() {
         const drawParticle = (p: { x: number; y: number }) => {
             ctx.beginPath();
             ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
-            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
             ctx.fill();
         };
 
         const drawLine = (
             p1: { x: number; y: number },
-            p2: { x: number; y: number }
+            p2: { x: number; y: number },
         ) => {
             const distance = Math.sqrt(
-                Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2)
+                Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2),
             );
             if (distance < 100) {
                 ctx.beginPath();
@@ -85,10 +85,10 @@ export default function BackgroundAnimation() {
         initParticles();
         animate();
 
-        window.addEventListener("resize", resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
 
         return () => {
-            window.removeEventListener("resize", resizeCanvas);
+            window.removeEventListener('resize', resizeCanvas);
         };
     }, []);
 

@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import legacy from "../../../public/legacy.svg";
-import machine from "../../../public/machine.svg";
-import social from "../../../public/social.svg";
-import Link from "next/link";
-import BackgroundAnimation from "@/components/background-animation";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { usePrivy } from "@privy-io/react-auth";
-import { FaArrowLeft } from "react-icons/fa6";
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import legacy from '../../../public/legacy.svg';
+import machine from '../../../public/machine.svg';
+import social from '../../../public/social.svg';
+import Link from 'next/link';
+import BackgroundAnimation from '@/components/background-animation';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { usePrivy } from '@privy-io/react-auth';
+import { FaArrowLeft } from 'react-icons/fa6';
 
 export default function ListingPage() {
     const { authenticated, login, logout } = usePrivy();
@@ -18,23 +18,23 @@ export default function ListingPage() {
 
     const dataTypes = [
         {
-            title: "Social Data",
+            title: 'Social Data',
             description:
-                "Upload your Digital Footprint from various Social Media sources",
+                'Upload your Digital Footprint from various Social Media sources',
             icon: social,
-            route: "/listing/social-data",
+            route: '/listing/social-data',
         },
         {
-            title: "Legacy Data",
-            description: "Upload traditional Excel and CSV files",
+            title: 'Legacy Data',
+            description: 'Upload traditional Excel and CSV files',
             icon: legacy,
-            route: "/listing/legacy-data",
+            route: '/listing/legacy-data',
         },
         {
-            title: "Machine Data",
-            description: "Coming Soon!",
+            title: 'Machine Data',
+            description: 'Coming Soon!',
             icon: machine,
-            route: "/listing/machine-data",
+            route: '/listing/machine-data',
         },
     ];
 
@@ -83,7 +83,7 @@ export default function ListingPage() {
                             onClick={authenticated ? logout : login}
                             className="bg-gradient-to-r from-[#00A340] to-[#00000080] border border-green-900 rounded-full p-3 font-semibold text-white hover:opacity-90 transition duration-300"
                         >
-                            {authenticated ? "Disconnect" : "Connect Wallet"}
+                            {authenticated ? 'Disconnect' : 'Connect Wallet'}
                         </Button>
                     </div>
                 </div>
@@ -98,7 +98,7 @@ export default function ListingPage() {
                 </Link>
                 <div className="mt-8">
                     <h1 className="text-3xl font-semibold mb-8 text-center text-white">
-                        Choose Your <span className="text-[#00A340]">Data</span>{" "}
+                        Choose Your <span className="text-[#00A340]">Data</span>{' '}
                         To Treen
                     </h1>
                     <div className="grid md:grid-cols-3 gap-8">

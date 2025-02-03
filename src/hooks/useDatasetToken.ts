@@ -1,8 +1,8 @@
-import { createPublicClient, createWalletClient, http } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
-import { baseSepolia } from "viem/chains";
-import DatasetTokenABI from "@/utils/DatasetTokenABI.json";
-import { CONTRACT_ADDRESS, RPC_URL } from "@/utils/contractConfig";
+import { createPublicClient, createWalletClient, http } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { baseSepolia } from 'viem/chains';
+import DatasetTokenABI from '@/utils/DatasetTokenABI.json';
+import { CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
 
 export interface OwnershipShare {
     owner: string;
@@ -10,7 +10,8 @@ export interface OwnershipShare {
 }
 
 // Viem configuration
-const PRIVATE_KEY = (process.env.NEXT_PUBLIC_CONTRACT_OWNER_PRIVATE_KEY || "") as `0x${string}`;
+const PRIVATE_KEY = (process.env.NEXT_PUBLIC_CONTRACT_OWNER_PRIVATE_KEY ||
+    '') as `0x${string}`;
 
 const walletClient = createWalletClient({
     account: privateKeyToAccount(PRIVATE_KEY),
@@ -34,7 +35,7 @@ export const useDatasetToken = () => {
         contentHash: string,
         ipfsHash: string,
         price: bigint,
-        tags: string[]
+        tags: string[],
     ) => {
         if (
             !owners.length ||
@@ -45,21 +46,21 @@ export const useDatasetToken = () => {
             !price ||
             !tags.length
         ) {
-            throw new Error("All parameters are required for minting");
+            throw new Error('All parameters are required for minting');
         }
 
         // Validate total percentage equals 100%
         const totalPercentage = owners.reduce(
             (sum, owner) => sum + owner.percentage,
-            0
+            0,
         );
         if (totalPercentage !== 10000) {
-            throw new Error("Total ownership percentage must equal 100%");
+            throw new Error('Total ownership percentage must equal 100%');
         }
 
         const functionData = {
             abi: DatasetTokenABI,
-            functionName: "mintDatasetToken",
+            functionName: 'mintDatasetToken',
             args: [
                 owners,
                 name,
@@ -76,14 +77,14 @@ export const useDatasetToken = () => {
                 address: CONTRACT_ADDRESS,
                 ...functionData,
             });
-            console.log("Mint transaction submitted:", tx);
+            console.log('Mint transaction submitted:', tx);
             const receipt = await publicClient.waitForTransactionReceipt({
                 hash: tx,
             });
-            console.log("Mint transaction confirmed:", receipt);
+            console.log('Mint transaction confirmed:', receipt);
             return receipt;
         } catch (error) {
-            console.error("Minting failed:", error);
+            console.error('Minting failed:', error);
             throw error;
         }
     };
@@ -96,13 +97,13 @@ export const useDatasetToken = () => {
             const metadata = await publicClient.readContract({
                 address: CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
-                functionName: "tokenMetadata",
+                functionName: 'tokenMetadata',
                 args: [tokenId],
             });
-            console.log("Token metadata:", metadata);
+            console.log('Token metadata:', metadata);
             return metadata;
         } catch (error) {
-            console.error("Failed to get token metadata:", error);
+            console.error('Failed to get token metadata:', error);
             throw error;
         }
     };
@@ -115,12 +116,12 @@ export const useDatasetToken = () => {
             const tokenIds = await publicClient.readContract({
                 address: CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
-                functionName: "getTokensByTag",
+                functionName: 'getTokensByTag',
                 args: [tag],
             });
             return tokenIds as bigint[];
         } catch (error) {
-            console.error("Failed to get tokens by tag:", error);
+            console.error('Failed to get tokens by tag:', error);
             throw error;
         }
     };
@@ -133,12 +134,12 @@ export const useDatasetToken = () => {
             const owners = await publicClient.readContract({
                 address: CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
-                functionName: "getTokenOwners",
+                functionName: 'getTokenOwners',
                 args: [tokenId],
             });
             return owners as OwnershipShare[];
         } catch (error) {
-            console.error("Failed to get token owners:", error);
+            console.error('Failed to get token owners:', error);
             throw error;
         }
     };
