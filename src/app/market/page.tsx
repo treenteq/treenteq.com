@@ -628,7 +628,7 @@ export default function Market() {
                     <div className="flex justify-center items-center sm:gap-5 gap-1">
                         <Link href="/listing">
                             <Button className="text-white bg-[#0B170D] border border-green-900/80 hover:bg-green-700 transition duration-300 rounded-full w-auto font-semibold">
-                                Link your data
+                                List your data
                             </Button>
                         </Link>
                         <Button
