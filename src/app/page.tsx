@@ -5,9 +5,12 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { FaChevronRight } from 'react-icons/fa6';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { useState } from 'react';
 
 export default function Home() {
     const pathname = usePathname();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const navItems = [
         { name: 'Home', path: '/', target: '' },
@@ -24,38 +27,49 @@ export default function Home() {
             target: '_blank',
         },
     ];
+
     return (
         <div className="min-h-screen bg-gradient">
             {/* Navbar */}
-            <nav className="fixed top-4 mt-8 left-1/2 transform -translate-x-1/2 w-[80%] rounded-full gradient-bg border border-white/20 shadow-lg z-50">
-                <div className="container flex justify-between items-center pt-3 pb-3">
+            <nav className="fixed top-4 mt-4 sm:mt-8 left-1/2 transform -translate-x-1/2 w-[90%] sm:w-[80%] rounded-full gradient-bg border border-white/20 shadow-lg z-50">
+                <div className="container flex justify-between items-center py-3 px-4 sm:px-6">
                     {/* Logo */}
                     <Link href="/">
                         <Image
                             src="/logo.svg"
                             alt="TREENTEQ Logo"
-                            layout="intrinsic"
                             width={145}
                             height={50}
                             className="contrast-200"
-                            objectFit="fit"
+                            objectFit="contain"
                             quality={100}
                             priority
                         />
                     </Link>
 
+                    {/* Hamburger Menu for Mobile */}
+                    <button
+                        className="sm:hidden text-white"
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    >
+                        <GiHamburgerMenu className="w-20 h-8" />
+                    </button>
+
                     {/* Navigation Links */}
-                    <ul className="flex space-x-6">
+                    <ul
+                        className={`sm:flex space-y-2 sm:space-y-0 sm:space-x-4 ${isMenuOpen ? 'block' : 'hidden'} absolute sm:relative top-full left-0 sm:top-auto sm:left-auto w-full sm:w-auto bg-black sm:bg-transparent rounded-b-lg sm:rounded-none p-4 sm:p-0`}
+                    >
                         {navItems.map((item) => (
                             <li key={item.path}>
                                 <Link
                                     href={item.path}
                                     target={item.target}
-                                    className={`px-4 py-2 rounded-md transition duration-300 ${
+                                    className={`block px-4 py-2 rounded-md transition duration-300 ${
                                         pathname === item.path
                                             ? 'text-[#00A340] font-semibold'
                                             : 'text-white hover:text-[#00A340]'
                                     }`}
+                                    onClick={() => setIsMenuOpen(false)}
                                 >
                                     {item.name}
                                 </Link>
@@ -66,36 +80,36 @@ export default function Home() {
             </nav>
 
             {/* Main Content */}
-            <main className="pt-32 w-full grid grid-cols-1 md:grid-cols-2 h-screen">
+            <main className="pt-32 min-w-4xl grid grid-cols-1 lg:grid-cols-2 min-h-screen">
                 {/* Left Part */}
-                <div className="flex flex-col justify-center gap-5 ml-[135px]">
-                    <div className="flex px-[10px] py-[15px] gap-[10px]">
-                        <Button className="text-white bg-[#0B170D] border border-green-900/30 rounded-full w-auto p-3 text-lg disable">
+                <div className="flex flex-col justify-center gap-5 px-6 sm:px-10 lg:ml-[135px] mb-10 lg:mb-0">
+                    <div className="flex gap-[10px]">
+                        <Button className="text-white bg-[#0B170D] border border-green-900/30 rounded-full w-auto p-3 text-sm sm:text-lg disable">
                             Lightning-fast, secure, easy.
                         </Button>
                     </div>
                     <div className="flex flex-col justify-center space-y-0 leading-tight">
-                        <h1 className="text-white text-[72px] font-semibold m-0">
+                        <h1 className="text-white text-4xl sm:text-5xl lg:text-[72px] font-semibold m-0">
                             Unlock The
                         </h1>
-                        <div className="flex flex-row gap-[20px] m-0">
-                            <h1 className="text-white text-[72px] font-semibold">
+                        <div className="flex flex-row gap-[10px] sm:gap-[20px] m-0">
+                            <h1 className="text-white text-4xl sm:text-5xl lg:text-[72px] font-semibold">
                                 Value of
                             </h1>
-                            <span className="text-[#00A340] text-[72px] font-semibold">
+                            <span className="text-[#00A340] text-4xl sm:text-5xl lg:text-[72px] font-semibold">
                                 Your
                             </span>
                         </div>
-                        <h1 className="text-white text-[72px] font-semibold m-0">
+                        <h1 className="text-white text-4xl sm:text-5xl lg:text-[72px] font-semibold m-0">
                             Data
                         </h1>
                     </div>
                     <div>
-                        <h1 className="text-white">
+                        <h1 className="text-white text-sm sm:text-base">
                             Transform your raw data into valuable insights.
                             Share,
                         </h1>
-                        <h1 className="text-white">
+                        <h1 className="text-white text-sm sm:text-base">
                             analyze, and monetize your data securely on our
                             platform
                         </h1>
@@ -103,13 +117,15 @@ export default function Home() {
                     <div className="flex flex-row items-center gap-4">
                         <Link href="/listing">
                             <Button className="border border-[#00A340] text-white rounded-full bg-black flex items-center">
-                                <h1 className="font-semibold">Treen It now</h1>
+                                <h1 className="font-semibold text-sm sm:text-base">
+                                    Treen It now
+                                </h1>
                                 <FaChevronRight />
                             </Button>
                         </Link>
                         <Link href="/market">
                             <div className="flex justify-center items-center gap-3 cursor-pointer">
-                                <h1 className="font-semibold text-white flex justify-center items-center border-green-900/80">
+                                <h1 className="font-semibold text-white flex justify-center items-center border-green-900/80 text-sm sm:text-base">
                                     Explore
                                 </h1>
                                 <FaChevronRight className="text-white" />
@@ -119,19 +135,15 @@ export default function Home() {
                 </div>
 
                 {/* Right Part (Image) */}
-                <div className="flex justify-center items-center w-full h-full bg-gradient-to-t-r from-[#00A340] to-black">
-                    <div className="relative w-full h-full">
-                        <div className="absolute inset-[10px] bg-image mt-[10rem]"></div>
-                        <Image
-                            src="/rightrobot.svg"
-                            alt="main image"
-                            layout="responsive"
-                            width={600}
-                            height={500}
-                            quality={100}
-                            className="relative w-full h-full contrast-125"
-                        />
-                    </div>
+                <div className="flex justify-center items-center w-full h-full">
+                    <Image
+                        src="/rightrobot.svg"
+                        alt="main image"
+                        width={500}
+                        height={400}
+                        quality={100}
+                        className="w-full max-w-[600px] h-auto object-contain"
+                    />
                 </div>
             </main>
 
@@ -161,13 +173,6 @@ export default function Home() {
                             rgba(255, 255, 255, 0.1)
                         );
                     backdrop-filter: blur(8px);
-                }
-                .bg-image {
-                    background: radial-gradient(
-                        ellipse 90% 120%,
-                        rgba(0, 163, 64, 0.3) 40%,
-                        rgba(0, 0, 0, 0) 50%
-                    );
                 }
             `}</style>
         </div>

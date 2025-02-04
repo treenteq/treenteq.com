@@ -67,7 +67,7 @@ export default function ListingPage() {
                             alt="TREENTEQ Logo"
                             width={145}
                             height={50}
-                            className="brightness-110 contrast-125"
+                            className="hidden sm:block brightness-110 contrast-125 p-1"
                             priority
                         />
                     </Link>

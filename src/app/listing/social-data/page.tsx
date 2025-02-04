@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { CustomButton } from '@/components/ui/custom-button';
-import { Twitter, Copy } from 'lucide-react';
+import { Copy } from 'lucide-react';
 import { usePrivy } from '@privy-io/react-auth';
 import { QRCodeCanvas } from 'qrcode.react';
 import { ReclaimProofRequest } from '@reclaimprotocol/js-sdk';
@@ -15,6 +15,8 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
 import logo from '../../../../public/logo.svg';
+import { RiTwitterXFill } from 'react-icons/ri';
+import { BsTwitterX } from 'react-icons/bs';
 
 // Replace these with your actual Reclaim Protocol credentials
 const APP_ID = process.env.NEXT_PUBLIC_RECLAIM_APP_ID as string;
@@ -61,8 +63,8 @@ export default function SocialDataUpload() {
         setLoading(true);
         try {
             reclaimProofRequest.addContext(
-                'Twitter account verification',
-                'Verify Twitter account ownership',
+                'X account verification',
+                'Verify X account ownership',
             );
 
             const url = await reclaimProofRequest.getRequestUrl();
@@ -136,7 +138,7 @@ export default function SocialDataUpload() {
             const ipfsHash = await uploadToPinata(tweetFile);
             setContentHash(ipfsHash);
             setLoading(false);
-            toast.success('Tweet data collected successfully!');
+            toast.success('X data collected successfully!');
         } catch (error) {
             console.error('Error scraping tweets:', error);
             toast.error('Failed to collect tweet data');
@@ -159,7 +161,7 @@ export default function SocialDataUpload() {
                             alt="TREENTEQ Logo"
                             width={145}
                             height={50}
-                            className="brightness-110 contrast-125"
+                            className="hidden sm:block brightness-110 contrast-125 p-1"
                             priority
                         />
                     </Link>
@@ -183,8 +185,8 @@ export default function SocialDataUpload() {
             <main className="container mx-auto p-12 flex items-center justify-center max-w-6xl bg-black">
                 <Card className="w-full max-w-xl p-6 space-y-6 border-[#00a340] border-2 bg-black">
                     <div className="space-y-2">
-                        <h2 className="text-xl font-semibold text-white">
-                            List Twitter Data
+                        <h2 className="text-xl font-semibold text-white flex flex-row gap-1 items-center">
+                            List <RiTwitterXFill /> Data
                         </h2>
                         <p className="text-sm text-gray-300">
                             Connect your Twitter account to create a dataset
@@ -200,7 +202,7 @@ export default function SocialDataUpload() {
                             </CustomButton>
                         ) : !requestUrl && !verificationComplete ? (
                             <div className="flex flex-col items-center gap-4">
-                                <Twitter className="h-16 w-16 text-[#00A340]" />
+                                <BsTwitterX className="h-16 w-16 text-[#00A340]" />
                                 <CustomButton
                                     onClick={generateVerificationRequest}
                                     className="w-full"
@@ -208,7 +210,7 @@ export default function SocialDataUpload() {
                                 >
                                     {loading
                                         ? 'Initializing...'
-                                        : 'Verify Twitter Account'}
+                                        : 'Verify X Account'}
                                 </CustomButton>
                             </div>
                         ) : requestUrl && !verificationComplete ? (
@@ -259,7 +261,7 @@ export default function SocialDataUpload() {
                             <div className="space-y-4">
                                 <div className="p-4 bg-green-100 rounded-lg">
                                     <p className="text-green-800">
-                                        ✓ Twitter account @{username} verified
+                                        ✓ X account @{username} verified
                                         successfully
                                     </p>
                                 </div>

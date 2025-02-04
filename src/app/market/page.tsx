@@ -26,6 +26,7 @@ import { Input } from '@/components/ui/input';
 import { OwnershipShare } from '@/hooks/useDatasetToken';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { Card } from '@/components/ui/card';
+import { IoSearchSharp } from 'react-icons/io5';
 
 interface RawMetadata extends Array<string | bigint> {
     0: string; // name
@@ -614,20 +615,20 @@ export default function Market() {
                 <div>
                     <Link href="/">
                         <Image
-                            src="./logo.svg"
+                            src="/logo.svg"
                             alt="TREENTEQ Logo"
                             width={145}
                             height={50}
-                            className="brightness-110 contrast-125"
+                            className="hidden sm:block brightness-110 contrast-125 p-1"
                             priority
                         />
                     </Link>
                 </div>
                 <div>
-                    <div className="flex justify-center items-center gap-5">
+                    <div className="flex justify-center items-center sm:gap-5 gap-1">
                         <Link href="/listing">
-                            <Button className="text-white bg-[#0B170D] border border-green-900/80 hover:bg-green-700 transition duration-300 rounded-full w-auto p-3 font-semibold">
-                                List Your Data
+                            <Button className="text-white bg-[#0B170D] border border-green-900/80 hover:bg-green-700 transition duration-300 rounded-full w-auto font-semibold">
+                                Link your data
                             </Button>
                         </Link>
                         <Button
@@ -639,30 +640,33 @@ export default function Market() {
                     </div>
                 </div>
             </header>
+
             {/* Main Content */}
-            <main className="relative z-10 container mx-auto px-6 pt-8">
+            <main className="relative z-10 container mx-auto px-4 sm:px-6 pt-4 sm:pt-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7 }}
                     className="max-w-4xl mx-auto"
                 >
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-6">
                         <Link href="/">
                             <div className="flex justify-start gap-2 items-center cursor-pointer">
-                                <FaArrowLeft className="text-[#00A340] text-lg" />
-                                <h1 className="text-[20px] text-white">Back</h1>
+                                <FaArrowLeft className="text-[#00A340] text-base sm:text-lg" />
+                                <h1 className="text-base sm:text-[20px] text-white">
+                                    Back
+                                </h1>
                             </div>
                         </Link>
 
                         {/* search bar */}
-                        <div className="relative mb-8">
+                        <div className="relative mb-4 sm:mb-8">
                             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
                             <Input
                                 type="text"
                                 onChange={(e) => setTag(e.target.value)}
                                 placeholder="Search for Datasets, tags......"
-                                className="w-full h-7 bg-black/40 border-green-800/80 pl-12 pr-12 py-6 text-white placeholder:text-gray-500 focus:border-green-500 rounded-full text-lg"
+                                className="w-full h-10 sm:h-12 bg-black/40 border-green-800/80 pl-12 pr-12 py-2 sm:py-3 text-white placeholder:text-gray-500 focus:border-green-500 rounded-full text-sm sm:text-lg"
                             />
                             <Button
                                 variant="ghost"
@@ -671,7 +675,7 @@ export default function Market() {
                                 size="icon"
                                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-green-500 hover:text-green-400 hover:bg-transparent"
                             >
-                                <SlidersHorizontal className="w-15 h-15" />
+                                <IoSearchSharp className="w-5 h-5 sm:w-6 sm:h-6" />
                             </Button>
                         </div>
 
