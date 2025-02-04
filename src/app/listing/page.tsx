@@ -90,7 +90,7 @@ export default function ListingPage() {
             </header>
             {/* main content */}
             <div className="container mx-auto px-6 py-8 relative z-10 space-y-6 max-w-4xl">
-                <Link href="/market">
+                <Link href="/">
                     <div className="flex justify-start gap-2 items-center cursor-pointer">
                         <FaArrowLeft className="text-[#00A340] text-lg" />
                         <h1 className="text-[20px] text-white">Back</h1>

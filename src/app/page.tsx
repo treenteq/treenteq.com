@@ -31,15 +31,15 @@ export default function Home() {
     return (
         <div className="min-h-screen bg-gradient">
             {/* Navbar */}
-            <nav className="fixed top-4 mt-4 sm:mt-8 left-1/2 transform -translate-x-1/2 w-[90%] sm:w-[80%] rounded-full gradient-bg border border-white/20 shadow-lg z-50">
+            <nav className="fixed top-0 mt-4 sm:mt-8 left-1/2 transform -translate-x-1/2 w-[90%] sm:w-[80%] rounded-full gradient-bg border border-white/20 shadow-lg z-50">
                 <div className="container flex justify-between items-center py-3 px-4 sm:px-6">
                     {/* Logo */}
                     <Link href="/">
                         <Image
                             src="/logo.svg"
                             alt="TREENTEQ Logo"
-                            width={145}
-                            height={50}
+                            width={140}
+                            height={45}
                             className="contrast-200"
                             objectFit="contain"
                             quality={100}
@@ -64,7 +64,7 @@ export default function Home() {
                                 <Link
                                     href={item.path}
                                     target={item.target}
-                                    className={`block px-4 py-2 rounded-md transition duration-300 ${
+                                    className={`block px-4 py-2 rounded-md transition duration-300 lg:text-lg ${
                                         pathname === item.path
                                             ? 'text-[#00A340] font-semibold'
                                             : 'text-white hover:text-[#00A340]'
@@ -80,31 +80,31 @@ export default function Home() {
             </nav>
 
             {/* Main Content */}
-            <main className="pt-32 min-w-4xl grid grid-cols-1 lg:grid-cols-2 min-h-screen">
+            <main className="min-w-4xl grid grid-cols-1 lg:grid-cols-2 min-h-screen pt-32 lg:pt-24">
                 {/* Left Part */}
-                <div className="flex flex-col justify-center gap-5 px-6 sm:px-10 lg:ml-[135px] mb-10 lg:mb-0">
+                <div className="flex flex-col justify-center items-center lg:items-start gap-5 px-6 sm:px-10 lg:ml-[135px] mb-10 lg:mb-0">
                     <div className="flex gap-[10px]">
-                        <Button className="text-white bg-[#0B170D] border border-green-900/30 rounded-full w-auto p-3 text-sm sm:text-lg disable">
+                        <Button className="text-white bg-[#0B170D] border border-green-900/30 rounded-full w-auto p-3 text-lg disable">
                             Lightning-fast, secure, easy.
                         </Button>
                     </div>
                     <div className="flex flex-col justify-center space-y-0 leading-tight">
-                        <h1 className="text-white text-4xl sm:text-5xl lg:text-[72px] font-semibold m-0">
+                        <h1 className="text-white text-5xl lg:text-[72px] font-semibold m-0">
                             Unlock The
                         </h1>
                         <div className="flex flex-row gap-[10px] sm:gap-[20px] m-0">
-                            <h1 className="text-white text-4xl sm:text-5xl lg:text-[72px] font-semibold">
+                            <h1 className="text-white text-5xl lg:text-[72px] font-semibold">
                                 Value of
                             </h1>
-                            <span className="text-[#00A340] text-4xl sm:text-5xl lg:text-[72px] font-semibold">
+                            <span className="text-[#00A340] text-5xl sm:text-5xl lg:text-[72px] font-semibold">
                                 Your
                             </span>
                         </div>
-                        <h1 className="text-white text-4xl sm:text-5xl lg:text-[72px] font-semibold m-0">
+                        <h1 className="text-white text-5xl lg:text-[72px] font-semibold m-0">
                             Data
                         </h1>
                     </div>
-                    <div>
+                    <div className="hidden sm:block">
                         <h1 className="text-white text-sm sm:text-base">
                             Transform your raw data into valuable insights.
                             Share,
@@ -114,6 +114,14 @@ export default function Home() {
                             platform
                         </h1>
                     </div>
+                    <div className="block flex-col justify-center items-center px-6 md:hidden">
+                        <h1 className="text-white text-sm text-center">
+                            Transform your raw data into valuable insights.
+                            Share, Analyze, and monetize your data securely on
+                            our platform.
+                        </h1>
+                    </div>
+
                     <div className="flex flex-row items-center gap-4">
                         <Link href="/listing">
                             <Button className="border border-[#00A340] text-white rounded-full bg-black flex items-center">
@@ -135,14 +143,25 @@ export default function Home() {
                 </div>
 
                 {/* Right Part (Image) */}
-                <div className="flex justify-center items-center w-full h-full">
+                <div className="flex flex-col justify-center items-center relative w-full max-h-screen">
+                    {/* Gradient background */}
+                    <Image
+                        src="/ellipse.svg"
+                        alt="gradient"
+                        width={100}
+                        height={400}
+                        quality={100}
+                        className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full object-cover bg-blend-lighten"
+                    />
+
+                    {/* Robot image */}
                     <Image
                         src="/rightrobot.svg"
                         alt="main image"
-                        width={500}
-                        height={400}
+                        width={400}
+                        height={450}
                         quality={100}
-                        className="w-full max-w-[600px] h-auto object-contain"
+                        className="relative lg:absolute bottom-0 z-10 object-cover w-auto h-auto contrast-100 brightness-105 mx-auto"
                     />
                 </div>
             </main>

@@ -550,6 +550,12 @@ export default function Market() {
         }
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    };
+
     const renderContent = () => {
         if (searchLoading) {
             return (
@@ -628,7 +634,7 @@ export default function Market() {
                     <div className="flex justify-center items-center sm:gap-5 gap-1">
                         <Link href="/listing">
                             <Button className="text-white bg-[#0B170D] border border-green-900/80 hover:bg-green-700 transition duration-300 rounded-full w-auto font-semibold">
-                                Link your data
+                                List your data
                             </Button>
                         </Link>
                         <Button
@@ -665,6 +671,7 @@ export default function Market() {
                             <Input
                                 type="text"
                                 onChange={(e) => setTag(e.target.value)}
+                                onKeyDown={handleKeyDown}
                                 placeholder="Search for Datasets, tags......"
                                 className="w-full h-10 sm:h-12 bg-black/40 border-green-800/80 pl-12 pr-12 py-2 sm:py-3 text-white placeholder:text-gray-500 focus:border-green-500 rounded-full text-sm sm:text-lg"
                             />
@@ -675,7 +682,7 @@ export default function Market() {
                                 size="icon"
                                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-green-500 hover:text-green-400 hover:bg-transparent"
                             >
-                                <IoSearchSharp className="w-5 h-5 sm:w-6 sm:h-6" />
+                                <IoSearchSharp className="w-20 h-14" />
                             </Button>
                         </div>
 
