@@ -141,25 +141,25 @@ export default function Home() {
                 </div>
 
                 {/* Right Part (Image) */}
-                <div className="flex flex-col justify-center items-center relative w-full h-full">
+                <div className="flex flex-col justify-center items-center relative w-full max-h-screen">
                     {/* Gradient background */}
                     <Image
                         src="/ellipse.svg"
                         alt="gradient"
-                        width={331}
-                        height={800}
+                        width={100}
+                        height={400}
                         quality={100}
-                        className="absolute top-0 lg:w-80% lg:h-80% left-1/2 -translate-x-1/2 w-full h-full object-cover"
+                        className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full object-cover bg-blend-lighten"
                     />
 
                     {/* Robot image */}
                     <Image
                         src="/rightrobot.svg"
                         alt="main image"
-                        width={696}
-                        height={659}
+                        width={400}
+                        height={450}
                         quality={100}
-                        className="relative z-10 object-cover w-auto h-auto lg:w-full lg:h-full contrast-100 brightness-105 mx-auto"
+                        className="relative lg:absolute bottom-0 z-10 object-cover w-auto h-auto contrast-100 brightness-105 mx-auto"
                     />
                 </div>
 
