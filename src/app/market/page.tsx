@@ -551,10 +551,10 @@ export default function Market() {
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
-        if(e.key === "Enter") {
+        if (e.key === 'Enter') {
             handleSearch();
         }
-    }
+    };
 
     const renderContent = () => {
         if (searchLoading) {

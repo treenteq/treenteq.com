@@ -189,9 +189,9 @@ export default function SocialDataUpload() {
                             List <RiTwitterXFill /> Data
                         </h2>
                         <p className="text-sm text-gray-300">
-                            Connect your X account to create a dataset
-                            from your tweets. Your data will be securely
-                            verified using zero-knowledge proofs.
+                            Connect your X account to create a dataset from your
+                            tweets. Your data will be securely verified using
+                            zero-knowledge proofs.
                         </p>
                     </div>
 

@@ -104,7 +104,7 @@ export default function Home() {
                             Data
                         </h1>
                     </div>
-                    <div className='hidden sm:block'>
+                    <div className="hidden sm:block">
                         <h1 className="text-white text-sm sm:text-base">
                             Transform your raw data into valuable insights.
                             Share,
@@ -116,7 +116,9 @@ export default function Home() {
                     </div>
                     <div className="block flex-col justify-center items-center px-6 md:hidden">
                         <h1 className="text-white text-sm text-center">
-                            Transform your raw data into valuable insights. Share, Analyze, and monetize your data securely on our platform.
+                            Transform your raw data into valuable insights.
+                            Share, Analyze, and monetize your data securely on
+                            our platform.
                         </h1>
                     </div>
 
@@ -162,7 +164,6 @@ export default function Home() {
                         className="relative lg:absolute bottom-0 z-10 object-cover w-auto h-auto contrast-100 brightness-105 mx-auto"
                     />
                 </div>
-
             </main>
 
             <style jsx>{`
