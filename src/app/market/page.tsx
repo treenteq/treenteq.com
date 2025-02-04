@@ -675,7 +675,7 @@ export default function Market() {
                                 size="icon"
                                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-green-500 hover:text-green-400 hover:bg-transparent"
                             >
-                                <IoSearchSharp className="w-5 h-5 sm:w-6 sm:h-6" />
+                                <IoSearchSharp className="w-20 h-14" />
                             </Button>
                         </div>
 
