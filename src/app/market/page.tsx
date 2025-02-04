@@ -550,6 +550,12 @@ export default function Market() {
         }
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if(e.key === "Enter") {
+            handleSearch();
+        }
+    }
+
     const renderContent = () => {
         if (searchLoading) {
             return (
@@ -665,6 +671,7 @@ export default function Market() {
                             <Input
                                 type="text"
                                 onChange={(e) => setTag(e.target.value)}
+                                onKeyDown={handleKeyDown}
                                 placeholder="Search for Datasets, tags......"
                                 className="w-full h-10 sm:h-12 bg-black/40 border-green-800/80 pl-12 pr-12 py-2 sm:py-3 text-white placeholder:text-gray-500 focus:border-green-500 rounded-full text-sm sm:text-lg"
                             />
