@@ -137,9 +137,14 @@ const DatasetCard: React.FC<{
                 <div className="space-y-2">
                     {/* Header Section */}
                     <div className="flex justify-between items-start">
-                        <h3 className="text-white font-medium">
-                            {token.metadata.name}
-                        </h3>
+                        <Link
+                            key={token.tokenId.toString()}
+                            href={`/market/${token.tokenId.toString()}`}
+                        >
+                            <h3 className="text-white font-medium hover:underline transition">
+                                {token.metadata.name}
+                            </h3>
+                        </Link>
                         <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded">
                             ID: {token.tokenId.toString()}
                         </span>
