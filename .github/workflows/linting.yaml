@@ -1,0 +1,23 @@
+name: Linting and Formatting
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - "**"
+jobs:
+  Continuous-Integration:
+    name: Performs linting, formatting on the application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the Repository
+        uses: actions/checkout@v3
+      - name: Setup pnpm
+        run: npm install -g pnpm
+      - name: Install Dependencies
+        run: pnpm install
+      - name: Run linting check
+        run: pnpm run lint:check
+      - name: Check formatting
+        run: pnpm run format:check
