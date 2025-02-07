@@ -193,7 +193,7 @@ export default function TokenDetailPage() {
             </header>
 
             {/* main */}
-            <main className="relative z-10 container mx-auto px-4 sm:px-6 pt-4 sm:pt-8">
+            <main className="relative z-10 container mx-auto px-4 sm:px-6 pt-4 sm:pt-8 cursor-pointer">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

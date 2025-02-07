@@ -137,14 +137,9 @@ const DatasetCard: React.FC<{
                 <div className="space-y-2">
                     {/* Header Section */}
                     <div className="flex justify-between items-start">
-                        <Link
-                            key={token.tokenId.toString()}
-                            href={`/market/${token.tokenId.toString()}`}
-                        >
-                            <h3 className="text-white font-medium hover:underline transition">
-                                {token.metadata.name}
-                            </h3>
-                        </Link>
+                        <h3 className="text-white font-medium">
+                            {token.metadata.name}
+                        </h3>
                         <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded">
                             ID: {token.tokenId.toString()}
                         </span>
@@ -202,12 +197,14 @@ const DatasetCard: React.FC<{
                         {/* Purchase or Download Button */}
                         {!isOwner ? (
                             <Button
-                                onClick={() =>
+                                onClick={(e) => {
+                                    e.preventDefault();
+
                                     onPurchase(
                                         token?.tokenId,
                                         token.metadata.price,
-                                    )
-                                }
+                                    );
+                                }}
                                 className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
                             >
                                 Collect Now
@@ -215,7 +212,11 @@ const DatasetCard: React.FC<{
                         ) : (
                             <div className="flex items-center gap-2">
                                 <Button
-                                    onClick={handleDownload}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+
+                                        handleDownload();
+                                    }}
                                     className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
                                 >
                                     <div className="flex flex-row gap-1">
@@ -255,6 +256,8 @@ export default function Market() {
     });
 
     const handlePurchase = async (tokenId: bigint, price: bigint) => {
+        // disable redirect to token info
+
         if (!authenticated || !user?.wallet?.address) {
             toast.error('Please connect your wallet first');
             return;
@@ -589,12 +592,17 @@ export default function Market() {
         return (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {tokens.map((token) => (
-                    <DatasetCard
+                    <Link
                         key={token.tokenId.toString()}
-                        token={token}
-                        onPurchase={handlePurchase}
-                        isOwner={token.balance > BigInt(0)}
-                    />
+                        href={`/market/${token.tokenId.toString()}`}
+                    >
+                        <DatasetCard
+                            key={token.tokenId.toString()}
+                            token={token}
+                            onPurchase={handlePurchase}
+                            isOwner={token.balance > BigInt(0)}
+                        />
+                    </Link>
                 ))}
             </div>
         );
