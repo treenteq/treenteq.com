@@ -229,13 +229,16 @@ export default function Market() {
     const { ready, authenticated, login, logout, user } = usePrivy();
     const { wallets } = useWallets();
     const [tokens, setTokens] = useState<TokenData[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [tag, setTag] = useState<string>();
     const [searchError, setSearchError] = useState<string | null>(null);
-    const [searchLoading, setSearchLoading] = useState(false);
-    const [isSearchActive, setIsSearchActive] = useState(false);
-    const router = useRouter();
+    const [searchLoading, setSearchLoading] = useState<boolean>(false);
+    const [isSearchActive, setIsSearchActive] = useState<boolean>(false);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [itemsPerPage] = useState<number>(9);
+    const [totalTokens, setTotalTokens] = useState<number>(0);
+    const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
 
     const publicClient = createPublicClient({
         chain: customBaseSepolia,
@@ -324,6 +327,7 @@ export default function Market() {
     const fetchTokens = async () => {
         try {
             if (isSearchActive) return;
+            setIsPageLoading(true);
 
             setError(null);
             console.log('Fetching tokens from contract:', CONTRACT_ADDRESS);
@@ -334,6 +338,7 @@ export default function Market() {
                 functionName: 'getTotalTokens',
             })) as bigint;
 
+            setTotalTokens(Number(totalTokens));
             console.log('Total tokens:', totalTokens.toString());
 
             if (totalTokens === BigInt(0)) {
@@ -342,8 +347,15 @@ export default function Market() {
                 return;
             }
 
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+
             const tokenPromises = [];
-            for (let i = BigInt(0); i < totalTokens; i = i + BigInt(1)) {
+            for (
+                let i = BigInt(startIndex);
+                i < BigInt(endIndex);
+                i = i + BigInt(1)
+            ) {
                 tokenPromises.push(
                     (async () => {
                         try {
@@ -427,6 +439,7 @@ export default function Market() {
             );
         } finally {
             setLoading(false);
+            setIsPageLoading(false);
         }
     };
 
@@ -438,7 +451,7 @@ export default function Market() {
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ready]);
+    }, [ready, currentPage]);
 
     if (!ready) return null;
 
@@ -642,7 +655,7 @@ export default function Market() {
             </header>
 
             {/* Main Content */}
-            <main className="relative z-10 container mx-auto px-4 sm:px-6 pt-4 sm:pt-8">
+            <main className="relative z-10 container px-4 sm:px-6 pt-4 sm:pt-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -682,6 +695,42 @@ export default function Market() {
 
                         {/* Render Content */}
                         {renderContent()}
+                        <div className="sticky bottom-0 left-0 w-full bg-black/80 p-4 flex justify-center items-center gap-5 mb-6">
+                            <Button
+                                onClick={() =>
+                                    setCurrentPage((prev) =>
+                                        Math.max(prev - 1, 1),
+                                    )
+                                }
+                                disabled={currentPage === 1 || isPageLoading}
+                                className="bg-green-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                            >
+                                Previous
+                            </Button>
+
+                            <span className="text-white text-sm">
+                                {isPageLoading
+                                    ? 'Loading...'
+                                    : `Page ${currentPage}`}
+                            </span>
+
+                            <Button
+                                onClick={() =>
+                                    setCurrentPage((prev) =>
+                                        prev * itemsPerPage < totalTokens
+                                            ? prev + 1
+                                            : prev,
+                                    )
+                                }
+                                disabled={
+                                    currentPage * itemsPerPage >= totalTokens ||
+                                    isPageLoading
+                                }
+                                className="bg-green-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                            >
+                                Next
+                            </Button>
+                        </div>
                     </div>
                 </motion.div>
             </main>
