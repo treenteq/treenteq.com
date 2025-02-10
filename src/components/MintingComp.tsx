@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDatasetToken, OwnershipShare } from '../hooks/useDatasetToken';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { uploadToPinata } from '@/services/pinata';
 import { parseEther } from 'viem';
 import toast, { Toast } from 'react-hot-toast';
 import { X, Plus } from 'lucide-react';
+import { usePrivy } from '@privy-io/react-auth';
 
 interface MintDatasetTokenProps {
     contentHash: string | null;
@@ -27,7 +28,10 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
     defaultDescription = '',
     defaultTags = [],
 }) => {
+    const { ready, authenticated, user } = usePrivy();
     const { mintDatasetToken } = useDatasetToken();
+
+    const connectedWallet = user?.wallet?.address || '';
 
     const [name, setName] = useState(defaultName);
     const [description, setDescription] = useState(defaultDescription);
@@ -37,8 +41,14 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
     const [tags, setTags] = useState<string[]>(defaultTags);
     const [newTag, setNewTag] = useState('');
     const [owners, setOwners] = useState<OwnershipShare[]>([
-        { owner: '', percentage: 0 },
+        { owner: connectedWallet, percentage: 0 }, // Default to connected wallet
     ]);
+
+    useEffect(() => {
+        if (ready && authenticated && connectedWallet) {
+            setOwners([{ owner: connectedWallet, percentage: 0 }]);
+        }
+    }, [ready, authenticated, connectedWallet]);
 
     const addOwner = () => {
         setOwners([...owners, { owner: '', percentage: 0 }]);
