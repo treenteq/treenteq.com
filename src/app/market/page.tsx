@@ -139,8 +139,8 @@ const DatasetCard: React.FC<{
                     </p>
 
                     {/* Tags */}
-                    <div className="flex flex-wrap gap-1 mt-2">
-                        {token.metadata.tags?.map((tag) => (
+                    <div className="flex flex-wrap items-center gap-1 mt-2">
+                        {token.metadata.tags?.slice(0, 3).map((tag) => (
                             <span
                                 key={tag}
                                 className="bg-green-500/60 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1"
@@ -149,6 +149,11 @@ const DatasetCard: React.FC<{
                                 {tag}
                             </span>
                         ))}
+                        {token.metadata.tags?.length > 3 && (
+                            <p className="text-xs text-gray-500">
+                                +{token.metadata.tags?.length - 3} more
+                            </p>
+                        )}
                     </div>
 
                     {/* Owners */}
