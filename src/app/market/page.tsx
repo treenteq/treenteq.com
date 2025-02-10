@@ -27,6 +27,7 @@ import { OwnershipShare } from '@/hooks/useDatasetToken';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { Card } from '@/components/ui/card';
 import { IoSearchSharp } from 'react-icons/io5';
+import { useDatasetDownload } from '@/hooks/useDatasetDownload';
 
 interface RawMetadata extends Array<string | bigint> {
     0: string; // name
@@ -78,49 +79,34 @@ const customBaseSepolia = defineChain({
     testnet: true,
 });
 
-const BASE_EXPLORER_URL = 'https://sepolia.basescan.org';
-
-const downloadFromPinata = async (ipfsHash: string, filename: string) => {
-    const toastId = toast.loading('Downloading dataset...');
-    try {
-        const response = await fetch(
-            `https://gateway.pinata.cloud/ipfs/${ipfsHash}`,
-        );
-        if (!response.ok) throw new Error('Failed to fetch file from Pinata');
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        toast.success('Dataset downloaded successfully!', { id: toastId });
-    } catch (error) {
-        console.error('Download error:', error);
-        toast.error('Failed to download the dataset. Please try again.', {
-            id: toastId,
-        });
-    }
-};
-
 const DatasetCard: React.FC<{
     token: TokenData;
     onPurchase: (tokenId: bigint, price: bigint) => Promise<void>;
     isOwner: boolean;
-}> = ({ token, onPurchase, isOwner }) => {
+    userAddress?: string;
+}> = ({ token, onPurchase, isOwner, userAddress }) => {
+    const { downloadDataset, downloading } = useDatasetDownload();
+
     if (!token?.metadata) {
         return null;
     }
 
     const handleDownload = async () => {
-        const filename = `${token.metadata.name.replace(
-            /[^a-zA-Z0-9]/g,
-            '_',
-        )}.zip`;
-        await downloadFromPinata(token.metadata.ipfsHash, filename);
+        if (!userAddress) {
+            toast.error('Please connect your wallet first');
+            return;
+        }
+
+        const toastId = toast.loading('Downloading dataset...');
+        try {
+            await downloadDataset(token.tokenId, userAddress);
+            toast.success('Dataset downloaded successfully!', { id: toastId });
+        } catch (error) {
+            console.error('Download error:', error);
+            toast.error('Failed to download the dataset. Please try again.', {
+                id: toastId,
+            });
+        }
     };
 
     const formatPercentage = (percentage: bigint) => {
@@ -189,12 +175,50 @@ const DatasetCard: React.FC<{
                     </div>
                 </div>
             </div>
+                    {/* Footer Section */}
+                    <div className="flex justify-between items-center pt-2">
+                        {/* Price */}
+                        <div className="text-lg font-bold text-green-400">
+                            {formatEther(BigInt(token?.metadata?.price))} ETH
+                        </div>
 
-            {/* 🔥 Fixed Footer */}
-            <div className="border-t border-green-500 pt-2 mt-2 flex justify-between items-center">
-                {/* Price */}
-                <div className="text-lg font-bold text-green-400">
-                    {formatEther(BigInt(token?.metadata?.price))} ETH
+                        {/* Purchase or Download Button */}
+                        {!isOwner ? (
+                            <Button
+                                onClick={() =>
+                                    onPurchase(
+                                        token?.tokenId,
+                                        token.metadata.price,
+                                    )
+                                }
+                                className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
+                            >
+                                Collect Now
+                            </Button>
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    onClick={handleDownload}
+                                    disabled={downloading}
+                                    className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
+                                >
+                                    <div className="flex flex-row gap-1">
+                                        <p>
+                                            {downloading
+                                                ? 'Downloading...'
+                                                : 'Download Now'}
+                                        </p>
+                                        <Image
+                                            src="/download.svg"
+                                            alt="download"
+                                            width={25}
+                                            height={20}
+                                        />
+                                    </div>
+                                </Button>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Purchase or Download Button */}
@@ -588,17 +612,13 @@ export default function Market() {
         return (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {tokens.map((token) => (
-                    <Link
-                        key={token.tokenId.toString()}
-                        href={`/market/${token.tokenId.toString()}`}
-                    >
                         <DatasetCard
                             key={token.tokenId.toString()}
                             token={token}
                             onPurchase={handlePurchase}
                             isOwner={token.balance > BigInt(0)}
+                            userAddress={user?.wallet?.address}
                         />
-                    </Link>
                 ))}
             </div>
         );

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { createPublicClient, http } from 'viem';
 import { baseSepolia } from 'viem/chains';
@@ -29,24 +30,57 @@ export const useDatasetDownload = () => {
                 throw new Error("You don't own this dataset");
             }
 
-            // Get the IPFS hash
-            const ipfsHash = (await publicClient.readContract({
+            // Get the metadata to determine file type
+            const metadata = (await publicClient.readContract({
                 address: CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
-                functionName: 'getDatasetIPFSHash',
+                functionName: 'tokenMetadata',
                 args: [tokenId],
-            })) as string;
+            })) as any;
+
+            // Get the IPFS hash
+            const ipfsHash = metadata[3]; // ipfsHash is at index 3
 
             // Get the download URL from Pinata
             const downloadUrl = await getFromPinata(ipfsHash);
 
-            // Trigger download
+            // Download and process the file
             const response = await fetch(downloadUrl);
             const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
+
+            // Check if this is a Twitter dataset (JSON file)
+            const isTwitterData =
+                metadata[0].includes('twitter dataset') ||
+                metadata[1].includes('tweet history');
+
+            let finalBlob: Blob;
+            let filename: string;
+
+            if (isTwitterData) {
+                // For Twitter data, keep it as JSON
+                finalBlob = blob;
+                filename = `twitter_data_${tokenId}.json`;
+            } else {
+                // For legacy data, ensure we get the raw file
+                const contentType = blob.type;
+                if (
+                    contentType.includes('spreadsheet') ||
+                    contentType.includes('csv')
+                ) {
+                    finalBlob = blob;
+                    filename = `dataset_${tokenId}${contentType.includes('csv') ? '.csv' : '.xlsx'}`;
+                } else {
+                    // If content type is not recognized, default to xlsx
+                    finalBlob = blob;
+                    filename = `dataset_${tokenId}.xlsx`;
+                }
+            }
+
+            // Trigger download
+            const url = window.URL.createObjectURL(finalBlob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `dataset-${tokenId}.xlsx`; // You might want to get the actual filename from metadata
+            a.download = filename;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
