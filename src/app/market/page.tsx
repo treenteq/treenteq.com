@@ -120,13 +120,12 @@ const DatasetCard: React.FC<{
     };
 
     return (
-        <Card className="bg-[#1A5617]/60 border-green-500 p-6 relative  group hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300 w-70 h-80 flex flex-col mb-6">
-            {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto overflow-x-hidden  scrollbar-track-green-800/10 scrollbar-thumb-green-500/20 scrollbar-thin scrollbar-custom-height">
+        <Card className="bg-[#1A5617]/60 border-green-500 p-6 relative  group hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300 w-70 h-[350px] flex flex-col mb-6">
+            <div className="flex-1 overflow-hidden">
                 <div className="space-y-4">
                     {/* Header Section */}
                     <div className="flex justify-between items-start">
-                        <h3 className="text-white font-medium">
+                        <h3 className="text-white font-medium line-clamp-2">
                             {token.metadata.name}
                         </h3>
                         <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded">
@@ -135,7 +134,7 @@ const DatasetCard: React.FC<{
                     </div>
 
                     {/* Description */}
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-gray-400 text-sm line-clamp-3">
                         {token.metadata.description}
                     </p>
 
@@ -158,21 +157,29 @@ const DatasetCard: React.FC<{
                             Owners
                         </h4>
                         <div className="space-y-1">
-                            {token.metadata.owners?.map((owner, index) => (
-                                <div
-                                    key={index}
-                                    className="flex justify-between text-xs text-gray-400"
-                                >
-                                    <span className="truncate flex-1">
-                                        {owner.owner}
-                                    </span>
-                                    <span className="ml-2">
-                                        {formatPercentage(
-                                            BigInt(owner.percentage),
-                                        )}
-                                    </span>
-                                </div>
-                            ))}
+                            {token.metadata.owners
+                                ?.slice(0, 2)
+                                .map((owner, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex justify-between text-xs text-gray-400"
+                                    >
+                                        <span className="truncate flex-1">
+                                            {owner.owner}
+                                        </span>
+                                        <span className="ml-2">
+                                            {formatPercentage(
+                                                BigInt(owner.percentage),
+                                            )}
+                                        </span>
+                                    </div>
+                                ))}
+                            {/* Show "+X more" if more than 2 owners exist */}
+                            {token.metadata.owners?.length > 2 && (
+                                <p className="text-xs text-gray-500">
+                                    +{token.metadata.owners.length - 2} more
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -536,7 +543,6 @@ export default function Market() {
             ) as TokenData[];
 
             setTokens(tokensData);
-            toast.success('Search results updated!');
         } catch (error) {
             console.error('Error fetching tokens by tag:', error);
             setError('Failed to search datasets. Please try again.');

@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/card';
 import { Tag } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useDatasetDownload } from '@/hooks/useDatasetDownload';
 
 interface RawMetadata extends Array<string | bigint> {
     0: string; // name
@@ -54,6 +55,7 @@ export default function TokenDetailPage() {
     const [loading, setLoading] = useState<boolean>(false);
     const [isOwner, setIsOwner] = useState<boolean>(false);
     const { authenticated, login, logout, user } = usePrivy();
+    const { downloadDataset, downloading } = useDatasetDownload();
     const { wallets } = useWallets();
 
     const customBaseSepolia = defineChain({
@@ -227,37 +229,27 @@ export default function TokenDetailPage() {
         }
     };
 
-    const downloadFromPinata = async (ipfsHash: string, filename: string) => {
+    const handleDownload = async () => {
+        const userAddress = user?.wallet?.address;
+
+        if (!userAddress) {
+            toast.error('Please connect your wallet first');
+            return;
+        }
+
         const toastId = toast.loading('Downloading dataset...');
         try {
-            const response = await fetch(
-                `https://gateway.pinata.cloud/ipfs/${ipfsHash}`,
-            );
-            if (!response.ok)
-                throw new Error('Failed to fetch file from Pinata');
-
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
+            if (typeof tokenId === 'string') {
+                await downloadDataset(BigInt(tokenId), userAddress);
+            } else {
+                throw new Error('Invalid tokenId type');
+            }
             toast.success('Dataset downloaded successfully!', { id: toastId });
         } catch (error) {
             console.error('Download error:', error);
             toast.error('Failed to download the dataset. Please try again.', {
                 id: toastId,
             });
-        }
-    };
-
-    const handleDownload = async () => {
-        const filename = `${dataset?.name.replace(/[^a-zA-Z0-9]/g, '_')}.zip`;
-        if (dataset?.ipfsHash) {
-            await downloadFromPinata(dataset.ipfsHash, filename);
         }
     };
 
@@ -412,7 +404,11 @@ export default function TokenDetailPage() {
                                             }}
                                             className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold flex gap-1"
                                         >
-                                            <p>Download</p>
+                                            <p>
+                                                {downloading
+                                                    ? 'Downloading...'
+                                                    : 'Download Now'}
+                                            </p>
                                             <Image
                                                 src="/download.svg"
                                                 alt="download"
