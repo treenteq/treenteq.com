@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
             process.env.NEXT_PUBLIC_RECLAIM_APP_SECRET,
         NEXT_PUBLIC_RECLAIM_TWITTER_PROVIDER_ID:
             process.env.NEXT_PUBLIC_RECLAIM_TWITTER_PROVIDER_ID,
+        NEXT_PUBLIC_CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+        NEXT_PUBLIC_RPC_URL: process.env.NEXT_PUBLIC_RPC_URL,
     },
     /* config options here */
 };
