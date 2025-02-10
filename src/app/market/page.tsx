@@ -53,6 +53,8 @@ interface TokenData {
     balance: bigint;
 }
 
+const BASE_EXPLORER_URL = 'https://sepolia.basescan.org';
+
 const customBaseSepolia = defineChain({
     id: 84532,
     name: 'Base Sepolia',
@@ -175,79 +177,45 @@ const DatasetCard: React.FC<{
                     </div>
                 </div>
             </div>
-                    {/* Footer Section */}
-                    <div className="flex justify-between items-center pt-2">
-                        {/* Price */}
-                        <div className="text-lg font-bold text-green-400">
-                            {formatEther(BigInt(token?.metadata?.price))} ETH
-                        </div>
-
-                        {/* Purchase or Download Button */}
-                        {!isOwner ? (
-                            <Button
-                                onClick={() =>
-                                    onPurchase(
-                                        token?.tokenId,
-                                        token.metadata.price,
-                                    )
-                                }
-                                className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
-                            >
-                                Collect Now
-                            </Button>
-                        ) : (
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    onClick={handleDownload}
-                                    disabled={downloading}
-                                    className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
-                                >
-                                    <div className="flex flex-row gap-1">
-                                        <p>
-                                            {downloading
-                                                ? 'Downloading...'
-                                                : 'Download Now'}
-                                        </p>
-                                        <Image
-                                            src="/download.svg"
-                                            alt="download"
-                                            width={25}
-                                            height={20}
-                                        />
-                                    </div>
-                                </Button>
-                            </div>
-                        )}
-                    </div>
+            {/* Footer Section */}
+            <div className="flex justify-between items-center pt-2">
+                {/* Price */}
+                <div className="text-lg font-bold text-green-400">
+                    {formatEther(BigInt(token?.metadata?.price))} ETH
                 </div>
 
                 {/* Purchase or Download Button */}
                 {!isOwner ? (
                     <Button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            onPurchase(token?.tokenId, token.metadata.price);
-                        }}
+                        onClick={() =>
+                            onPurchase(token?.tokenId, token.metadata.price)
+                        }
                         className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
                     >
-                        Purchase
+                        Collect Now
                     </Button>
                 ) : (
-                    <Button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            handleDownload();
-                        }}
-                        className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold flex gap-1"
-                    >
-                        <p>Download</p>
-                        <Image
-                            src="/download.svg"
-                            alt="download"
-                            width={15}
-                            height={15}
-                        />
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            onClick={handleDownload}
+                            disabled={downloading}
+                            className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
+                        >
+                            <div className="flex flex-row gap-1">
+                                <p>
+                                    {downloading
+                                        ? 'Downloading...'
+                                        : 'Download Now'}
+                                </p>
+                                <Image
+                                    src="/download.svg"
+                                    alt="download"
+                                    width={25}
+                                    height={20}
+                                />
+                            </div>
+                        </Button>
+                    </div>
                 )}
             </div>
         </Card>
@@ -612,13 +580,13 @@ export default function Market() {
         return (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {tokens.map((token) => (
-                        <DatasetCard
-                            key={token.tokenId.toString()}
-                            token={token}
-                            onPurchase={handlePurchase}
-                            isOwner={token.balance > BigInt(0)}
-                            userAddress={user?.wallet?.address}
-                        />
+                    <DatasetCard
+                        key={token.tokenId.toString()}
+                        token={token}
+                        onPurchase={handlePurchase}
+                        isOwner={token.balance > BigInt(0)}
+                        userAddress={user?.wallet?.address}
+                    />
                 ))}
             </div>
         );
