@@ -27,6 +27,7 @@ import { OwnershipShare } from '@/hooks/useDatasetToken';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { Card } from '@/components/ui/card';
 import { IoSearchSharp } from 'react-icons/io5';
+import { useDatasetDownload } from '@/hooks/useDatasetDownload';
 
 interface RawMetadata extends Array<string | bigint> {
     0: string; // name
@@ -80,47 +81,34 @@ const customBaseSepolia = defineChain({
     testnet: true,
 });
 
-const downloadFromPinata = async (ipfsHash: string, filename: string) => {
-    const toastId = toast.loading('Downloading dataset...');
-    try {
-        const response = await fetch(
-            `https://gateway.pinata.cloud/ipfs/${ipfsHash}`,
-        );
-        if (!response.ok) throw new Error('Failed to fetch file from Pinata');
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        toast.success('Dataset downloaded successfully!', { id: toastId });
-    } catch (error) {
-        console.error('Download error:', error);
-        toast.error('Failed to download the dataset. Please try again.', {
-            id: toastId,
-        });
-    }
-};
-
 const DatasetCard: React.FC<{
     token: TokenData;
     onPurchase: (tokenId: bigint, price: bigint) => Promise<void>;
     isOwner: boolean;
-}> = ({ token, onPurchase, isOwner }) => {
+    userAddress?: string;
+}> = ({ token, onPurchase, isOwner, userAddress }) => {
+    const { downloadDataset, downloading } = useDatasetDownload();
+
     if (!token?.metadata) {
         return null;
     }
 
     const handleDownload = async () => {
-        const filename = `${token.metadata.name.replace(
-            /[^a-zA-Z0-9]/g,
-            '_',
-        )}.zip`;
-        await downloadFromPinata(token.metadata.ipfsHash, filename);
+        if (!userAddress) {
+            toast.error('Please connect your wallet first');
+            return;
+        }
+
+        const toastId = toast.loading('Downloading dataset...');
+        try {
+            await downloadDataset(token.tokenId, userAddress);
+            toast.success('Dataset downloaded successfully!', { id: toastId });
+        } catch (error) {
+            console.error('Download error:', error);
+            toast.error('Failed to download the dataset. Please try again.', {
+                id: toastId,
+            });
+        }
     };
 
     const formatPercentage = (percentage: bigint) => {
@@ -211,10 +199,15 @@ const DatasetCard: React.FC<{
                             <div className="flex items-center gap-2">
                                 <Button
                                     onClick={handleDownload}
+                                    disabled={downloading}
                                     className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
                                 >
                                     <div className="flex flex-row gap-1">
-                                        <p>Download Now</p>
+                                        <p>
+                                            {downloading
+                                                ? 'Downloading...'
+                                                : 'Download Now'}
+                                        </p>
                                         <Image
                                             src="/download.svg"
                                             alt="download"
@@ -589,6 +582,7 @@ export default function Market() {
                         token={token}
                         onPurchase={handlePurchase}
                         isOwner={token.balance > BigInt(0)}
+                        userAddress={user?.wallet?.address}
                     />
                 ))}
             </div>
