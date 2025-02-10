@@ -78,6 +78,8 @@ const customBaseSepolia = defineChain({
     testnet: true,
 });
 
+const BASE_EXPLORER_URL = 'https://sepolia.basescan.org';
+
 const downloadFromPinata = async (ipfsHash: string, filename: string) => {
     const toastId = toast.loading('Downloading dataset...');
     try {
@@ -298,7 +300,7 @@ export default function Market() {
                     <div>
                         Purchase successful! You can now access the dataset.
                         <a
-                            href={`${RPC_URL}/tx/${receipt.transactionHash}`}
+                            href={`${BASE_EXPLORER_URL}/tx/${receipt.transactionHash}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="block mt-2 text-blue-500 hover:underline"
