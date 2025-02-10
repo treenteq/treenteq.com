@@ -540,7 +540,6 @@ export default function Market() {
             ) as TokenData[];
 
             setTokens(tokensData);
-            toast.success('Search results updated!');
         } catch (error) {
             console.error('Error fetching tokens by tag:', error);
             setError('Failed to search datasets. Please try again.');
