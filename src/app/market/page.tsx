@@ -130,9 +130,10 @@ const DatasetCard: React.FC<{
     };
 
     return (
-        <Card className="bg-[#1A5617]/60 border-green-500 p-6 relative overflow-hidden group hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300">
-            <div className="space-y-4">
-                <div className="space-y-2">
+        <Card className="bg-[#1A5617]/60 border-green-500 p-6 relative  group hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300 w-70 h-80 flex flex-col mb-6">
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden  scrollbar-track-green-800/10 scrollbar-thumb-green-500/20 scrollbar-thin scrollbar-custom-height">
+                <div className="space-y-4">
                     {/* Header Section */}
                     <div className="flex justify-between items-start">
                         <h3 className="text-white font-medium">
@@ -144,7 +145,7 @@ const DatasetCard: React.FC<{
                     </div>
 
                     {/* Description */}
-                    <p className="text-gray-400 text-sm line-clamp-2">
+                    <p className="text-gray-400 text-sm">
                         {token.metadata.description}
                     </p>
 
@@ -184,53 +185,44 @@ const DatasetCard: React.FC<{
                             ))}
                         </div>
                     </div>
-
-                    {/* Footer Section */}
-                    <div className="flex justify-between items-center pt-2">
-                        {/* Price */}
-                        <div className="text-lg font-bold text-green-400">
-                            {formatEther(BigInt(token?.metadata?.price))} ETH
-                        </div>
-
-                        {/* Purchase or Download Button */}
-                        {!isOwner ? (
-                            <Button
-                                onClick={(e) => {
-                                    e.preventDefault();
-
-                                    onPurchase(
-                                        token?.tokenId,
-                                        token.metadata.price,
-                                    );
-                                }}
-                                className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
-                            >
-                                Collect Now
-                            </Button>
-                        ) : (
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    onClick={(e) => {
-                                        e.preventDefault();
-
-                                        handleDownload();
-                                    }}
-                                    className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
-                                >
-                                    <div className="flex flex-row gap-1">
-                                        <p>Download Now</p>
-                                        <Image
-                                            src="/download.svg"
-                                            alt="download"
-                                            width={25}
-                                            height={20}
-                                        />
-                                    </div>
-                                </Button>
-                            </div>
-                        )}
-                    </div>
                 </div>
+            </div>
+
+            {/* 🔥 Fixed Footer */}
+            <div className="border-t border-green-500 pt-2 mt-2 flex justify-between items-center">
+                {/* Price */}
+                <div className="text-lg font-bold text-green-400">
+                    {formatEther(BigInt(token?.metadata?.price))} ETH
+                </div>
+
+                {/* Purchase or Download Button */}
+                {!isOwner ? (
+                    <Button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            onPurchase(token?.tokenId, token.metadata.price);
+                        }}
+                        className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
+                    >
+                        Purchase
+                    </Button>
+                ) : (
+                    <Button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleDownload();
+                        }}
+                        className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold flex gap-1"
+                    >
+                        <p>Download</p>
+                        <Image
+                            src="/download.svg"
+                            alt="download"
+                            width={15}
+                            height={15}
+                        />
+                    </Button>
+                )}
             </div>
         </Card>
     );
@@ -254,7 +246,6 @@ export default function Market() {
     });
 
     const handlePurchase = async (tokenId: bigint, price: bigint) => {
-
         if (!authenticated || !user?.wallet?.address) {
             toast.error('Please connect your wallet first');
             return;
@@ -298,8 +289,8 @@ export default function Market() {
 
             console.log(`transaction:${hash}`);
 
-            if (receipt.status !== "success") {
-                throw new Error("Transaction failed on the blockchain");
+            if (receipt.status !== 'success') {
+                throw new Error('Transaction failed on the blockchain');
             }
 
             toast.success(
