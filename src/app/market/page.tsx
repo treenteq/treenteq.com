@@ -52,8 +52,6 @@ interface TokenData {
     balance: bigint;
 }
 
-const BASE_EXPLORER_URL = 'https://sepolia.basescan.org';
-
 const customBaseSepolia = defineChain({
     id: 84532,
     name: 'Base Sepolia',
@@ -64,10 +62,10 @@ const customBaseSepolia = defineChain({
     },
     rpcUrls: {
         default: {
-            http: ['https://sepolia.base.org'],
+            http: [RPC_URL],
         },
         public: {
-            http: ['https://sepolia.base.org'],
+            http: [RPC_URL],
         },
     },
     blockExplorers: {
@@ -256,7 +254,6 @@ export default function Market() {
     });
 
     const handlePurchase = async (tokenId: bigint, price: bigint) => {
-        // disable redirect to token info
 
         if (!authenticated || !user?.wallet?.address) {
             toast.error('Please connect your wallet first');
@@ -299,12 +296,18 @@ export default function Market() {
                 hash,
             });
 
+            console.log(`transaction:${hash}`);
+
+            if (receipt.status !== "success") {
+                throw new Error("Transaction failed on the blockchain");
+            }
+
             toast.success(
                 (t: Toast) => (
                     <div>
                         Purchase successful! You can now access the dataset.
                         <a
-                            href={`${BASE_EXPLORER_URL}/tx/${receipt.transactionHash}`}
+                            href={`${RPC_URL}/tx/${receipt.transactionHash}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="block mt-2 text-blue-500 hover:underline"
