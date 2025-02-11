@@ -120,27 +120,27 @@ const DatasetCard: React.FC<{
     };
 
     return (
-        <Card className="bg-[#1A5617]/60 border-green-500 p-6 relative  group hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300 w-70 h-[350px] flex flex-col mb-6">
+        <Card className="bg-[#1A5617]/60 border-green-500 p-4 relative  group hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300 w-70 h-64 flex flex-col mb-6">
             <div className="flex-1 overflow-hidden">
                 <div className="space-y-4">
                     {/* Header Section */}
-                    <div className="flex justify-between items-start">
-                        <h3 className="text-white font-medium line-clamp-2">
+                    <div className="flex justify-between gap-1 items-start">
+                        <h3 className="text-white font-medium line-clamp-1">
                             {token.metadata.name}
                         </h3>
-                        <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded">
-                            ID: {token.tokenId.toString()}
+                        <span className="text-xs flex flex-row bg-green-500/20 text-green-500 px-2 py-1 rounded">
+                            <div>ID:</div> <div>{token.tokenId.toString()}</div>
                         </span>
                     </div>
 
                     {/* Description */}
-                    <p className="text-gray-400 text-sm line-clamp-3">
+                    <p className="text-gray-400 text-sm line-clamp-1">
                         {token.metadata.description}
                     </p>
 
                     {/* Tags */}
                     <div className="flex flex-wrap items-center gap-1 mt-2">
-                        {token.metadata.tags?.slice(0, 3).map((tag) => (
+                        {token.metadata.tags?.slice(0, 2).map((tag) => (
                             <span
                                 key={tag}
                                 className="bg-green-500/60 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1"
@@ -149,9 +149,9 @@ const DatasetCard: React.FC<{
                                 {tag}
                             </span>
                         ))}
-                        {token.metadata.tags?.length > 3 && (
+                        {token.metadata.tags?.length > 2 && (
                             <p className="text-xs text-gray-500">
-                                +{token.metadata.tags?.length - 3} more
+                                +{token.metadata.tags?.length - 2} more
                             </p>
                         )}
                     </div>
@@ -163,7 +163,7 @@ const DatasetCard: React.FC<{
                         </h4>
                         <div className="space-y-1">
                             {token.metadata.owners
-                                ?.slice(0, 2)
+                                ?.slice(0, 1)
                                 .map((owner, index) => (
                                     <div
                                         key={index}
@@ -180,9 +180,9 @@ const DatasetCard: React.FC<{
                                     </div>
                                 ))}
                             {/* Show "+X more" if more than 2 owners exist */}
-                            {token.metadata.owners?.length > 2 && (
+                            {token.metadata.owners?.length > 1 && (
                                 <p className="text-xs text-gray-500">
-                                    +{token.metadata.owners.length - 2} more
+                                    +{token.metadata.owners.length - 1} more
                                 </p>
                             )}
                         </div>
@@ -205,7 +205,7 @@ const DatasetCard: React.FC<{
                         }}
                         className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
                     >
-                        Collect Now
+                        Purchase
                     </Button>
                 ) : (
                     <div className="flex items-center gap-2">
