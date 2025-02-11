@@ -199,9 +199,10 @@ const DatasetCard: React.FC<{
                 {/* Purchase or Download Button */}
                 {!isOwner ? (
                     <Button
-                        onClick={() =>
-                            onPurchase(token?.tokenId, token.metadata.price)
-                        }
+                        onClick={(e) => {
+                            e.preventDefault();
+                            onPurchase(token?.tokenId, token.metadata.price);
+                        }}
                         className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
                     >
                         Collect Now
@@ -209,7 +210,10 @@ const DatasetCard: React.FC<{
                 ) : (
                     <div className="flex items-center gap-2">
                         <Button
-                            onClick={handleDownload}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleDownload();
+                            }}
                             disabled={downloading}
                             className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
                         >
@@ -591,13 +595,17 @@ export default function Market() {
         return (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {tokens.map((token) => (
-                    <DatasetCard
+                    <Link
                         key={token.tokenId.toString()}
-                        token={token}
-                        onPurchase={handlePurchase}
-                        isOwner={token.balance > BigInt(0)}
-                        userAddress={user?.wallet?.address}
-                    />
+                        href={`/market/${token.tokenId.toString()}`}
+                    >
+                        <DatasetCard
+                            token={token}
+                            onPurchase={handlePurchase}
+                            isOwner={token.balance > BigInt(0)}
+                            userAddress={user?.wallet?.address}
+                        />
+                    </Link>
                 ))}
             </div>
         );
