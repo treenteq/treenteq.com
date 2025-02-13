@@ -15,12 +15,9 @@ import {
 import DatasetTokenABI from '@/utils/DatasetTokenABI.json';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import logo from '../../../../public/logo.svg';
-import BackgroundAnimation from '@/components/background-animation';
 import Image from 'next/image';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { FaArrowLeft } from 'react-icons/fa6';
-import { motion } from 'framer-motion';
 import {
     Card,
     CardContent,
@@ -30,6 +27,8 @@ import {
 import { Tag } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useDatasetDownload } from '@/hooks/useDatasetDownload';
+import Background from '@/components/background';
+import NavBar from '@/components/NavBar';
 
 interface RawMetadata extends Array<string | bigint> {
     0: string; // name
@@ -266,65 +265,17 @@ export default function TokenDetailPage() {
         );
     }
     return (
-        <div className="relative min-h-screen overflow-hidden bg-black bg-gradient">
-            {/* Background Elements */}
-            <div className="absolute inset-0 z-0">
-                {/* Left side background */}
-                <div className="absolute left-0 top-0 w-2/5 h-full">
-                    <div className="absolute inset-0 bg-[url('/background.svg')] bg-left bg-no-repeat opacity-30 transform scale-150 animate-float-left bg-svg" />
-                </div>
-                {/* Center background pattern */}
-                <div className="absolute left-1/3 right-1/3 top-0 h-full">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#00A340]/5 to-transparent" />
-                </div>
-                {/* Right side background */}
-                <div className="absolute -right-1/4 -top-1/4 w-2/3 h-full">
-                    <div className="absolute inset-0 bg-[url('/background.svg')] bg-right bg-no-repeat opacity-30 transform scale-150 rotate-90 animate-float-right bg-svg" />
-                </div>
-            </div>
-
-            <BackgroundAnimation />
-
-            {/* Header */}
-            <header className="relative z-10 flex justify-between items-center p-6">
-                {/* logo */}
-                <div>
-                    <Link href="/">
-                        <Image
-                            src={logo}
-                            alt="TREENTEQ Logo"
-                            width={145}
-                            height={50}
-                            className="hidden sm:block brightness-110 contrast-125 p-1"
-                            priority
-                        />
-                    </Link>
-                </div>
-                <div>
-                    <div className="flex justify-center items-center sm:gap-5 gap-1">
-                        <Link href="/listing">
-                            <Button className="text-white bg-[#0B170D] border border-green-900/80 hover:bg-green-700 transition duration-300 rounded-full w-auto font-semibold">
-                                List your data
-                            </Button>
-                        </Link>
-                        <Button
-                            onClick={authenticated ? logout : login}
-                            className="bg-gradient-to-r from-[#00A340] to-[#00000080] border border-green-900 rounded-full p-3 font-semibold text-white hover:opacity-90 transition duration-300"
-                        >
-                            {authenticated ? 'Disconnect' : 'Connect Wallet'}
-                        </Button>
-                    </div>
-                </div>
-            </header>
-
-            {/* main */}
-            <main className="relative z-10 container mx-auto px-4 sm:px-6 pt-4 sm:pt-8 cursor-pointer mb-6">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7 }}
-                    className="max-w-4xl mx-auto"
-                >
+        <div className="relative min-h-screen overflow-hidden bg-gradient-to-bl from-[#373737] to-black">
+            <Background />
+            <div className="absolute top-0 w-full">
+                <NavBar
+                    authenticated={authenticated}
+                    login={login}
+                    logout={logout}
+                    primaryButton={{ text: 'Back', link: '/market' }}
+                />
+                {/* main */}
+                <main className="container mx-auto px-4 sm:px-6 pt-4 sm:pt-8 cursor-pointer mb-6 lg:px-40">
                     <div className="space-y-4 sm:space-y-6">
                         <Link href="/market">
                             <div className="flex justify-start gap-2 items-center cursor-pointer">
@@ -336,7 +287,7 @@ export default function TokenDetailPage() {
                         </Link>
 
                         {/* card display */}
-                        <Card className="bg-[#1A5617]/60 border-green-500 p-6 relative overflow-hidden group hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300">
+                        <Card className="bg-slate-900/50 border-white p-6 relative overflow-hidden group hover:border-green-500 hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300">
                             <div className="flex flex-col justify-center items-start">
                                 <CardHeader className="text-white text-3xl">
                                     {dataset?.name}
@@ -421,8 +372,8 @@ export default function TokenDetailPage() {
                             </div>
                         </Card>
                     </div>
-                </motion.div>
-            </main>
+                </main>
+            </div>
         </div>
     );
 }

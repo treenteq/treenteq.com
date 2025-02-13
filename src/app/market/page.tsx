@@ -9,22 +9,17 @@ import {
     http,
     formatEther,
     custom,
-    Chain,
     defineChain,
 } from 'viem';
-import { baseSepolia } from 'viem/chains';
 import DatasetTokenABI from '@/utils/DatasetTokenABI.json';
 import Link from 'next/link';
 import { CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
-import { Download, Search, SlidersHorizontal, Tag } from 'lucide-react';
+import { Loader, Search, Tag } from 'lucide-react';
 import toast, { Toast } from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import BackgroundAnimation from '@/components/background-animation';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import { OwnershipShare } from '@/hooks/useDatasetToken';
-import { FaArrowLeft } from 'react-icons/fa6';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa6';
 import { Card } from '@/components/ui/card';
 import { IoSearchSharp } from 'react-icons/io5';
 import { useDatasetDownload } from '@/hooks/useDatasetDownload';
@@ -587,15 +582,15 @@ export default function Market() {
         if (searchLoading) {
             return (
                 <div className="flex flex-row flex-wrap gap-3 justify-center items-center">
-                <div>
-                    <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
-                </div>
-                <div>
-                    <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
-                </div>
-                <div>
-                    <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
-                </div>
+                    <div>
+                        <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                    </div>
+                    <div>
+                        <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                    </div>
+                    <div>
+                        <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                    </div>
                 </div>
             );
         }
@@ -604,28 +599,26 @@ export default function Market() {
         }
         if (loading) {
             return (
-                
-                    <div className="flex flex-row flex-wrap gap-3 justify-center items-center">
-                        <div>
-                            <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
-                        </div>
-                        <div>
-                            <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
-                        </div>
-                        <div>
-                            <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
-                        </div>
-                        <div>
-                            <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
-                        </div>
-                        <div>
-                            <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
-                        </div>
-                        <div>
-                            <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
-                        </div>
+                <div className="flex flex-row flex-wrap gap-3 justify-center items-center">
+                    <div>
+                        <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
                     </div>
-               
+                    <div>
+                        <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                    </div>
+                    <div>
+                        <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                    </div>
+                    <div>
+                        <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                    </div>
+                    <div>
+                        <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                    </div>
+                    <div>
+                        <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                    </div>
+                </div>
             );
         }
         if (tokens.length === 0) {
@@ -666,9 +659,9 @@ export default function Market() {
                     primaryButton={{ text: 'List your data', link: '/listing' }}
                 />
                 {/* Main Content */}
-                <main className="relative container px-4 sm:px-6 pt-4 sm:pt-8 flex flex-col justify-center items-center">
-                    <div className="flex flex-col justify-center items-center w-full px-24">
-                        <div className="space-y-4 sm:space-y-6 w-full">
+                <main className="relative container px-0 sm:px-6 pt-4 sm:pt-8 flex flex-col justify-center items-center">
+                    <div className="flex flex-col justify-center items-center w-full px-2 lg:px-24 sm:px-0">
+                        <div className="sm:space-y-6 w-full">
                             <Link href="/">
                                 <div className="flex justify-start gap-2 items-center cursor-pointer">
                                     <FaArrowLeft className="text-[#00A340] text-base sm:text-lg" />
@@ -700,9 +693,13 @@ export default function Market() {
                             </div>
 
                             {/* Render Content */}
-                            {renderContent()}
+                            <div className="flex justify-center items-center">
+                                {renderContent()}
+                            </div>
 
-                            <div className={`sticky bottom-0 left-0 w-full bg-black/80 p-4 flex justify-center items-center gap-5 mb-6 ${searchLoading ? 'hidden' : ''}`}>
+                            <div
+                                className={`sticky bottom-0 left-0 w-full bg-black/80 p-4 flex justify-center items-center gap-5 mb-6 ${searchLoading ? 'hidden' : ''}`}
+                            >
                                 <Button
                                     onClick={() =>
                                         setCurrentPage((prev) =>
@@ -714,13 +711,15 @@ export default function Market() {
                                     }
                                     className="bg-green-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
                                 >
-                                    Previous
+                                    <FaArrowLeft />
                                 </Button>
 
                                 <span className="text-white text-sm">
-                                    {isPageLoading
-                                        ? 'Loading...'
-                                        : `Page ${currentPage}`}
+                                    {isPageLoading ? (
+                                        <Loader className="animate-spin" />
+                                    ) : (
+                                        `Page ${currentPage}`
+                                    )}
                                 </span>
 
                                 <Button
@@ -737,7 +736,7 @@ export default function Market() {
                                     }
                                     className="bg-green-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
                                 >
-                                    Next
+                                    <FaArrowRight />
                                 </Button>
                             </div>
                         </div>
