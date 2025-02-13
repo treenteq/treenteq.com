@@ -4,7 +4,7 @@ import { createPublicClient, http } from 'viem';
 import { baseSepolia } from 'viem/chains';
 import DatasetTokenABI from '@/utils/DatasetTokenABI.json';
 import { getFromPinata } from '@/services/pinata';
-import { CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
+import { DATASET_CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
 
 export const useDatasetDownload = () => {
     const [downloading, setDownloading] = useState(false);
@@ -20,7 +20,7 @@ export const useDatasetDownload = () => {
 
             // Check if user owns the token
             const balance = (await publicClient.readContract({
-                address: CONTRACT_ADDRESS,
+                address: DATASET_CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
                 functionName: 'balanceOf',
                 args: [userAddress, tokenId],
@@ -32,9 +32,9 @@ export const useDatasetDownload = () => {
 
             // Get the metadata to determine file type
             const metadata = (await publicClient.readContract({
-                address: CONTRACT_ADDRESS,
+                address: DATASET_CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
-                functionName: 'tokenMetadata',
+                functionName: 'getDatasetMetadata',
                 args: [tokenId],
             })) as any;
 

@@ -2,7 +2,7 @@ import { createPublicClient, createWalletClient, http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { baseSepolia } from 'viem/chains';
 import DatasetTokenABI from '@/utils/DatasetTokenABI.json';
-import { CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
+import { DATASET_CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
 
 export interface OwnershipShare {
     owner: string;
@@ -74,7 +74,7 @@ export const useDatasetToken = () => {
 
         try {
             const tx = await walletClient.writeContract({
-                address: CONTRACT_ADDRESS,
+                address: DATASET_CONTRACT_ADDRESS,
                 ...functionData,
             });
             console.log('Mint transaction submitted:', tx);
@@ -95,9 +95,9 @@ export const useDatasetToken = () => {
     const getTokenMetadata = async (tokenId: bigint) => {
         try {
             const metadata = await publicClient.readContract({
-                address: CONTRACT_ADDRESS,
+                address: DATASET_CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
-                functionName: 'tokenMetadata',
+                functionName: 'getDatasetMetadata',
                 args: [tokenId],
             });
             console.log('Token metadata:', metadata);
@@ -114,7 +114,7 @@ export const useDatasetToken = () => {
     const getTokensByTag = async (tag: string) => {
         try {
             const tokenIds = await publicClient.readContract({
-                address: CONTRACT_ADDRESS,
+                address: DATASET_CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
                 functionName: 'getTokensByTag',
                 args: [tag],
@@ -132,7 +132,7 @@ export const useDatasetToken = () => {
     const getTokenOwners = async (tokenId: bigint) => {
         try {
             const owners = await publicClient.readContract({
-                address: CONTRACT_ADDRESS,
+                address: DATASET_CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
                 functionName: 'getTokenOwners',
                 args: [tokenId],
