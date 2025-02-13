@@ -1,7 +1,7 @@
 'use client';
 
 import { OwnershipShare } from '@/hooks/useDatasetToken';
-import { CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
+import { DATASET_CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
@@ -95,15 +95,15 @@ export default function TokenDetailPage() {
                 setLoading(true);
                 // get metadata
                 const metadata = (await publicClient.readContract({
-                    address: CONTRACT_ADDRESS,
+                    address: DATASET_CONTRACT_ADDRESS,
                     abi: DatasetTokenABI,
-                    functionName: 'tokenMetadata',
+                    functionName: 'getDatasetMetadata',
                     args: [tokenId],
                 })) as RawMetadata;
 
                 // get tags
                 const tags = (await publicClient.readContract({
-                    address: CONTRACT_ADDRESS,
+                    address: DATASET_CONTRACT_ADDRESS,
                     abi: DatasetTokenABI,
                     functionName: 'getTokenTags',
                     args: [tokenId],
@@ -111,7 +111,7 @@ export default function TokenDetailPage() {
 
                 // get owners
                 const owners = (await publicClient.readContract({
-                    address: CONTRACT_ADDRESS,
+                    address: DATASET_CONTRACT_ADDRESS,
                     abi: DatasetTokenABI,
                     functionName: 'getTokenOwners',
                     args: [tokenId],
@@ -119,7 +119,7 @@ export default function TokenDetailPage() {
 
                 if (authenticated && user?.wallet?.address) {
                     const balance = (await publicClient.readContract({
-                        address: CONTRACT_ADDRESS,
+                        address: DATASET_CONTRACT_ADDRESS,
                         abi: DatasetTokenABI,
                         functionName: 'balanceOf',
                         args: [user.wallet.address, tokenId],
@@ -182,7 +182,7 @@ export default function TokenDetailPage() {
 
             // Call the purchase function on the contract
             const hash = await walletClient.writeContract({
-                address: CONTRACT_ADDRESS,
+                address: DATASET_CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
                 functionName: 'purchaseDataset',
                 args: [tokenId],
