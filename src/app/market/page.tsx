@@ -68,10 +68,10 @@ const customBaseSepolia = defineChain({
     },
     rpcUrls: {
         default: {
-            http: ['https://sepolia.base.org'],
+            http: [RPC_URL],
         },
         public: {
-            http: ['https://sepolia.base.org'],
+            http: [RPC_URL],
         },
     },
     blockExplorers: {
@@ -123,27 +123,27 @@ const DatasetCard: React.FC<{
     };
 
     return (
-        <Card className="bg-black/30 border-white p-6 relative overflow-hidden group hover:shadow-[0_0_10px_4px_#00A340] hover:border-green-400 transition-shadow duration-300">
-            <div className="space-y-4">
-                <div className="space-y-2">
+        <Card className="bg-black/30 border-white p-4 relative  group hover:shadow-[0_0_10px_4px_#00A340] hover:border-green-400 transition-shadow duration-300 w-72 h-64 flex flex-col mb-6">
+            <div className="flex-1 overflow-hidden">
+                <div className="space-y-4">
                     {/* Header Section */}
-                    <div className="flex justify-between items-start">
-                        <h3 className="text-white font-medium">
+                    <div className="flex justify-between gap-1 items-start">
+                        <h3 className="text-white font-medium line-clamp-1">
                             {token.metadata.name}
                         </h3>
-                        <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded">
-                            ID: {token.tokenId.toString()}
+                        <span className="text-xs flex flex-row bg-green-500/20 text-green-500 px-2 py-1 rounded">
+                            <div>ID:</div> <div>{token.tokenId.toString()}</div>
                         </span>
                     </div>
 
                     {/* Description */}
-                    <p className="text-gray-400 text-sm line-clamp-2">
+                    <p className="text-gray-400 text-sm line-clamp-1">
                         {token.metadata.description}
                     </p>
 
                     {/* Tags */}
-                    <div className="flex flex-wrap gap-1 mt-2">
-                        {token.metadata.tags?.map((tag) => (
+                    <div className="flex flex-wrap items-center gap-1 mt-2">
+                        {token.metadata.tags?.slice(0, 2).map((tag) => (
                             <span
                                 key={tag}
                                 className="bg-green-500/60 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1"
@@ -152,6 +152,11 @@ const DatasetCard: React.FC<{
                                 {tag}
                             </span>
                         ))}
+                        {token.metadata.tags?.length > 2 && (
+                            <p className="text-xs text-gray-500">
+                                +{token.metadata.tags?.length - 2} more
+                            </p>
+                        )}
                     </div>
 
                     {/* Owners */}
@@ -160,69 +165,77 @@ const DatasetCard: React.FC<{
                             Owners
                         </h4>
                         <div className="space-y-1">
-                            {token.metadata.owners?.map((owner, index) => (
-                                <div
-                                    key={index}
-                                    className="flex justify-between text-xs text-gray-400"
-                                >
-                                    <span className="truncate flex-1">
-                                        {owner.owner}
-                                    </span>
-                                    <span className="ml-2">
-                                        {formatPercentage(
-                                            BigInt(owner.percentage),
-                                        )}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Footer Section */}
-                    <div className="flex justify-between items-center pt-2">
-                        {/* Price */}
-                        <div className="text-lg font-bold text-green-400">
-                            {formatEther(BigInt(token?.metadata?.price))} ETH
-                        </div>
-
-                        {/* Purchase or Download Button */}
-                        {!isOwner ? (
-                            <Button
-                                onClick={() =>
-                                    onPurchase(
-                                        token?.tokenId,
-                                        token.metadata.price,
-                                    )
-                                }
-                                className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
-                            >
-                                Collect Now
-                            </Button>
-                        ) : (
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    onClick={handleDownload}
-                                    disabled={downloading}
-                                    className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
-                                >
-                                    <div className="flex flex-row gap-1">
-                                        <p>
-                                            {downloading
-                                                ? 'Downloading...'
-                                                : 'Download Now'}
-                                        </p>
-                                        <Image
-                                            src="/download.svg"
-                                            alt="download"
-                                            width={25}
-                                            height={20}
-                                        />
+                            {token.metadata.owners
+                                ?.slice(0, 1)
+                                .map((owner, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex justify-between text-xs text-gray-400"
+                                    >
+                                        <span className="truncate flex-1">
+                                            {owner.owner}
+                                        </span>
+                                        <span className="ml-2">
+                                            {formatPercentage(
+                                                BigInt(owner.percentage),
+                                            )}
+                                        </span>
                                     </div>
-                                </Button>
-                            </div>
-                        )}
+                                ))}
+                            {/* Show "+X more" if more than 2 owners exist */}
+                            {token.metadata.owners?.length > 1 && (
+                                <p className="text-xs text-gray-500">
+                                    +{token.metadata.owners.length - 1} more
+                                </p>
+                            )}
+                        </div>
                     </div>
                 </div>
+            </div>
+            {/* Footer Section */}
+            <div className="flex justify-between items-center pt-2">
+                {/* Price */}
+                <div className="text-lg font-bold text-green-400">
+                    {formatEther(BigInt(token?.metadata?.price))} ETH
+                </div>
+
+                {/* Purchase or Download Button */}
+                {!isOwner ? (
+                    <Button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            onPurchase(token?.tokenId, token.metadata.price);
+                        }}
+                        className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
+                    >
+                        Purchase
+                    </Button>
+                ) : (
+                    <div className="flex items-center gap-2">
+                        <Button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleDownload();
+                            }}
+                            disabled={downloading}
+                            className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
+                        >
+                            <div className="flex flex-row gap-1">
+                                <p>
+                                    {downloading
+                                        ? 'Downloading...'
+                                        : 'Download Now'}
+                                </p>
+                                <Image
+                                    src="/download.svg"
+                                    alt="download"
+                                    width={25}
+                                    height={20}
+                                />
+                            </div>
+                        </Button>
+                    </div>
+                )}
             </div>
         </Card>
     );
@@ -289,6 +302,12 @@ export default function Market() {
             const receipt = await publicClient.waitForTransactionReceipt({
                 hash,
             });
+
+            console.log(`transaction:${hash}`);
+
+            if (receipt.status !== 'success') {
+                throw new Error('Transaction failed on the blockchain');
+            }
 
             toast.success(
                 (t: Toast) => (
@@ -549,7 +568,6 @@ export default function Market() {
             ) as TokenData[];
 
             setTokens(tokensData);
-            toast.success('Search results updated!');
         } catch (error) {
             console.error('Error fetching tokens by tag:', error);
             setError('Failed to search datasets. Please try again.');
@@ -620,13 +638,17 @@ export default function Market() {
         return (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {tokens.map((token) => (
-                    <DatasetCard
+                    <Link
                         key={token.tokenId.toString()}
-                        token={token}
-                        onPurchase={handlePurchase}
-                        isOwner={token.balance > BigInt(0)}
-                        userAddress={user?.wallet?.address}
-                    />
+                        href={`/market/${token.tokenId.toString()}`}
+                    >
+                        <DatasetCard
+                            token={token}
+                            onPurchase={handlePurchase}
+                            isOwner={token.balance > BigInt(0)}
+                            userAddress={user?.wallet?.address}
+                        />
+                    </Link>
                 ))}
             </div>
         );
