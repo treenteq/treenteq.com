@@ -33,7 +33,7 @@ export default function NavBar({
                 </div>
 
                 {/* Buttons */}
-                <div className="flex justify-center items-center sm:gap-5 gap-1">
+                <div className="flex justify-center items-center gap-3 sm:gap-5 lg:gap-2">
                     <Link href={primaryButton.link}>
                         <Button className="text-white bg-[#0B170D] border border-white hover:bg-green-700 transition duration-300 rounded-lg w-auto font-semibold">
                             {primaryButton.text}

@@ -132,12 +132,12 @@ export default function Home() {
                                     'https://www.treenteq.com/LitePaper_treenteq.pdf'
                                 }
                             >
-                                <Button className="text-white border rounded-lg border-white p-2 text-sm md:text-lg font-semibold">
+                                <Button className="text-white border rounded-lg border-white p-2 font-semibold">
                                     Learn More
                                 </Button>
                             </Link>
                             <Link href={'/market'}>
-                                <Button className="bg-[#00C853] hover:bg-[#00B548] text-white p-2 text:sm md:text-lg font-semibold">
+                                <Button className="bg-[#00C853] hover:bg-[#00C853] text-white p-2 font-semibold">
                                     Treen It
                                 </Button>
                             </Link>

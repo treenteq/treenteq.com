@@ -287,7 +287,7 @@ export default function TokenDetailPage() {
                         </Link>
 
                         {/* card display */}
-                        <Card className="bg-slate-900/50 border-white p-6 relative overflow-hidden group hover:border-green-500 hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300">
+                        <Card className="bg-black/30 border-white p-6 relative overflow-hidden group hover:border-green-500 hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300">
                             <div className="flex flex-col justify-center items-start">
                                 <CardHeader className="text-white text-3xl">
                                     {dataset?.name}

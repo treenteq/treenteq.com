@@ -647,6 +647,8 @@ export default function Market() {
         );
     };
 
+    const totalPages = Math.ceil(totalTokens / itemsPerPage);
+
     return (
         <div className="relative min-h-screen overflow-y-auto inset-0 bg-gradient-to-bl from-[#373737] to-black">
             <Background />
@@ -659,8 +661,8 @@ export default function Market() {
                     primaryButton={{ text: 'List your data', link: '/listing' }}
                 />
                 {/* Main Content */}
-                <main className="relative container px-0 sm:px-6 pt-4 sm:pt-8 flex flex-col justify-center items-center">
-                    <div className="flex flex-col justify-center items-center w-full px-2 lg:px-24 sm:px-0">
+                <main className="relative container px-0 sm:px-6 pt-4 sm:pt-8 flex flex-col justify-center items-center w-full">
+                    <div className="flex flex-col justify-center items-center w-full px-4 lg:px-40 sm:px-0">
                         <div className="sm:space-y-6 w-full">
                             <Link href="/">
                                 <div className="flex justify-start gap-2 items-center cursor-pointer">
@@ -698,7 +700,7 @@ export default function Market() {
                             </div>
 
                             <div
-                                className={`sticky bottom-0 left-0 w-full bg-black/80 p-4 flex justify-center items-center gap-5 mb-6 ${searchLoading ? 'hidden' : ''}`}
+                                className={`bottom-0 left-0 w-full px-4 pb-5  lg:px-40 flex justify-center items-center gap-5 mb-6 ${searchLoading ? 'hidden' : ''}`}
                             >
                                 <Button
                                     onClick={() =>
@@ -714,13 +716,47 @@ export default function Market() {
                                     <FaArrowLeft />
                                 </Button>
 
-                                <span className="text-white text-sm">
-                                    {isPageLoading ? (
-                                        <Loader className="animate-spin" />
-                                    ) : (
-                                        `Page ${currentPage}`
-                                    )}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                    {Array.from(
+                                        { length: totalPages },
+                                        (_, index) => index + 1,
+                                    )
+                                        .filter(
+                                            (page) =>
+                                                page === 1 ||
+                                                page === totalPages ||
+                                                (page >= currentPage - 2 &&
+                                                    page <= currentPage + 2),
+                                        )
+                                        .map((page, idx, arr) => (
+                                            <div key={idx}>
+                                                {idx > 0 &&
+                                                    page !==
+                                                        arr[idx - 1] + 1 && (
+                                                        <span
+                                                            key={`ellipsis-${idx}`}
+                                                            className="text-white"
+                                                        >
+                                                            ...
+                                                        </span>
+                                                    )}
+
+                                                <Button
+                                                    key={page}
+                                                    onClick={() =>
+                                                        setCurrentPage(page)
+                                                    }
+                                                    className={`px-3 py-1 rounded-lg ${
+                                                        page === currentPage
+                                                            ? 'bg-green-700 text-white'
+                                                            : 'bg-gray-800 text-gray-300 hover:bg-green-600 hover:text-white'
+                                                    }`}
+                                                >
+                                                    {page}
+                                                </Button>
+                                            </div>
+                                        ))}
+                                </div>
 
                                 <Button
                                     onClick={() =>
