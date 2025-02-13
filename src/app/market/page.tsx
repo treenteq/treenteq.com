@@ -120,7 +120,7 @@ const DatasetCard: React.FC<{
     };
 
     return (
-        <Card className="bg-[#1A5617]/60 border-green-500 p-4 relative  group hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300 w-70 h-64 flex flex-col mb-6">
+        <Card className="bg-[#1A5617]/60 border-green-500 p-4 relative  group hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300 w-72 h-64 flex flex-col mb-6">
             <div className="flex-1 overflow-hidden">
                 <div className="space-y-4">
                     {/* Header Section */}
