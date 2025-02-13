@@ -54,19 +54,26 @@ export default function Home() {
                 {/* desktop header */}
                 <nav className="sm:flex flex-row justify-between items-center w-5/6 py-5 hidden">
                     {/* logo */}
-                    <Image src="/logo.svg" alt="logo" width={135} height={45} />
+                    <Link href={'/'}>
+                        <Image
+                            src="/logo.svg"
+                            alt="logo"
+                            width={135}
+                            height={45}
+                        />
+                    </Link>
                     <div className="flex flex-row gap-4">
                         {navItems.map((nav, index) => (
                             <Link href={nav.path} key={index}>
                                 <p
-                                    className={`font-semibold ${pathname === nav.path ? 'text-[#00A340] font-bold' : 'text-white'}`}
+                                    className={`font-semibold lg:font-lg ${pathname === nav.path ? 'text-[#00A340] font-extrabold' : 'text-white'}`}
                                 >
                                     {nav.name}
                                 </p>
                             </Link>
                         ))}
                     </div>
-                    <Link href={'/'}>
+                    <Link href={'/market'}>
                         <Image
                             src="./menu.svg"
                             alt="menu"
@@ -129,7 +136,7 @@ export default function Home() {
                                     Learn More
                                 </Button>
                             </Link>
-                            <Link href={'/datasets'}>
+                            <Link href={'/market'}>
                                 <Button className="bg-[#00C853] hover:bg-[#00B548] text-white p-2 text:sm md:text-lg font-semibold">
                                     Treen It
                                 </Button>

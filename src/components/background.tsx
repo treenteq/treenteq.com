@@ -4,7 +4,7 @@ import cube from '../../public/cube-bundle.svg';
 
 export default function Background() {
     return (
-        <div className="relative min-h-screen overflow-hidden">
+        <div className="relative min-h-screen max-h-fit overflow-hidden">
             {/* left blob */}
             <Image
                 src={blob}

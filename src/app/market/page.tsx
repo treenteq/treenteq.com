@@ -28,6 +28,9 @@ import { FaArrowLeft } from 'react-icons/fa6';
 import { Card } from '@/components/ui/card';
 import { IoSearchSharp } from 'react-icons/io5';
 import { useDatasetDownload } from '@/hooks/useDatasetDownload';
+import Navbar from '@/components/NavBar';
+import Background from '@/components/background';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface RawMetadata extends Array<string | bigint> {
     0: string; // name
@@ -120,7 +123,7 @@ const DatasetCard: React.FC<{
     };
 
     return (
-        <Card className="bg-[#1A5617]/60 border-green-500 p-6 relative overflow-hidden group hover:shadow-[0_0_10px_4px_#00A340] transition-shadow duration-300">
+        <Card className="bg-black/30 border-white p-6 relative overflow-hidden group hover:shadow-[0_0_10px_4px_#00A340] hover:border-green-400 transition-shadow duration-300">
             <div className="space-y-4">
                 <div className="space-y-2">
                     {/* Header Section */}
@@ -565,8 +568,16 @@ export default function Market() {
     const renderContent = () => {
         if (searchLoading) {
             return (
-                <div className="text-center py-8 text-white">
-                    Searching datasets...
+                <div className="flex flex-row flex-wrap gap-3 justify-center items-center">
+                <div>
+                    <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                </div>
+                <div>
+                    <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                </div>
+                <div>
+                    <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                </div>
                 </div>
             );
         }
@@ -575,9 +586,28 @@ export default function Market() {
         }
         if (loading) {
             return (
-                <div className="text-center py-8 text-white">
-                    Loading datasets...
-                </div>
+                
+                    <div className="flex flex-row flex-wrap gap-3 justify-center items-center">
+                        <div>
+                            <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                        </div>
+                        <div>
+                            <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                        </div>
+                        <div>
+                            <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                        </div>
+                        <div>
+                            <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                        </div>
+                        <div>
+                            <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                        </div>
+                        <div>
+                            <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
+                        </div>
+                    </div>
+               
             );
         }
         if (tokens.length === 0) {
@@ -603,152 +633,95 @@ export default function Market() {
     };
 
     return (
-        <div className="relative min-h-screen overflow-hidden bg-black bg-gradient">
-            {/* Background Elements */}
-            <div className="absolute inset-0 z-0">
-                {/* Left side background */}
-                <div className="absolute left-0 top-0 w-2/5 h-full">
-                    <div className="absolute inset-0 bg-[url('/background.svg')] bg-left bg-no-repeat opacity-30 transform scale-150 animate-float-left bg-svg" />
-                </div>
-                {/* Center background pattern */}
-                <div className="absolute left-1/3 right-1/3 top-0 h-full">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#00A340]/5 to-transparent" />
-                </div>
-                {/* Right side background */}
-                <div className="absolute -right-1/4 -top-1/4 w-2/3 h-full">
-                    <div className="absolute inset-0 bg-[url('/background.svg')] bg-right bg-no-repeat opacity-30 transform scale-150 rotate-90 animate-float-right bg-svg" />
-                </div>
-            </div>
+        <div className="relative min-h-screen overflow-y-auto inset-0 bg-gradient-to-bl from-[#373737] to-black">
+            <Background />
 
-            <BackgroundAnimation />
+            <div className="absolute top-0 w-full">
+                <Navbar
+                    authenticated={authenticated}
+                    login={login}
+                    logout={logout}
+                    primaryButton={{ text: 'List your data', link: '/listing' }}
+                />
+                {/* Main Content */}
+                <main className="relative container px-4 sm:px-6 pt-4 sm:pt-8 flex flex-col justify-center items-center">
+                    <div className="flex flex-col justify-center items-center w-full px-24">
+                        <div className="space-y-4 sm:space-y-6 w-full">
+                            <Link href="/">
+                                <div className="flex justify-start gap-2 items-center cursor-pointer">
+                                    <FaArrowLeft className="text-[#00A340] text-base sm:text-lg" />
+                                    <h1 className="text-base sm:text-[20px] text-white">
+                                        Back
+                                    </h1>
+                                </div>
+                            </Link>
 
-            {/* Header */}
-            <header className="relative z-10 flex justify-between items-center p-6">
-                {/* logo */}
-                <div>
-                    <Link href="/">
-                        <Image
-                            src="/logo.svg"
-                            alt="TREENTEQ Logo"
-                            width={145}
-                            height={50}
-                            className="hidden sm:block brightness-110 contrast-125 p-1"
-                            priority
-                        />
-                    </Link>
-                </div>
-                <div>
-                    <div className="flex justify-center items-center sm:gap-5 gap-1">
-                        <Link href="/listing">
-                            <Button className="text-white bg-[#0B170D] border border-green-900/80 hover:bg-green-700 transition duration-300 rounded-full w-auto font-semibold">
-                                List your data
-                            </Button>
-                        </Link>
-                        <Button
-                            onClick={authenticated ? logout : login}
-                            className="bg-gradient-to-r from-[#00A340] to-[#00000080] border border-green-900 rounded-full p-3 font-semibold text-white hover:opacity-90 transition duration-300"
-                        >
-                            {authenticated ? 'Disconnect' : 'Connect Wallet'}
-                        </Button>
-                    </div>
-                </div>
-            </header>
-
-            {/* Main Content */}
-            <main className="relative z-10 container px-4 sm:px-6 pt-4 sm:pt-8">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7 }}
-                    className="max-w-4xl mx-auto"
-                >
-                    <div className="space-y-4 sm:space-y-6">
-                        <Link href="/">
-                            <div className="flex justify-start gap-2 items-center cursor-pointer">
-                                <FaArrowLeft className="text-[#00A340] text-base sm:text-lg" />
-                                <h1 className="text-base sm:text-[20px] text-white">
-                                    Back
-                                </h1>
+                            {/* search bar */}
+                            <div className="relative mb-4 sm:mb-8 w-full">
+                                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                                <Input
+                                    type="text"
+                                    onChange={(e) => setTag(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder="Search for Datasets, tags......"
+                                    className="w-full h-10 sm:h-12 bg-black/40 border-whitex pl-12 pr-12 py-2 sm:py-3 text-white placeholder:text-gray-500 focus:border-green-500 rounded-full text-sm sm:text-lg"
+                                />
+                                <Button
+                                    variant="ghost"
+                                    onClick={handleSearch}
+                                    type="submit"
+                                    size="icon"
+                                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-green-500 hover:text-green-400 hover:bg-transparent"
+                                >
+                                    <IoSearchSharp className="w-20 h-14" />
+                                </Button>
                             </div>
-                        </Link>
 
-                        {/* search bar */}
-                        <div className="relative mb-4 sm:mb-8">
-                            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                            <Input
-                                type="text"
-                                onChange={(e) => setTag(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                placeholder="Search for Datasets, tags......"
-                                className="w-full h-10 sm:h-12 bg-black/40 border-green-800/80 pl-12 pr-12 py-2 sm:py-3 text-white placeholder:text-gray-500 focus:border-green-500 rounded-full text-sm sm:text-lg"
-                            />
-                            <Button
-                                variant="ghost"
-                                onClick={handleSearch}
-                                type="submit"
-                                size="icon"
-                                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-green-500 hover:text-green-400 hover:bg-transparent"
-                            >
-                                <IoSearchSharp className="w-20 h-14" />
-                            </Button>
-                        </div>
+                            {/* Render Content */}
+                            {renderContent()}
 
-                        {/* Render Content */}
-                        {renderContent()}
-                        <div className="sticky bottom-0 left-0 w-full bg-black/80 p-4 flex justify-center items-center gap-5 mb-6">
-                            <Button
-                                onClick={() =>
-                                    setCurrentPage((prev) =>
-                                        Math.max(prev - 1, 1),
-                                    )
-                                }
-                                disabled={currentPage === 1 || isPageLoading}
-                                className="bg-green-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
-                            >
-                                Previous
-                            </Button>
+                            <div className={`sticky bottom-0 left-0 w-full bg-black/80 p-4 flex justify-center items-center gap-5 mb-6 ${searchLoading ? 'hidden' : ''}`}>
+                                <Button
+                                    onClick={() =>
+                                        setCurrentPage((prev) =>
+                                            Math.max(prev - 1, 1),
+                                        )
+                                    }
+                                    disabled={
+                                        currentPage === 1 || isPageLoading
+                                    }
+                                    className="bg-green-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                                >
+                                    Previous
+                                </Button>
 
-                            <span className="text-white text-sm">
-                                {isPageLoading
-                                    ? 'Loading...'
-                                    : `Page ${currentPage}`}
-                            </span>
+                                <span className="text-white text-sm">
+                                    {isPageLoading
+                                        ? 'Loading...'
+                                        : `Page ${currentPage}`}
+                                </span>
 
-                            <Button
-                                onClick={() =>
-                                    setCurrentPage((prev) =>
-                                        prev * itemsPerPage < totalTokens
-                                            ? prev + 1
-                                            : prev,
-                                    )
-                                }
-                                disabled={
-                                    currentPage * itemsPerPage >= totalTokens ||
-                                    isPageLoading
-                                }
-                                className="bg-green-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
-                            >
-                                Next
-                            </Button>
+                                <Button
+                                    onClick={() =>
+                                        setCurrentPage((prev) =>
+                                            prev * itemsPerPage < totalTokens
+                                                ? prev + 1
+                                                : prev,
+                                        )
+                                    }
+                                    disabled={
+                                        currentPage * itemsPerPage >=
+                                            totalTokens || isPageLoading
+                                    }
+                                    className="bg-green-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                                >
+                                    Next
+                                </Button>
+                            </div>
                         </div>
                     </div>
-                </motion.div>
-            </main>
-            <style jsx>{`
-                .bg-gradient {
-                    background: radial-gradient(
-                            50% 30% at 50% 0%,
-                            rgba(0, 163, 64, 0.2) 0%,
-                            rgba(0, 0, 0, 1) 100%
-                        ),
-                        radial-gradient(
-                            circle at 30% 0%,
-                            rgba(0, 163, 64, 0.3) 0%,
-                            transparent 70%
-                        ),
-                        black;
-                }
-            `}</style>
+                </main>
+            </div>
         </div>
     );
 }
