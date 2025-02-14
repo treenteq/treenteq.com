@@ -14,7 +14,7 @@ import {
 import DatasetTokenABI from '@/utils/DatasetTokenABI.json';
 import Link from 'next/link';
 import { DATASET_CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
-import { Loader, Search, Tag } from 'lucide-react';
+import { DownloadIcon, Loader, Search, Tag } from 'lucide-react';
 import toast, { Toast } from 'react-hot-toast';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
