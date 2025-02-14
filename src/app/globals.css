@@ -232,3 +232,7 @@ body {
     background: #00892a; /* Color when hovered */
   }
   
+  .hide-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}

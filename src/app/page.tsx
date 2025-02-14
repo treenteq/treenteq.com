@@ -13,6 +13,7 @@ import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { Menu } from 'lucide-react';
 import { BsDiscord, BsLinkedin, BsTwitterX } from 'react-icons/bs';
 import { Button } from '@/components/ui/button';
+import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card';
 
 export default function Home() {
     const pathname = usePathname();
@@ -47,7 +48,7 @@ export default function Home() {
     ];
 
     return (
-        <div className="min-h-screen relative inset-0 bg-gradient-to-bl from-[#373737] to-black">
+        <div className="min-h-screen overflow-hidden relative inset-0 bg-gradient-to-bl from-[#373737] to-black">
             <Background />
 
             <div className="absolute top-0 w-full flex flex-col justify-center items-center">
@@ -115,7 +116,7 @@ export default function Home() {
                 </nav>
 
                 {/* main content */}
-                <main className="w-5/6 grid lg:grid-cols-2 gap-12 items-center sm:mt-20 lg:mt-28">
+                <main className="w-5/6 mx-auto grid lg:grid-cols-2 gap-12 place-items-center sm:mt-20 lg:mt-20">
                     <div className="space-y-8 ">
                         <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
                             Unlock The Value Of{' '}
@@ -150,14 +151,23 @@ export default function Home() {
                             ))}
                         </div>
                     </div>
-                    <div className="flex justify-center">
-                        <Image
-                            src={'/hero.png'}
-                            width={400}
-                            height={600}
-                            alt="hero"
-                            className="w-5/6 h-5/6"
-                        />
+                    <div>
+                        <CardContainer className="inter-var">
+                            <CardBody className="bg-black/50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-6 border flex justify-center items-center">
+                                <CardItem
+                                    translateZ="100"
+                                    className="w-5/6 h-5/6"
+                                >
+                                    <Image
+                                        src={'/hero.png'}
+                                        width={400}
+                                        height={600}
+                                        alt="hero"
+                                        className="w-full h-full object-cover rounded-xl group-hover/card:shadow-xl"
+                                    />
+                                </CardItem>
+                            </CardBody>
+                        </CardContainer>
                     </div>
                 </main>
             </div>

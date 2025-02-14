@@ -14,7 +14,7 @@ import {
 import DatasetTokenABI from '@/utils/DatasetTokenABI.json';
 import Link from 'next/link';
 import { CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
-import { Loader, Search, Tag } from 'lucide-react';
+import { DownloadIcon, Loader, Search, Tag } from 'lucide-react';
 import toast, { Toast } from 'react-hot-toast';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
@@ -215,18 +215,13 @@ const DatasetCard: React.FC<{
                             disabled={downloading}
                             className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold"
                         >
-                            <div className="flex flex-row gap-1">
+                            <div className="flex flex-row justify-center items-center gap-1">
                                 <p>
                                     {downloading
                                         ? 'Downloading...'
                                         : 'Download Now'}
                                 </p>
-                                <Image
-                                    src="/download.svg"
-                                    alt="download"
-                                    width={25}
-                                    height={20}
-                                />
+                                <DownloadIcon />
                             </div>
                         </Button>
                     </div>
@@ -716,7 +711,7 @@ export default function Market() {
                                     <FaArrowLeft />
                                 </Button>
 
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center justify-center gap-2">
                                     {Array.from(
                                         { length: totalPages },
                                         (_, index) => index + 1,
@@ -729,13 +724,16 @@ export default function Market() {
                                                     page <= currentPage + 2),
                                         )
                                         .map((page, idx, arr) => (
-                                            <div key={idx}>
+                                            <div
+                                                key={idx}
+                                                className="flex justify-center gap-2"
+                                            >
                                                 {idx > 0 &&
                                                     page !==
                                                         arr[idx - 1] + 1 && (
                                                         <span
                                                             key={`ellipsis-${idx}`}
-                                                            className="text-white"
+                                                            className="text-white text-lg"
                                                         >
                                                             ...
                                                         </span>

@@ -15,7 +15,6 @@ import {
 import DatasetTokenABI from '@/utils/DatasetTokenABI.json';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { FaArrowLeft } from 'react-icons/fa6';
 import {
@@ -24,7 +23,7 @@ import {
     CardDescription,
     CardHeader,
 } from '@/components/ui/card';
-import { Tag } from 'lucide-react';
+import { DownloadIcon, Tag } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useDatasetDownload } from '@/hooks/useDatasetDownload';
 import Background from '@/components/background';
@@ -355,17 +354,14 @@ export default function TokenDetailPage() {
                                             }}
                                             className="bg-green-500/20 text-white border border-green-800 backdrop-blur-3xl hover:bg-green-700 text-sm font-semibold flex gap-1"
                                         >
-                                            <p>
-                                                {downloading
-                                                    ? 'Downloading...'
-                                                    : 'Download Now'}
-                                            </p>
-                                            <Image
-                                                src="/download.svg"
-                                                alt="download"
-                                                width={15}
-                                                height={15}
-                                            />
+                                            <div className="flex flex-row justify-center items-center gap-1">
+                                                <p>
+                                                    {downloading
+                                                        ? 'Downloading...'
+                                                        : 'Download Now'}
+                                                </p>
+                                                <DownloadIcon />
+                                            </div>
                                         </Button>
                                     )}
                                 </div>
