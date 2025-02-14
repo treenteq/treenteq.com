@@ -13,8 +13,8 @@ import {
 } from 'viem';
 import DatasetTokenABI from '@/utils/DatasetTokenABI.json';
 import Link from 'next/link';
-import { CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
-import { DownloadIcon, Loader, Search, Tag } from 'lucide-react';
+import { DATASET_CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
+import { Loader, Search, Tag } from 'lucide-react';
 import toast, { Toast } from 'react-hot-toast';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
@@ -281,7 +281,7 @@ export default function Market() {
 
             // Call the purchase function on the contract
             const hash = await walletClient.writeContract({
-                address: CONTRACT_ADDRESS,
+                address: DATASET_CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
                 functionName: 'purchaseDataset',
                 args: [tokenId],
@@ -342,10 +342,13 @@ export default function Market() {
             setIsPageLoading(true);
 
             setError(null);
-            console.log('Fetching tokens from contract:', CONTRACT_ADDRESS);
+            console.log(
+                'Fetching tokens from contract:',
+                DATASET_CONTRACT_ADDRESS,
+            );
 
             const totalTokens = (await publicClient.readContract({
-                address: CONTRACT_ADDRESS,
+                address: DATASET_CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
                 functionName: 'getTotalTokens',
             })) as bigint;
@@ -373,15 +376,15 @@ export default function Market() {
                         try {
                             // Get metadata
                             const metadata = (await publicClient.readContract({
-                                address: CONTRACT_ADDRESS,
+                                address: DATASET_CONTRACT_ADDRESS,
                                 abi: DatasetTokenABI,
-                                functionName: 'tokenMetadata',
+                                functionName: 'getDatasetMetadata',
                                 args: [i],
                             })) as RawMetadata;
 
                             // Get tags
                             const tags = (await publicClient.readContract({
-                                address: CONTRACT_ADDRESS,
+                                address: DATASET_CONTRACT_ADDRESS,
                                 abi: DatasetTokenABI,
                                 functionName: 'getTokenTags',
                                 args: [i],
@@ -389,7 +392,7 @@ export default function Market() {
 
                             // Get owners
                             const owners = (await publicClient.readContract({
-                                address: CONTRACT_ADDRESS,
+                                address: DATASET_CONTRACT_ADDRESS,
                                 abi: DatasetTokenABI,
                                 functionName: 'getTokenOwners',
                                 args: [i],
@@ -399,7 +402,7 @@ export default function Market() {
                             const balance =
                                 authenticated && user?.wallet?.address
                                     ? ((await publicClient.readContract({
-                                          address: CONTRACT_ADDRESS,
+                                          address: DATASET_CONTRACT_ADDRESS,
                                           abi: DatasetTokenABI,
                                           functionName: 'balanceOf',
                                           args: [user.wallet.address, i],
@@ -481,7 +484,7 @@ export default function Market() {
         try {
             // Fetch token IDs by tag
             const tokenIds = (await publicClient.readContract({
-                address: CONTRACT_ADDRESS,
+                address: DATASET_CONTRACT_ADDRESS,
                 abi: DatasetTokenABI,
                 functionName: 'getTokensByTag',
                 args: [tag],
@@ -499,15 +502,15 @@ export default function Market() {
                 try {
                     // Get metadata
                     const metadata = (await publicClient.readContract({
-                        address: CONTRACT_ADDRESS,
+                        address: DATASET_CONTRACT_ADDRESS,
                         abi: DatasetTokenABI,
-                        functionName: 'tokenMetadata',
+                        functionName: 'getDatasetMetadata',
                         args: [tokenId],
                     })) as RawMetadata;
 
                     // Get tags
                     const tags = (await publicClient.readContract({
-                        address: CONTRACT_ADDRESS,
+                        address: DATASET_CONTRACT_ADDRESS,
                         abi: DatasetTokenABI,
                         functionName: 'getTokenTags',
                         args: [tokenId],
@@ -515,7 +518,7 @@ export default function Market() {
 
                     // Get owners
                     const owners = (await publicClient.readContract({
-                        address: CONTRACT_ADDRESS,
+                        address: DATASET_CONTRACT_ADDRESS,
                         abi: DatasetTokenABI,
                         functionName: 'getTokenOwners',
                         args: [tokenId],
@@ -525,7 +528,7 @@ export default function Market() {
                     const balance =
                         authenticated && user?.wallet?.address
                             ? ((await publicClient.readContract({
-                                  address: CONTRACT_ADDRESS,
+                                  address: DATASET_CONTRACT_ADDRESS,
                                   abi: DatasetTokenABI,
                                   functionName: 'balanceOf',
                                   args: [user.wallet.address, tokenId],
