@@ -147,6 +147,7 @@ export default function TokenDetailPage() {
         };
 
         fetchDetails();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handlePurchase = async () => {
