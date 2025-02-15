@@ -274,7 +274,7 @@ export default function TokenDetailPage() {
     }
     return (
         <div className="min-h-screen w-screen overflow-hidden relative inset-0 bg-gradient-to-bl from-[#373737] to-black">
-            <div className="absolute inset-0 w-full h-full overflow-hidden">
+            <div className="fixed inset-0 w-full h-full">
                 <Background />
             </div>
             <div className="absolute top-0 w-full">

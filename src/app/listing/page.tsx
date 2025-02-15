@@ -40,7 +40,7 @@ export default function ListingPage() {
 
     return (
         <div className="relative h-screen w-screen overflow-y-hidden inset-0 bg-gradient-to-bl from-[#373737] to-black">
-            <div className="absolute inset-0 w-full h-full overflow-hidden">
+            <div className="fixed inset-0 w-full h-full">
                 <Background />
             </div>
             <div className="w-full absolute top-0">

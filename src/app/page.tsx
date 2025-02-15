@@ -48,8 +48,8 @@ export default function Home() {
     ];
 
     return (
-        <div className="h-screen w-screen overflow-auto relative inset-0 bg-gradient-to-bl from-[#373737] to-black">
-            <div className="absolute inset-0 w-full h-full overflow-hidden">
+        <div className="h-screen w-screen overflow-auto md:overflow-hidden relative inset-0 bg-gradient-to-bl from-[#373737] to-black">
+            <div className="absolute inset-0 w-full h-full overflow-auto hide-scrollbar">
                 <Background />
             </div>
 
