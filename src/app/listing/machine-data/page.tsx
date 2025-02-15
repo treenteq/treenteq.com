@@ -12,7 +12,7 @@ export default function MachineDataUpload() {
     const { authenticated, login, logout } = usePrivy();
 
     return (
-        <div className="inset-0 bg-gradient-to-bl from-[#373737] to-black">
+        <div>
             <Background />
             <div className="absolute top-0 w-full">
                 <NavBar

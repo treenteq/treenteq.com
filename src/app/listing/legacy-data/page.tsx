@@ -35,7 +35,7 @@ export default function LegacyDataUpload() {
     if (!ready) return null;
 
     return (
-        <div className="inset-0 bg-gradient-to-bl from-[#373737] to-black">
+        <div className="min-h-screen">
             <Background />
             <div className="absolute top-0 w-full">
                 <NavBar

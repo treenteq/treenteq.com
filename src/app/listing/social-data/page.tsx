@@ -149,7 +149,7 @@ export default function SocialDataUpload() {
     console.log('Req URL: ', requestUrl);
     console.log('Username: ', username);
     return (
-        <div className="inset-0 bg-gradient-to-bl from-[#373737] to-black">
+        <div>
             <Background />
             <div className="absolute top-0 w-full">
                 <NavBar
