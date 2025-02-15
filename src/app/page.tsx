@@ -48,8 +48,10 @@ export default function Home() {
     ];
 
     return (
-        <div className="min-h-screen overflow-hidden relative inset-0 bg-gradient-to-bl from-[#373737] to-black">
-            <Background />
+        <div className="h-screen w-screen overflow-auto relative inset-0 bg-gradient-to-bl from-[#373737] to-black">
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
+                <Background />
+            </div>
 
             <div className="absolute top-0 w-full flex flex-col justify-center items-center">
                 {/* desktop header */}

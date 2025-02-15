@@ -39,8 +39,10 @@ export default function ListingPage() {
     ];
 
     return (
-        <div className="relative min-h-screen overflow-y-hidden inset-0 bg-gradient-to-bl from-[#373737] to-black">
-            <Background />
+        <div className="relative h-screen w-screen overflow-y-hidden inset-0 bg-gradient-to-bl from-[#373737] to-black">
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
+                <Background />
+            </div>
             <div className="w-full absolute top-0">
                 <NavBar
                     authenticated={authenticated}

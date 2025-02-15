@@ -604,7 +604,7 @@ export default function Market() {
     const renderContent = () => {
         if (searchLoading) {
             return (
-                <div className="flex flex-row flex-wrap gap-3 justify-center items-center">
+                <div className="flex flex-row flex-wrap overflow-hidden gap-3 justify-center items-center">
                     <div>
                         <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
                     </div>
@@ -622,7 +622,7 @@ export default function Market() {
         }
         if (loading) {
             return (
-                <div className="flex flex-row flex-wrap gap-3 justify-center items-center">
+                <div className="flex flex-row flex-wrap gap-3 overflow-hidden justify-center items-center">
                     <div>
                         <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
                     </div>
@@ -673,7 +673,7 @@ export default function Market() {
     const totalPages = Math.ceil(totalTokens / itemsPerPage);
 
     return (
-        <div className="relative min-h-screen overflow-y-auto inset-0 bg-gradient-to-bl from-[#373737] to-black">
+        <div className="relative h-screen overflow-auto inset-0 bg-gradient-to-bl from-[#373737] to-black">
             <Background />
 
             <div className="absolute top-0 w-full">

@@ -273,8 +273,10 @@ export default function TokenDetailPage() {
         );
     }
     return (
-        <div className="relative min-h-screen overflow-hidden bg-gradient-to-bl from-[#373737] to-black">
-            <Background />
+        <div className="min-h-screen w-screen overflow-hidden relative inset-0 bg-gradient-to-bl from-[#373737] to-black">
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
+                <Background />
+            </div>
             <div className="absolute top-0 w-full">
                 <NavBar
                     authenticated={authenticated}

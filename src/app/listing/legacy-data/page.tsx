@@ -36,7 +36,7 @@ export default function LegacyDataUpload() {
 
     return (
         <div className="min-h-screen relative inset-0 bg-gradient-to-bl from-[#373737] to-black flex flex-col">
-            <div className="absolute inset-0 -z-0 min-h-screen w-full pointer-events-none">
+            <div className="absolute inset-0 -z-0 min-h-screen w-full overflow-hidden pointer-events-none">
                 <Background />
             </div>
 

@@ -4,7 +4,7 @@ import cube from '../../public/cube-bundle.svg';
 
 export default function Background() {
     return (
-        <div className="relative min-h-screen overflow-hidden hide-scrollbar">
+        <div className="relative min-h-[120vh] overflow-hidden hide-scrollbar">
             {/* left blob */}
             <Image
                 src={blob}
@@ -44,6 +44,13 @@ export default function Background() {
                 width={197}
                 height={207}
                 className="absolute w-48 h-64 right-32 md:top-72 lg:top-36 hidden sm:block"
+            />
+            <Image
+                src={blob}
+                alt="blob"
+                width={120}
+                height={120}
+                className="absolute w-40 h-full right-80 sm:bottom-[-600px] md:bottom-[-400px] hidden sm:block"
             />
         </div>
     );
