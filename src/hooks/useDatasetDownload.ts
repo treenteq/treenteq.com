@@ -18,16 +18,26 @@ export const useDatasetDownload = () => {
         try {
             setDownloading(true);
 
-            // Check if user owns the token
-            const balance = (await publicClient.readContract({
-                address: DATASET_CONTRACT_ADDRESS,
-                abi: DatasetTokenABI,
-                functionName: 'balanceOf',
-                args: [userAddress, tokenId],
-            })) as bigint;
+            // Check if user has purchased the token or is an owner
+            const [hasPurchased, balance] = await Promise.all([
+                publicClient.readContract({
+                    address: DATASET_CONTRACT_ADDRESS,
+                    abi: DatasetTokenABI,
+                    functionName: 'hasPurchased',
+                    args: [userAddress, tokenId],
+                }) as Promise<boolean>,
+                publicClient.readContract({
+                    address: DATASET_CONTRACT_ADDRESS,
+                    abi: DatasetTokenABI,
+                    functionName: 'balanceOf',
+                    args: [userAddress, tokenId],
+                }) as Promise<bigint>,
+            ]);
 
-            if (balance === BigInt(0)) {
-                throw new Error("You don't own this dataset");
+            const hasAccess = hasPurchased || balance > BigInt(0);
+
+            if (!hasAccess) {
+                throw new Error("You don't have access to this dataset");
             }
 
             // Get the metadata to determine file type
