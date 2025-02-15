@@ -116,14 +116,22 @@ export default function TokenDetailPage() {
                 })) as OwnershipShare[];
 
                 if (authenticated && user?.wallet?.address) {
-                    const balance = (await publicClient.readContract({
-                        address: DATASET_CONTRACT_ADDRESS,
-                        abi: DatasetTokenABI,
-                        functionName: 'balanceOf',
-                        args: [user.wallet.address, tokenId],
-                    })) as bigint;
+                    const [hasPurchased, balance] = await Promise.all([
+                        publicClient.readContract({
+                            address: DATASET_CONTRACT_ADDRESS,
+                            abi: DatasetTokenABI,
+                            functionName: 'hasPurchased',
+                            args: [user.wallet.address, tokenId],
+                        }) as Promise<boolean>,
+                        publicClient.readContract({
+                            address: DATASET_CONTRACT_ADDRESS,
+                            abi: DatasetTokenABI,
+                            functionName: 'balanceOf',
+                            args: [user.wallet.address, tokenId],
+                        }) as Promise<bigint>,
+                    ]);
 
-                    setIsOwner(balance > BigInt(0));
+                    setIsOwner(hasPurchased || balance > BigInt(0));
                 }
 
                 // Combine all metadata

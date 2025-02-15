@@ -48,7 +48,8 @@ interface DatasetMetadata {
 interface TokenData {
     tokenId: bigint;
     metadata: DatasetMetadata;
-    balance: bigint;
+    hasPurchased: boolean;
+    isOwner: boolean;
 }
 
 const BASE_EXPLORER_URL = 'https://sepolia.basescan.org';
@@ -195,7 +196,7 @@ const DatasetCard: React.FC<{
                 </div>
 
                 {/* Purchase or Download Button */}
-                {!isOwner ? (
+                {!token.hasPurchased && !token.isOwner ? (
                     <Button
                         onClick={(e) => {
                             e.preventDefault();
@@ -398,8 +399,16 @@ export default function Market() {
                                 args: [i],
                             })) as OwnershipShare[];
 
-                            // Get balance if user is authenticated
-                            const balance =
+                            // Get hasPurchased and balance
+                            const [hasPurchased, balance] = await Promise.all([
+                                authenticated && user?.wallet?.address
+                                    ? ((await publicClient.readContract({
+                                          address: DATASET_CONTRACT_ADDRESS,
+                                          abi: DatasetTokenABI,
+                                          functionName: 'hasPurchased',
+                                          args: [user.wallet.address, i],
+                                      })) as boolean)
+                                    : false,
                                 authenticated && user?.wallet?.address
                                     ? ((await publicClient.readContract({
                                           address: DATASET_CONTRACT_ADDRESS,
@@ -407,7 +416,8 @@ export default function Market() {
                                           functionName: 'balanceOf',
                                           args: [user.wallet.address, i],
                                       })) as bigint)
-                                    : BigInt(0);
+                                    : BigInt(0),
+                            ]);
 
                             // Combine all metadata
                             const fullMetadata = {
@@ -423,7 +433,8 @@ export default function Market() {
                             return {
                                 tokenId: i,
                                 metadata: fullMetadata,
-                                balance,
+                                hasPurchased,
+                                isOwner: balance > BigInt(0),
                             };
                         } catch (error) {
                             console.error(`Error fetching token ${i}:`, error);
@@ -524,8 +535,16 @@ export default function Market() {
                         args: [tokenId],
                     })) as OwnershipShare[];
 
-                    // Get balance if user is authenticated
-                    const balance =
+                    // Get hasPurchased and balance
+                    const [hasPurchased, balance] = await Promise.all([
+                        authenticated && user?.wallet?.address
+                            ? ((await publicClient.readContract({
+                                  address: DATASET_CONTRACT_ADDRESS,
+                                  abi: DatasetTokenABI,
+                                  functionName: 'hasPurchased',
+                                  args: [user.wallet.address, tokenId],
+                              })) as boolean)
+                            : false,
                         authenticated && user?.wallet?.address
                             ? ((await publicClient.readContract({
                                   address: DATASET_CONTRACT_ADDRESS,
@@ -533,7 +552,8 @@ export default function Market() {
                                   functionName: 'balanceOf',
                                   args: [user.wallet.address, tokenId],
                               })) as bigint)
-                            : BigInt(0);
+                            : BigInt(0),
+                    ]);
 
                     // Format metadata
                     const fullMetadata = {
@@ -546,7 +566,12 @@ export default function Market() {
                         owners,
                     };
 
-                    return { tokenId, metadata: fullMetadata, balance };
+                    return {
+                        tokenId,
+                        metadata: fullMetadata,
+                        hasPurchased,
+                        isOwner: balance > BigInt(0),
+                    };
                 } catch (err) {
                     console.error(
                         `Error fetching metadata for token ${tokenId}:`,
@@ -636,7 +661,7 @@ export default function Market() {
                         <DatasetCard
                             token={token}
                             onPurchase={handlePurchase}
-                            isOwner={token.balance > BigInt(0)}
+                            isOwner={token.isOwner || token.hasPurchased}
                             userAddress={user?.wallet?.address}
                         />
                     </Link>
