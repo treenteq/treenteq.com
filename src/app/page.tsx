@@ -8,8 +8,8 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { Menu } from 'lucide-react';
 import { BsDiscord, BsLinkedin, BsTwitterX } from 'react-icons/bs';
 import { Button } from '@/components/ui/button';

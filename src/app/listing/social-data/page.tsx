@@ -149,131 +149,128 @@ export default function SocialDataUpload() {
     console.log('Req URL: ', requestUrl);
     console.log('Username: ', username);
     return (
-        <div>
-            <Background />
-            <div className="absolute top-0 w-full">
-                <NavBar
-                    authenticated={authenticated}
-                    login={login}
-                    logout={logout}
-                    primaryButton={{ text: 'Back', link: '/listing' }}
-                />
-                <main className="container mx-auto p-12 flex items-center justify-center max-w-6xl">
-                    <Card className="w-full max-w-xl p-6 space-y-6 border-white border-2 bg-black/30">
-                        <div className="space-y-2">
-                            <h2 className="text-xl font-semibold text-white flex flex-row gap-1 items-center">
-                                List <RiTwitterXFill /> Data
-                            </h2>
-                            <p className="text-sm text-gray-300">
-                                Connect your X account to create a dataset from
-                                your tweets. Your data will be securely verified
-                                using zero-knowledge proofs.
-                            </p>
-                        </div>
-
-                        <div className="space-y-6">
-                            {!authenticated ? (
-                                <CustomButton
-                                    onClick={login}
-                                    className="w-full"
-                                >
-                                    Connect Wallet to Continue
-                                </CustomButton>
-                            ) : !requestUrl && !verificationComplete ? (
-                                <div className="flex flex-col items-center gap-4">
-                                    <BsTwitterX className="h-16 w-16 text-[#00A340]" />
-                                    <CustomButton
-                                        onClick={generateVerificationRequest}
-                                        className="w-full"
-                                        disabled={loading}
-                                    >
-                                        {loading
-                                            ? 'Initializing...'
-                                            : 'Verify X Account'}
-                                    </CustomButton>
-                                </div>
-                            ) : requestUrl && !verificationComplete ? (
-                                <div className="flex flex-col items-center gap-4">
-                                    <p className="text-white">
-                                        Scan QR code to verify your Twitter
-                                        account
-                                    </p>
-                                    {requestUrl && (
-                                        <QRCodeCanvas
-                                            value={requestUrl}
-                                            size={200}
-                                            style={{
-                                                padding: 10,
-                                                background: 'white',
-                                            }}
-                                            level="H"
-                                        />
-                                    )}
-                                    <div className="flex items-center gap-2 mt-2 w-full">
-                                        <p className="text-xs text-gray-400 break-all flex-grow">
-                                            Verification URL:{' '}
-                                            <a
-                                                href={requestUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-[#00A340] hover:underline"
-                                            >
-                                                {requestUrl}
-                                            </a>
-                                        </p>
-                                        <Button
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(
-                                                    requestUrl,
-                                                );
-                                                toast.success(
-                                                    'URL copied to clipboard!',
-                                                );
-                                            }}
-                                            className="bg-[#00A340] hover:bg-[#009030] p-2"
-                                            size="sm"
-                                        >
-                                            <Copy className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </div>
-                            ) : verificationComplete && contentHash ? (
-                                <div className="space-y-4">
-                                    <div className="p-4 bg-green-100 rounded-lg">
-                                        <p className="text-green-800">
-                                            ✓ X account @{username} verified
-                                            successfully
-                                        </p>
-                                    </div>
-                                    <MintDatasetToken
-                                        contentHash={contentHash}
-                                        file={
-                                            new File(
-                                                [JSON.stringify(tweetData)],
-                                                `${username}-tweets.json`,
-                                                {
-                                                    type: 'application/json',
-                                                },
-                                            )
-                                        }
-                                        defaultName={`@${username}'s twitter dataset`}
-                                        defaultDescription={`Complete tweet history for @${username}`}
-                                        defaultTags={[
-                                            'twitter',
-                                            'social-data',
-                                            username,
-                                        ]}
-                                    />
-                                </div>
-                            ) : (
-                                <div className="flex justify-center">
-                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00A340]" />
-                                </div>
-                            )}
-                        </div>
-                    </Card>
-                </main>
+        <div className="min-h-screen relative inset-0 bg-gradient-to-bl from-[#373737] to-black flex flex-col">
+            <div className="absolute inset-0 -z-0 min-h-screen w-full pointer-events-none">
+                <Background />
             </div>
+
+            <NavBar
+                authenticated={authenticated}
+                login={login}
+                logout={logout}
+                primaryButton={{ text: 'Back', link: '/listing' }}
+            />
+            <main className="container mx-auto p-12 flex items-center justify-center max-w-6xl">
+                <Card className="w-full max-w-xl p-6 space-y-6 border-white border-2 bg-black/30">
+                    <div className="space-y-2">
+                        <h2 className="text-xl font-semibold text-white flex flex-row gap-1 items-center">
+                            List <RiTwitterXFill /> Data
+                        </h2>
+                        <p className="text-sm text-gray-300">
+                            Connect your X account to create a dataset from your
+                            tweets. Your data will be securely verified using
+                            zero-knowledge proofs.
+                        </p>
+                    </div>
+
+                    <div className="space-y-6">
+                        {!authenticated ? (
+                            <CustomButton onClick={login} className="w-full">
+                                Connect Wallet to Continue
+                            </CustomButton>
+                        ) : !requestUrl && !verificationComplete ? (
+                            <div className="flex flex-col items-center gap-4">
+                                <BsTwitterX className="h-16 w-16 text-[#00A340]" />
+                                <CustomButton
+                                    onClick={generateVerificationRequest}
+                                    className="w-full"
+                                    disabled={loading}
+                                >
+                                    {loading
+                                        ? 'Initializing...'
+                                        : 'Verify X Account'}
+                                </CustomButton>
+                            </div>
+                        ) : requestUrl && !verificationComplete ? (
+                            <div className="flex flex-col items-center gap-4">
+                                <p className="text-white">
+                                    Scan QR code to verify your Twitter account
+                                </p>
+                                {requestUrl && (
+                                    <QRCodeCanvas
+                                        value={requestUrl}
+                                        size={200}
+                                        style={{
+                                            padding: 10,
+                                            background: 'white',
+                                        }}
+                                        level="H"
+                                    />
+                                )}
+                                <div className="flex items-center gap-2 mt-2 w-full">
+                                    <p className="text-xs text-gray-400 break-all flex-grow">
+                                        Verification URL:{' '}
+                                        <a
+                                            href={requestUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-[#00A340] hover:underline"
+                                        >
+                                            {requestUrl}
+                                        </a>
+                                    </p>
+                                    <Button
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(
+                                                requestUrl,
+                                            );
+                                            toast.success(
+                                                'URL copied to clipboard!',
+                                            );
+                                        }}
+                                        className="bg-[#00A340] hover:bg-[#009030] p-2"
+                                        size="sm"
+                                    >
+                                        <Copy className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            </div>
+                        ) : verificationComplete && contentHash ? (
+                            <div className="space-y-4">
+                                <div className="p-4 bg-green-100 rounded-lg">
+                                    <p className="text-green-800">
+                                        ✓ X account @{username} verified
+                                        successfully
+                                    </p>
+                                </div>
+                                <MintDatasetToken
+                                    contentHash={contentHash}
+                                    file={
+                                        new File(
+                                            [JSON.stringify(tweetData)],
+                                            `${username}-tweets.json`,
+                                            {
+                                                type: 'application/json',
+                                            },
+                                        )
+                                    }
+                                    defaultName={`@${username}'s twitter dataset`}
+                                    defaultDescription={`Complete tweet history for @${username}`}
+                                    defaultTags={[
+                                        'twitter',
+                                        'social-data',
+                                        username,
+                                    ]}
+                                />
+                            </div>
+                        ) : (
+                            <div className="flex justify-center">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00A340]" />
+                            </div>
+                        )}
+                    </div>
+                </Card>
+            </main>
         </div>
     );
 }
