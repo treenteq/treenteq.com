@@ -25,10 +25,12 @@ export default function Home() {
         {
             name: 'Docs',
             path: 'https://www.treenteq.com/LitePaper_treenteq.pdf',
+            external: true,
         },
         {
             name: 'Contact Us',
             path: 'https://docs.google.com/forms/d/e/1FAIpQLSfFGfRqMHaBRLy22fDHJvJQgagAP7sjoyVM0HETDOcz79VcVA/viewform',
+            external: true,
         },
     ];
 
@@ -66,15 +68,35 @@ export default function Home() {
                         />
                     </Link>
                     <div className="flex flex-row gap-4">
-                        {navItems.map((nav, index) => (
-                            <Link href={nav.path} key={index}>
-                                <p
-                                    className={`font-semibold lg:font-lg ${pathname === nav.path ? 'text-[#00A340] font-extrabold' : 'text-white'}`}
+                        {navItems.map((nav, index) =>
+                            nav.external ? (
+                                <a
+                                    href={nav.path}
+                                    key={index}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`font-semibold lg:font-lg ${
+                                        pathname === nav.path
+                                            ? 'text-[#00A340] font-extrabold'
+                                            : 'text-white'
+                                    }`}
                                 >
                                     {nav.name}
-                                </p>
-                            </Link>
-                        ))}
+                                </a>
+                            ) : (
+                                <Link href={nav.path} key={index}>
+                                    <p
+                                        className={`font-semibold lg:font-lg ${
+                                            pathname === nav.path
+                                                ? 'text-[#00A340] font-extrabold'
+                                                : 'text-white'
+                                        }`}
+                                    >
+                                        {nav.name}
+                                    </p>
+                                </Link>
+                            ),
+                        )}
                     </div>
                     <Link href={'/market'}>
                         <Image
@@ -130,15 +152,17 @@ export default function Home() {
                             our platform
                         </p>
                         <div className="flex flex-wrap gap-4">
-                            <Link
+                            <a
                                 href={
                                     'https://www.treenteq.com/LitePaper_treenteq.pdf'
                                 }
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
                                 <Button className="text-white border rounded-lg border-white p-2 font-semibold">
                                     Learn More
                                 </Button>
-                            </Link>
+                            </a>
                             <Link href={'/market'}>
                                 <Button className="bg-[#00C853] hover:bg-[#00C853] text-white p-2 font-semibold">
                                     Treen It
