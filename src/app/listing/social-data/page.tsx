@@ -150,7 +150,7 @@ export default function SocialDataUpload() {
     console.log('Username: ', username);
     return (
         <div className="min-h-screen relative inset-0 bg-gradient-to-bl from-[#373737] to-black flex flex-col">
-            <div className="fixed inset-0 w-full h-full">
+            <div className="fixed inset-0 w-full h-full pointer-events-none">
                 <Background />
             </div>
 

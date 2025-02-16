@@ -674,7 +674,7 @@ export default function Market() {
 
     return (
         <div className="relative min-h-screen w-screen overflow-y-scroll overflow-x-hidden inset-0 bg-gradient-to-bl from-[#373737] to-black flex flex-col justify-center items-center">
-            <div className="fixed inset-0 w-full h-full">
+            <div className="fixed inset-0 w-full h-full pointer-events-none">
                 <Background />
             </div>
 
