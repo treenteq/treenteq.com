@@ -28,7 +28,8 @@ export default function LegacyDataUpload() {
         } else {
             setContentHash(null);
             setFile(null);
-            toast.error(result.errorDetails || 'Upload failed');
+            console.error(result.errorDetails);
+            toast.error('Upload failed');
         }
     };
 

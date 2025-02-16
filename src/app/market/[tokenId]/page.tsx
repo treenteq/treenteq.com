@@ -229,10 +229,7 @@ export default function TokenDetailPage() {
             window.location.reload();
         } catch (error) {
             console.error('Purchase error:', error);
-            toast.error(
-                `Error purchasing dataset: ${(error as Error).message}`,
-                { id: toastId },
-            );
+            toast.error(`Error purchasing dataset`, { id: toastId });
         }
     };
 

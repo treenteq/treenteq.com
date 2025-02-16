@@ -323,7 +323,7 @@ export default function Market() {
         } catch (error) {
             console.error('Purchase error:', error);
             if (error instanceof Error) {
-                toast.error(`Error purchasing dataset: ${error.message}`, {
+                toast.error(`Error purchasing dataset`, {
                     id: toastId,
                 });
             } else {

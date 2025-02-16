@@ -116,8 +116,9 @@ const MintDatasetToken: React.FC<MintDatasetTokenProps> = ({
         try {
             validateOwners();
         } catch (error) {
+            console.error(error);
             if (error instanceof Error) {
-                toast.error(error.message);
+                toast.error('Error!');
             }
             return;
         }
