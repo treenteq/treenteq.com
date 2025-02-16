@@ -71,7 +71,12 @@ body {
     body {
         @apply bg-background text-foreground;
     }
+    html, body {
+        @apply overflow-x-hidden w-screen;
+    }
 }
+
+
 
 @layer components {
     .border-border {
@@ -213,3 +218,26 @@ body {
     opacity: 1;
 }
 
+/* Custom thin scrollbar */
+::-webkit-scrollbar {
+    width: 5px; /* Adjust the width for a thin scrollbar */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #1a1a1a; /* Background color of the track */
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #00a340; /* Scrollbar color */
+    border-radius: 5px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00892a; /* Color when hovered */
+  }
+  
+  .hide-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}

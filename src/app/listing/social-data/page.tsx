@@ -12,11 +12,10 @@ import MintDatasetToken from '@/components/MintingComp';
 import { uploadToPinata } from '@/services/pinata';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import Image from 'next/image';
-import logo from '../../../../public/logo.svg';
 import { RiTwitterXFill } from 'react-icons/ri';
 import { BsTwitterX } from 'react-icons/bs';
+import Background from '@/components/background';
+import NavBar from '@/components/NavBar';
 
 // Replace these with your actual Reclaim Protocol credentials
 const APP_ID = process.env.NEXT_PUBLIC_RECLAIM_APP_ID as string;
@@ -150,40 +149,19 @@ export default function SocialDataUpload() {
     console.log('Req URL: ', requestUrl);
     console.log('Username: ', username);
     return (
-        <>
-            {/* Header */}
-            <header className="relative z-10 flex justify-between items-center p-6">
-                {/* logo */}
-                <div>
-                    <Link href="/">
-                        <Image
-                            src={logo}
-                            alt="TREENTEQ Logo"
-                            width={145}
-                            height={50}
-                            className="hidden sm:block brightness-110 contrast-125 p-1"
-                            priority
-                        />
-                    </Link>
-                </div>
-                <div>
-                    <div className="flex justify-center items-center gap-5">
-                        <Link href="/listing">
-                            <Button className="text-white bg-[#0B170D] border border-green-900/80 hover:bg-green-700 transition duration-300 rounded-full w-auto p-3 px-7 font-semibold">
-                                Back
-                            </Button>
-                        </Link>
-                        <Button
-                            onClick={authenticated ? logout : login}
-                            className="bg-gradient-to-r from-[#00A340] to-[#00000080] border border-green-900 rounded-full p-3 font-semibold text-white hover:opacity-90 transition duration-300"
-                        >
-                            {authenticated ? 'Disconnect' : 'Connect Wallet'}
-                        </Button>
-                    </div>
-                </div>
-            </header>
-            <main className="container mx-auto p-12 flex items-center justify-center max-w-6xl bg-black">
-                <Card className="w-full max-w-xl p-6 space-y-6 border-[#00a340] border-2 bg-black">
+        <div className="min-h-screen relative inset-0 bg-gradient-to-bl from-[#373737] to-black flex flex-col">
+            <div className="fixed inset-0 w-full h-full pointer-events-none">
+                <Background />
+            </div>
+
+            <NavBar
+                authenticated={authenticated}
+                login={login}
+                logout={logout}
+                primaryButton={{ text: 'Back', link: '/listing' }}
+            />
+            <main className="container mx-auto p-12 flex items-center justify-center max-w-6xl">
+                <Card className="w-full max-w-xl p-6 space-y-6 border-white border-2 bg-black/30">
                     <div className="space-y-2">
                         <h2 className="text-xl font-semibold text-white flex flex-row gap-1 items-center">
                             List <RiTwitterXFill /> Data
@@ -293,6 +271,6 @@ export default function SocialDataUpload() {
                     </div>
                 </Card>
             </main>
-        </>
+        </div>
     );
 }
