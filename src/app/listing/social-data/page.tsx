@@ -24,7 +24,7 @@ const TWITTER_PROVIDER_ID = process.env
     .NEXT_PUBLIC_RECLAIM_TWITTER_PROVIDER_ID as string;
 
 export default function SocialDataUpload() {
-    const { ready, authenticated, login, logout } = usePrivy();
+    const { ready, authenticated, login } = usePrivy();
     const [reclaimProofRequest, setReclaimProofRequest] = useState<any>(null);
     const [requestUrl, setRequestUrl] = useState('');
     const [verificationComplete, setVerificationComplete] = useState(false);
@@ -154,12 +154,7 @@ export default function SocialDataUpload() {
                 <Background />
             </div>
 
-            <NavBar
-                authenticated={authenticated}
-                login={login}
-                logout={logout}
-                primaryButton={{ text: 'Back', link: '/listing' }}
-            />
+            <NavBar primaryButton={{ text: 'Back', link: '/listing' }} />
             <main className="container mx-auto p-12 flex items-center justify-center max-w-6xl">
                 <Card className="w-full max-w-xl p-6 space-y-6 border-white border-2 bg-black/30">
                     <div className="space-y-2">

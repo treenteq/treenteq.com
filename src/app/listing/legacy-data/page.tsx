@@ -11,7 +11,7 @@ import Background from '@/components/background';
 import NavBar from '@/components/NavBar';
 
 export default function LegacyDataUpload() {
-    const { ready, authenticated, login, logout } = usePrivy();
+    const { ready, authenticated, login } = usePrivy();
     const [file, setFile] = useState<File | null>(null);
     const [contentHash, setContentHash] = useState<string | null>(null);
 
@@ -41,12 +41,7 @@ export default function LegacyDataUpload() {
                 <Background />
             </div>
 
-            <NavBar
-                authenticated={authenticated}
-                login={login}
-                logout={logout}
-                primaryButton={{ text: 'Back', link: '/listing' }}
-            />
+            <NavBar primaryButton={{ text: 'Back', link: '/listing' }} />
 
             <main className="container mx-auto p-12 flex flex-grow items-center justify-center max-w-6xl">
                 <Card className="w-full max-w-xl p-6 space-y-6 border-[#00a340] border-2 bg-black/30">

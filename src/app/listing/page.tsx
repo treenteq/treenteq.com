@@ -7,13 +7,11 @@ import machine from '../../../public/machine.svg';
 import social from '../../../public/social.svg';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePrivy } from '@privy-io/react-auth';
 import { FaArrowLeft } from 'react-icons/fa6';
 import Background from '@/components/background';
 import NavBar from '@/components/NavBar';
 
 export default function ListingPage() {
-    const { authenticated, login, logout } = usePrivy();
     const router = useRouter();
 
     const dataTypes = [
@@ -44,12 +42,7 @@ export default function ListingPage() {
                 <Background />
             </div>
             <div className="w-full absolute top-0">
-                <NavBar
-                    authenticated={authenticated}
-                    login={login}
-                    logout={logout}
-                    primaryButton={{ text: 'Back', link: '/market' }}
-                />
+                <NavBar primaryButton={{ text: 'Back', link: '/market' }} />
                 {/* main content */}
                 <div className="container mx-auto px-4 py-8 relative z-10 space-y-6 lg:px-40 ">
                     <Link href="/">

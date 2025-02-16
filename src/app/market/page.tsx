@@ -16,7 +16,6 @@ import Link from 'next/link';
 import { DATASET_CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
 import { DownloadIcon, Loader, Search, Tag } from 'lucide-react';
 import toast, { Toast } from 'react-hot-toast';
-import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import { OwnershipShare } from '@/hooks/useDatasetToken';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa6';
@@ -679,9 +678,6 @@ export default function Market() {
             </div>
 
             <Navbar
-                authenticated={authenticated}
-                login={login}
-                logout={logout}
                 primaryButton={{
                     text: 'List your data',
                     link: '/listing',

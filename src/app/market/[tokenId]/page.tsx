@@ -52,7 +52,7 @@ export default function TokenDetailPage() {
     const [dataset, setDataset] = useState<DatasetMetadata | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [isOwner, setIsOwner] = useState<boolean>(false);
-    const { authenticated, login, logout, user } = usePrivy();
+    const { authenticated, user } = usePrivy();
     const { downloadDataset, downloading } = useDatasetDownload();
     const { wallets } = useWallets();
 
@@ -275,12 +275,7 @@ export default function TokenDetailPage() {
                 <Background />
             </div>
             <div className="absolute top-0 w-full">
-                <NavBar
-                    authenticated={authenticated}
-                    login={login}
-                    logout={logout}
-                    primaryButton={{ text: 'Back', link: '/market' }}
-                />
+                <NavBar primaryButton={{ text: 'Back', link: '/market' }} />
                 {/* main */}
                 <main className="container mx-auto px-4 sm:px-6 pt-4 sm:pt-8 cursor-pointer mb-6 lg:px-40">
                     <div className="space-y-4 sm:space-y-6">
