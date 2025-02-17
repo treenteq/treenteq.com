@@ -62,7 +62,7 @@ export default function NavBar({ primaryButton }: NavbarProps) {
             const interval = setInterval(fetchBalance, 30000);
             return () => clearInterval(interval);
         }
-    }, [activeWallet?.address]);
+    }, [activeWallet.address, publicClient]);
 
     // Handle authentication state changes
     useEffect(() => {
