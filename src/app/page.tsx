@@ -78,7 +78,7 @@ export default function Home() {
                                     className={`font-semibold lg:font-lg ${
                                         pathname === nav.path
                                             ? 'text-[#00A340] font-extrabold'
-                                            : 'text-white'
+                                            : 'text-white hover:text-[#00A340]'
                                     }`}
                                 >
                                     {nav.name}
@@ -89,7 +89,7 @@ export default function Home() {
                                         className={`font-semibold lg:font-lg ${
                                             pathname === nav.path
                                                 ? 'text-[#00A340] font-extrabold'
-                                                : 'text-white'
+                                                : 'text-white  hover:text-[#00A340]'
                                         }`}
                                     >
                                         {nav.name}
@@ -98,14 +98,10 @@ export default function Home() {
                             ),
                         )}
                     </div>
-                    <Link href={'/market'}>
-                        <Image
-                            src="./menu.svg"
-                            alt="menu"
-                            width={40}
-                            height={40}
-                            className="w-10 cursor-pointer"
-                        />
+                    <Link href={'/data-wanted'}>
+                        <Button className="bg-[#00A340] cursor-pointer hover:bg-black/30 font-bold">
+                            Request Dataset
+                        </Button>
                     </Link>
                 </nav>
                 {/* mobile header */}
@@ -128,14 +124,10 @@ export default function Home() {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
-                    <Link href={'/'}>
-                        <Image
-                            src="./logo.svg"
-                            alt="logo"
-                            width={20}
-                            height={20}
-                            className="w-28 h-20"
-                        />
+                    <Link href={'/data-wanted'}>
+                        <Button className="bg-black/45 cursor-pointer">
+                            Request Dataset
+                        </Button>
                     </Link>
                 </nav>
 
