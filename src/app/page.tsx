@@ -19,12 +19,59 @@ import { baseSepolia } from 'viem/chains';
 import { DATASET_CONTRACT_ADDRESS, RPC_URL } from '@/utils/contractConfig';
 import toast from 'react-hot-toast';
 import DatasetTokenABI from '@/utils/DatasetTokenABI.json';
+
+interface tokenMetadata {
+    0: string; // name
+    1: string; // description
+    5: string[]; //tags
+}
+
+interface tokenCardProps {
+    metadata: tokenMetadata;
+    tokenId: string;
+}
+
+const TokenCard: React.FC<tokenCardProps> = ({ metadata, tokenId }) => {
+    console.log(metadata);
+
+    return (
+        <Link href={`/market/${tokenId}`}>
+            <div className="bg-green-700/50 shadow-lg rounded-xl p-4 w-36 h-32 hover:border-green-400 hover:shadow-green-400 border border-white text-white mb-2 mt-3">
+                <h3 className="text-lg font-semibold mt-3 line-clamp-1">
+                    {metadata[0]}
+                </h3>
+                <p className="text-gray-300 text-sm mt-1 line-clamp-1">
+                    {metadata[1]}
+                </p>
+                <div className="text-gray-500 text-xs mt-1 flex">
+                    {metadata[5] &&
+                        metadata?.[5].slice(0, 1).map((tag, index) => (
+                            <span key={index} className="mr-2">
+                                #{tag}
+                            </span>
+                        ))}
+                    {metadata[5].length > 1 && (
+                        <p>+{metadata[5].length - 1} more</p>
+                    )}
+                </div>
+            </div>
+        </Link>
+    );
+};
+
 export default function Home() {
     const [balance, setBalance] = useState<string>('0');
     const [isLoadingBalance, setIsLoadingBalance] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isLoggingIn, setIsLoggingIn] = useState(false);
-    const [tokenIds, setTokenIds] = useState<string[]>([]);
+    const [mintedTokenIds, setMintedTokenIds] = useState<string[]>([]);
+    const [purchasedTokenIds, setPurchasedTokenIds] = useState<string[]>([]);
+    const [purchasedTokenMetadata, setPurchasedTokenMetadata] = useState<
+        tokenMetadata[] | null
+    >(null);
+    const [mintedTokenMetadata, setMintedTokenMetadata] = useState<
+        tokenMetadata[] | null
+    >(null);
 
     const pathname = usePathname();
 
@@ -90,7 +137,8 @@ export default function Home() {
             setIsLoggingIn(false);
             window.location.reload();
         }
-    }, [ready, authenticated, isLoggingIn]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleLogin = async () => {
         setIsLoggingIn(true);
@@ -123,31 +171,82 @@ export default function Home() {
         return 'Good evening';
     };
 
-    async function getTokens() {
-        try {
-            const tokenIds = await publicClient.readContract({
-                address: DATASET_CONTRACT_ADDRESS,
-                abi: DatasetTokenABI,
-                functionName: 'getTokensByOwner',
-                args: [activeWallet?.address],
-            });
-            setTokenIds(Array.isArray(tokenIds) ? tokenIds : []);
-            console.log('Token IDs:', tokenIds);
-        } catch (error) {
-            console.error('Error fetching tokens:', error);
-        }
-    }
-
     useEffect(() => {
+        async function fetchAllData() {
+            try {
+                // minted Token
+                const mintedTokenPromise = publicClient.readContract({
+                    address: DATASET_CONTRACT_ADDRESS,
+                    abi: DatasetTokenABI,
+                    functionName: 'getTokensByOwner',
+                    args: [activeWallet?.address],
+                });
+
+                // purchased token
+                const purchasedTokenPromise = publicClient.readContract({
+                    address: DATASET_CONTRACT_ADDRESS,
+                    abi: DatasetTokenABI,
+                    functionName: 'getPurchasedTokens',
+                    args: [activeWallet?.address],
+                });
+
+                // Run all promises in parallel
+                const [mintedTokenIds, purchasedTokenIds] = await Promise.all([
+                    mintedTokenPromise,
+                    purchasedTokenPromise,
+                ]);
+
+                const mintedTokenIdsArray = Array.isArray(mintedTokenIds)
+                    ? mintedTokenIds
+                    : [];
+                const purchasedTokenIdsArray = Array.isArray(purchasedTokenIds)
+                    ? purchasedTokenIds
+                    : [];
+
+                const fetchMetadata = async (tokenIds: string[]) => {
+                    return Promise.all(
+                        tokenIds.map((tokenId) =>
+                            publicClient.readContract({
+                                address: DATASET_CONTRACT_ADDRESS,
+                                abi: DatasetTokenABI,
+                                functionName: 'getDatasetMetadata',
+                                args: [tokenId],
+                            }),
+                        ),
+                    );
+                };
+
+                const [purchasedTokenMetadata, mintedTokenMetadata] =
+                    await Promise.all([
+                        fetchMetadata(purchasedTokenIdsArray),
+                        fetchMetadata(mintedTokenIdsArray),
+                    ]);
+
+                setMintedTokenIds(mintedTokenIdsArray);
+                setPurchasedTokenIds(purchasedTokenIdsArray);
+                setPurchasedTokenMetadata(
+                    purchasedTokenMetadata as tokenMetadata[],
+                );
+                setMintedTokenMetadata(mintedTokenMetadata as tokenMetadata[]);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
         if (activeWallet?.address) {
-            getTokens();
+            console.log(activeWallet?.address);
+            fetchAllData();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [activeWallet]);
+
+    // console.log(mintedTokenIds);
+    // console.log(purchasedTokenIds);
+    // console.log(purchasedTokenMetadata);
+    // console.log(mintedTokenMetadata);
 
     return (
-        <div className="h-screen w-screen overflow-auto md:overflow-hidden relative inset-0 bg-gradient-to-bl from-[#373737] to-black flex flex-col items-center justify-center">
-            <div className="absolute inset-0 w-full h-full overflow-auto hide-scrollbar">
+        <div className="h-screen w-screen overflow-auto relative inset-0 bg-gradient-to-bl from-[#373737] to-black flex flex-col items-center justify-center">
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
                 <Background />
             </div>
 
@@ -195,15 +294,6 @@ export default function Home() {
                         )}
                     </div>
                     <div className=" flex justify-center items-center gap-2">
-                        <Link href={'/market'}>
-                            <Image
-                                src="./menu.svg"
-                                alt="menu"
-                                width={40}
-                                height={40}
-                                className="w-10 cursor-pointer"
-                            />
-                        </Link>
                         <div>
                             {authenticated && activeWallet ? (
                                 <Button
@@ -249,6 +339,32 @@ export default function Home() {
                                         </DropdownMenuItem>
                                     </Link>
                                 ))}
+                                <DropdownMenuItem>
+                                    {authenticated && activeWallet ? (
+                                        <Button
+                                            onClick={handleLogout}
+                                            className="bg-red-700 rounded-lg p-3 font-semibold text-white hover:opacity-90 transition duration-300 flex items-center gap-2"
+                                        >
+                                            {' '}
+                                            Disconnect
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            onClick={handleLogin}
+                                            disabled={isLoggingIn}
+                                            className="bg-[#00A340] border border-green-900 rounded-lg p-3 font-semibold text-white hover:opacity-90 transition duration-300 flex items-center gap-2"
+                                        >
+                                            {isLoggingIn ? (
+                                                <>
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                    Connecting...
+                                                </>
+                                            ) : (
+                                                'Connect Wallet'
+                                            )}
+                                        </Button>
+                                    )}
+                                </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
@@ -265,11 +381,14 @@ export default function Home() {
 
                 {/* main content */}
                 <main className="w-5/6 flex flex-col items-center justify-center mt-9">
-                    <div className="rounded-md border bg-black/55 border-white w-full h-52 p-6">
+                    <div className="rounded-lg border bg-black/55 border-white w-full h-52 p-6">
                         {activeWallet?.address ? (
                             <>
                                 <p className="text-white text-xl">
-                                    {getGreeting()}, {activeWallet.address}!
+                                    {getGreeting()}, anon
+                                </p>
+                                <p className="text-white">
+                                    Your wallet address: {activeWallet?.address}
                                 </p>
                                 <p className="text-white">
                                     Your wallet balance is:{' '}
@@ -284,21 +403,65 @@ export default function Home() {
                                     {getGreeting()}!
                                 </p>
                                 <p className="text-white">
-                                    Connect your wallet to check your balance.
+                                    Connect your wallet to check your
+                                    activities.
                                 </p>
                             </>
                         )}
                     </div>
-                    <div className="flex justify-centre w-full items-center mt-5">
-                        <div className="w-52 h-52 border border-white rounded-md text-white text-lg bg-black/60 p-4 shadow-lg flex flex-col items-center justify-center">
-                            <p className="text-xl font-semibold">
-                                No. of dataset purchased
-                            </p>
-                            <p className="text-2xl font-bold">
-                                {tokenIds.length}
-                            </p>
+                    <div className="flex flex-col md:flex-row justify-center w-full items-center mt-5 gap-5 overflow-hidden">
+                        {/* Minted Tokens Section */}
+                        <div className="w-full md:w-1/2 h-80 border border-white rounded-lg p-5 bg-black/55">
+                            <p className="text-white">Your minted tokens</p>
+                            <div className="flex justify-center">
+                                <div className="grid grid-cols-2 xl:grid-cols-3 p-2 gap-7 overflow-x-hidden overflow-y-auto h-64 justify-center">
+                                    {mintedTokenMetadata ? (
+                                        mintedTokenMetadata.map(
+                                            (metadata, index) => (
+                                                <TokenCard
+                                                    key={index}
+                                                    metadata={metadata}
+                                                    tokenId={
+                                                        mintedTokenIds[index]
+                                                    }
+                                                />
+                                            ),
+                                        )
+                                    ) : (
+                                        <p className="text-gray-400">
+                                            You have not minted any token yet
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                        <div>{''}</div>
+
+                        {/* Purchased Tokens Section */}
+                        <div className="w-full md:w-1/2 h-80 border border-white rounded-lg p-5 bg-black/55">
+                            <p className="text-white">Your purchased tokens</p>
+                            <div className="flex justify-center">
+                                <div className="grid grid-cols-2 xl:grid-cols-3 p-2 gap-7 overflow-x-hidden overflow-y-auto h-64 justify-center">
+                                    {purchasedTokenMetadata ? (
+                                        purchasedTokenMetadata.map(
+                                            (metadata, index) => (
+                                                <TokenCard
+                                                    key={index}
+                                                    metadata={metadata}
+                                                    tokenId={
+                                                        purchasedTokenIds[index]
+                                                    }
+                                                />
+                                            ),
+                                        )
+                                    ) : (
+                                        <p className="text-gray-400">
+                                            You have not purchased any dataset
+                                            yet
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </main>
             </div>
