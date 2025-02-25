@@ -62,6 +62,7 @@ export default function NavBar({ primaryButton }: NavbarProps) {
             const interval = setInterval(fetchBalance, 30000);
             return () => clearInterval(interval);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeWallet?.address]);
 
     // Handle authentication state changes

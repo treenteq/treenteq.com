@@ -601,9 +601,9 @@ export default function Market() {
     };
 
     const renderContent = () => {
-        if (searchLoading) {
+        if (searchLoading || loading) {
             return (
-                <div className="flex flex-row flex-wrap overflow-hidden gap-3 justify-center items-center">
+                <div className="flex flex-row flex-wrap overflow-hidden gap-3 justify-center items-center mb-5">
                     <div>
                         <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
                     </div>
@@ -613,15 +613,6 @@ export default function Market() {
                     <div>
                         <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
                     </div>
-                </div>
-            );
-        }
-        if (error) {
-            return <div className="text-center py-8 text-red-500">{error}</div>;
-        }
-        if (loading) {
-            return (
-                <div className="flex flex-row flex-wrap gap-3 overflow-hidden justify-center items-center">
                     <div>
                         <Skeleton className="h-64 w-72 rounded-xl bg-neutral-400/50" />
                     </div>
@@ -642,6 +633,9 @@ export default function Market() {
                     </div>
                 </div>
             );
+        }
+        if (error) {
+            return <div className="text-center py-8 text-red-500">{error}</div>;
         }
         if (tokens.length === 0) {
             return (

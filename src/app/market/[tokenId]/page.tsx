@@ -275,7 +275,7 @@ export default function TokenDetailPage() {
                 <Background />
             </div>
             <div className="absolute top-0 w-full">
-                <NavBar primaryButton={{ text: 'Back', link: '/market' }} />
+                <NavBar primaryButton={{ text: 'Home', link: '/' }} />
                 {/* main */}
                 <main className="container mx-auto px-4 sm:px-6 pt-4 sm:pt-8 cursor-pointer mb-6 lg:px-40">
                     <div className="space-y-4 sm:space-y-6">
