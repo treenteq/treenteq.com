@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import legacy from '../../../public/legacy.svg';
 import machine from '../../../public/machine.svg';
 import social from '../../../public/social.svg';
+import ip from '../../../public/ip-small.svg';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
@@ -35,6 +36,12 @@ export default function ListingPage() {
             description: 'Coming Soon!',
             icon: machine,
             route: '/listing/machine-data',
+        },
+        {
+            title: 'IP Registration',
+            description: 'Coming Soon!',
+            icon: ip,
+            route: '/listing/ip-registration',
         },
     ];
 
