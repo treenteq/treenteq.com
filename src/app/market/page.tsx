@@ -80,6 +80,25 @@ const customBaseSepolia = defineChain({
     testnet: true,
 });
 
+// Utility to format ETH price to show only the first 3 non-zero decimals
+function formatEthShort(wei: bigint): string {
+    const eth = formatEther(wei);
+    // Split into whole and decimal
+    const [whole, decimal = ''] = eth.split('.');
+    if (!decimal) return whole;
+    // Find first 3 non-zero decimals
+    let shown = '';
+    let nonZeroCount = 0;
+    for (let i = 0; i < decimal.length; i++) {
+        shown += decimal[i];
+        if (decimal[i] !== '0') nonZeroCount++;
+        if (nonZeroCount === 3) break;
+    }
+    // If all decimals are zero, just show up to 3
+    if (nonZeroCount === 0) shown = decimal.slice(0, 3);
+    return `${whole}.${shown}`;
+}
+
 const DatasetCard: React.FC<{
     token: TokenData;
     onPurchase: (tokenId: bigint, price: bigint) => Promise<void>;
@@ -192,7 +211,7 @@ const DatasetCard: React.FC<{
             <div className="flex justify-between items-center pt-2">
                 {/* Price */}
                 <div className="text-lg font-bold text-green-400">
-                    {formatEther(BigInt(token?.metadata?.price))} ETH
+                    {formatEthShort(BigInt(token?.metadata?.price))} ETH
                 </div>
 
                 {/* Purchase or Download Button */}
